@@ -29,14 +29,14 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
-LIBS:librairie-personnelle
+LIBS:PicVision-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "25 feb 2014"
+Date "27 feb 2014"
 Rev ""
 Comp ""
 Comment1 ""
@@ -340,10 +340,10 @@ F 3 "" H 8200 5250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R10
+L R R11
 U 1 1 530CC92A
 P 7350 4700
-F 0 "R10" V 7430 4700 50  0000 C CNN
+F 0 "R11" V 7430 4700 50  0000 C CNN
 F 1 "75R" V 7350 4700 50  0000 C CNN
 F 2 "" H 7350 4700 60  0000 C CNN
 F 3 "" H 7350 4700 60  0000 C CNN
@@ -351,10 +351,10 @@ F 3 "" H 7350 4700 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L R R11
+L R R12
 U 1 1 530CC937
 P 7350 4950
-F 0 "R11" V 7430 4950 50  0000 C CNN
+F 0 "R12" V 7430 4950 50  0000 C CNN
 F 1 "470R" V 7350 4950 50  0000 C CNN
 F 2 "" H 7350 4950 60  0000 C CNN
 F 3 "" H 7350 4950 60  0000 C CNN
@@ -366,7 +366,7 @@ L DIODE D2
 U 1 1 530CC93F
 P 6800 4700
 F 0 "D2" H 6800 4800 40  0000 C CNN
-F 1 "DIODE" H 6800 4600 40  0000 C CNN
+F 1 "1N4148" H 6800 4600 40  0000 C CNN
 F 2 "" H 6800 4700 60  0000 C CNN
 F 3 "" H 6800 4700 60  0000 C CNN
 	1    6800 4700
@@ -465,10 +465,10 @@ F 3 "" H 8200 6250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R9
+L R R10
 U 1 1 530CD0AB
 P 7100 5650
-F 0 "R9" V 7180 5650 50  0000 C CNN
+F 0 "R10" V 7180 5650 50  0000 C CNN
 F 1 "200R" V 7100 5650 50  0000 C CNN
 F 2 "" H 7100 5650 60  0000 C CNN
 F 3 "" H 7100 5650 60  0000 C CNN
@@ -606,7 +606,7 @@ SCL2
 Text GLabel 4800 3500 0    39   Input ~ 0
 SDA2
 Text Notes 9350 5050 0    59   ~ 0
-NOTES:\nPIN 14 OC2    video sync\nPIN 15 SDO1  video data\nPIN 16 OC1    audio PWM\n
+NOTES:\nPIN 14 OC2    video sync\nPIN 15 SDO1  video data\nPIN 16 OC1    audio PWM\nPIN 21 OC3    video out pedestal\nPIN 22 SSC1  SP1 sync input
 Text GLabel 6300 4100 2    39   Input ~ 0
 SCL1
 Text GLabel 6300 4000 2    39   Input ~ 0
@@ -615,17 +615,6 @@ Text GLabel 4800 4000 0    39   Input ~ 0
 CS2
 Text GLabel 4800 4100 0    39   Input ~ 0
 CS1
-$Comp
-L CONN_6 P6
-U 1 1 530CF1D0
-P 8450 3400
-F 0 "P6" V 8400 3400 60  0000 C CNN
-F 1 "spare I/O" V 8500 3400 60  0000 C CNN
-F 2 "" H 8450 3400 60  0000 C CNN
-F 3 "" H 8450 3400 60  0000 C CNN
-	1    8450 3400
-	1    0    0    -1  
-$EndComp
 $Comp
 L GND #PWR18
 U 1 1 530CF1DF
@@ -637,7 +626,7 @@ F 3 "" H 8100 3800 60  0000 C CNN
 	1    8100 3800
 	1    0    0    -1  
 $EndComp
-Text GLabel 8100 3050 1    60   Input ~ 0
+Text GLabel 8100 3250 1    60   Input ~ 0
 Vdd
 $Comp
 L GND #PWR3
@@ -816,7 +805,7 @@ Wire Wire Line
 Wire Wire Line
 	2700 2350 2700 2400
 Wire Wire Line
-	7600 4700 7600 4950
+	7600 3650 7600 4950
 Wire Wire Line
 	7600 4700 7700 4700
 Wire Wire Line
@@ -934,31 +923,15 @@ Wire Wire Line
 Wire Wire Line
 	8100 3650 8100 3800
 Wire Wire Line
-	8100 3050 8100 3150
+	8100 3250 8100 3350
 Wire Wire Line
-	6250 3700 7900 3700
-Wire Wire Line
-	7900 3700 7900 3550
-Wire Wire Line
-	7900 3550 8100 3550
-Wire Wire Line
-	6250 3600 7800 3600
-Wire Wire Line
-	7800 3600 7800 3450
+	7700 3550 8100 3550
 Wire Wire Line
 	7800 3450 8100 3450
 Wire Wire Line
 	6250 3500 7700 3500
 Wire Wire Line
-	7700 3500 7700 3350
-Wire Wire Line
-	7700 3350 8100 3350
-Wire Wire Line
-	6250 3400 7600 3400
-Wire Wire Line
-	7600 3400 7600 3250
-Wire Wire Line
-	7600 3250 8100 3250
+	6250 3400 7800 3400
 Wire Wire Line
 	2300 6300 2300 6550
 Wire Wire Line
@@ -1029,4 +1002,51 @@ Wire Wire Line
 	6700 6150 6700 6300
 Wire Wire Line
 	5250 5650 6050 5650
+Wire Wire Line
+	6250 3600 6250 3700
+$Comp
+L R R9
+U 1 1 530EB8E3
+P 6550 3650
+F 0 "R9" V 6630 3650 40  0000 C CNN
+F 1 "1K2" V 6557 3651 40  0000 C CNN
+F 2 "~" V 6480 3650 30  0000 C CNN
+F 3 "~" H 6550 3650 30  0000 C CNN
+	1    6550 3650
+	0    -1   -1   0   
+$EndComp
+$Comp
+L DIODE D3
+U 1 1 530EB8F0
+P 7100 3650
+F 0 "D3" H 7100 3750 40  0000 C CNN
+F 1 "1N4148" H 7100 3550 40  0000 C CNN
+F 2 "" H 7100 3650 60  0000 C CNN
+F 3 "" H 7100 3650 60  0000 C CNN
+	1    7100 3650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6300 3650 6250 3650
+Connection ~ 6250 3650
+Wire Wire Line
+	6800 3650 6900 3650
+Wire Wire Line
+	7300 3650 7600 3650
+Connection ~ 7600 4700
+$Comp
+L CONN_4 P6
+U 1 1 530EBBB0
+P 8450 3500
+F 0 "P6" V 8400 3500 50  0000 C CNN
+F 1 "spare i/o" V 8500 3500 50  0000 C CNN
+F 2 "" H 8450 3500 60  0000 C CNN
+F 3 "" H 8450 3500 60  0000 C CNN
+	1    8450 3500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7800 3400 7800 3450
+Wire Wire Line
+	7700 3500 7700 3550
 $EndSCHEMATC
