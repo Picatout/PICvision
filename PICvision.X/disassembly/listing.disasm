@@ -1,458 +1,465 @@
 Disassembly Listing for PICvision
 Generated From:
 /home/jacques/MPLABXProjects/PICvision/PICvision.X/dist/default/production/PICvision.X.production.elf
-2014-02-26 23:50:37
+2014-02-27 15:43:20
 
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/TVout.c  ----------------------------------------
 1:                 /* 
 2:                  * File:   TVout.c
 3:                  * Author: jacques Deschênes
 4:                  * Description:  NTSC/PAL signal generator
-5:                  * Created on 25 février 2014, 16:28
-6:                  */
-7:                 
-8:                 #include <stdio.h>
-9:                 #include <stdlib.h>
-10:                #include <string.h>
-11:                #include "TVout.h"
-12:                
-13:                
-14:                #define HPERIOD 1016  // timer count for 15748Hz horizontal frequency ( no prescale)
-15:                #define HPULSE 75 // 4,7µsec horizontal pulse width
-16:                #define FIRST_VISIBLE 28 // première ligne visible
-17:                #define LAST_VISIBLE (FIRST_VISIBLE+VPIXELS) // dernière ligne visible
-18:                
-19:                #define F_PCHAR 1    // flag put_char() pending
-20:                #define F_CLEAR 2    // flag clear_screen() pending
-21:                #define F_CLREOL 4   // flag clear to end of line
-22:                #define F_RETRACE 8 // flag screen in retrace phase
-23:                
-24:                #define QUEUE_SIZE 32  // put_char queue
+5:                  * NTSC REF: http://www.ntsc-tv.com/ntsc-index-02.htm
+6:                  * NTSC/PAL/SECAM REF: http://www.videointerchange.com/pal_secam_conversions.htm
+7:                  * Created on 25 février 2014, 16:28
+8:                  */
+9:                 
+10:                #include <stdio.h>
+11:                #include <stdlib.h>
+12:                #include <string.h>
+13:                #include "TVout.h"
+14:                
+15:                
+16:                #define HPERIOD 1016  // timer count for 15748Hz horizontal frequency ( no prescale)
+17:                #define HPULSE 75 // 4,7µsec horizontal pulse width
+18:                #define FIRST_VISIBLE 30 // première ligne visible
+19:                #define LAST_VISIBLE (FIRST_VISIBLE+VPIXELS) // dernière ligne visible
+20:                #define FRONT_PORCH  (1.5*FCY/1000000UL)
+21:                #define F_PCHAR 1    // flag put_char() pending
+22:                #define F_CLEAR 2    // flag clear_screen() pending
+23:                #define F_CLREOL 4   // flag clear to end of line
+24:                #define F_RETRACE 8 // flag screen in retrace phase
 25:                
-26:                static unsigned int frame_line_cntr=0; // count line in video frame
-27:                volatile static unsigned long frame_cntr=0; // number of frame since reset
-28:                volatile static unsigned int flags;
-29:                
-30:                typedef union coord_type{
-31:                    unsigned int yx;
-32:                    struct{
-33:                        unsigned char y;
-34:                        unsigned char x;
-35:                    };
-36:                }coord_t;
-37:                
-38:                volatile static coord_t cursor_pos;
+26:                #define QUEUE_SIZE 32  // put_char queue
+27:                
+28:                static unsigned int frame_line_cntr=0; // count line in video frame
+29:                volatile static unsigned long frame_cntr=0; // number of frame since reset
+30:                volatile static unsigned int flags;
+31:                
+32:                typedef union coord_type{
+33:                    unsigned int yx;
+34:                    struct{
+35:                        unsigned char y;
+36:                        unsigned char x;
+37:                    };
+38:                }coord_t;
 39:                
-40:                volatile static char pchar_queue[QUEUE_SIZE];
+40:                volatile static coord_t cursor_pos;
 41:                
-42:                char video_buffer[LINES][COLUMNS];
-43:                volatile static unsigned  head=0, tail=0;
-44:                
-45:                
-46:                void  video_init(){ // initialisation sorties NTSC
-47:                    T2CON=0; // désactivation TIMER2
-0005EE  EB0280     CLR W5
-0005F0  880885     MOV W5, T2CON
-48:                    PR2 = HPERIOD;
-0005F2  203F84     MOV #0x3F8, W4
-0005F4  880864     MOV W4, PR2
-49:                    // OC1 video sync
-50:                    OC1R=HPULSE;
-0005F6  2004B6     MOV #0x4B, W6
-0005F8  880C16     MOV W6, OC1R
-51:                    OC1RS=HPERIOD;
-0005FA  880C04     MOV W4, OC1RS
-52:                    OC1CON=5; // mode 5, timer 2
-0005FC  200054     MOV #0x5, W4
-0005FE  880C24     MOV W4, OC1CON
-53:                    //OC3 video delay timer
-54:                    OC3R=2*HPULSE;
-000600  200966     MOV #0x96, W6
-000602  880C76     MOV W6, OC3R
-55:                    OC3RS=HPERIOD-16;
-000604  203E86     MOV #0x3E8, W6
-000606  880C66     MOV W6, OC3RS
-56:                    OC3CON=5; // mode 5, timer 2
-000608  880C84     MOV W4, OC3CON
-57:                    // OC1 interrupt service  routine trigger video pixels output via SPI1
+42:                volatile static char pchar_queue[QUEUE_SIZE];
+43:                
+44:                char video_buffer[LINES][COLUMNS];
+45:                volatile static unsigned  head=0, tail=0;
+46:                
+47:                
+48:                void  video_init(){ // initialisation sorties NTSC
+49:                    T2CON=0; // désactivation TIMER2
+0005FE  EB0280     CLR W5
+000600  880885     MOV W5, T2CON
+50:                    PR2 = HPERIOD;
+000602  203F84     MOV #0x3F8, W4
+000604  880864     MOV W4, PR2
+51:                    // OC1 video sync
+52:                    OC1R=HPULSE;
+000606  2004B6     MOV #0x4B, W6
+000608  880C16     MOV W6, OC1R
+53:                    OC1RS=HPERIOD;
+00060A  880C04     MOV W4, OC1RS
+54:                    OC1CON=5; // mode 5, timer 2
+00060C  200054     MOV #0x5, W4
+00060E  880C24     MOV W4, OC1CON
+55:                    //OC3 video delay timer black level fixer.
+56:                    OC3R=2*HPULSE;
+000610  200964     MOV #0x96, W4
+000612  880C74     MOV W4, OC3R
+57:                    OC3RS=HPERIOD-FRONT_PORCH;
+000614  203E04     MOV #0x3E0, W4
+000616  880C64     MOV W4, OC3RS
 58:                    IFS0bits.OC1IF=0;
-00060A  A94084     BCLR IFS0, #2
+000618  A94084     BCLR IFS0, #2
 59:                    IPC0bits.OC1IP=7;
-00060C  207000     MOV #0x700, W0
-00060E  B720A4     IOR IPC0
-60:                    // timer 2 interrupt enabling
-61:                    IFS0bits.T2IF=0;
-000610  A9E084     BCLR IFS0, #7
-62:                    IPC1bits.T2IP=7; // plus haute priorité
-000612  270000     MOV #0x7000, W0
-000614  B720A6     IOR IPC1
-63:                    IEC0bits.T2IE=1;
-000616  A8E094     BSET IEC0, #7
-64:                    // SPI1 configuratio (pixel output)
-65:                    SPI1CON1=0;
-000618  881215     MOV W5, SPI1CON1
-66:                    SPI1CON1bits.DISSCK=1;
-00061A  A88243     BSET 0x243, #4
-67:                    SPI1CON1bits.MSTEN=1;
-00061C  A8A242     BSET SPI1CON1, #5
-68:                    SPI1CON1bits.SPRE=7;
-00061E  2001C0     MOV #0x1C, W0
-000620  B72242     IOR SPI1CON1
-69:                    SPI1CON1bits.PPRE=2;
-000622  801214     MOV SPI1CON1, W4
-000624  A10004     BCLR W4, #0
-000626  A01004     BSET W4, #1
-000628  881214     MOV W4, SPI1CON1
-70:                    SPI1CON2=1;
-00062A  200014     MOV #0x1, W4
-00062C  881224     MOV W4, SPI1CON2
-71:                    SPI1STATbits.SPIEN=1;
-00062E  A8E241     BSET 0x241, #7
-72:                    T2CONbits.TON=1;
-000630  A8E111     BSET 0x111, #7
-73:                    cursor_pos.y=0;
-000632  FD0280     EXCH W0, W5
-000634  B7EAAC     MOV.B WREG, cursor_pos
-000636  B7EAAD     MOV.B WREG, 0xAAD
-000638  FD0280     EXCH W0, W5
-74:                    cursor_pos.x=0;
-75:                }//horz_sync_init()
-00063A  060000     RETURN
-76:                
-77:                void  wait_n_frame(unsigned n){
-78:                unsigned long f0;
-79:                    f0=frame_cntr+n;
-00063C  805544     MOV frame_cntr, W4
-00063E  805555     MOV 0xAAA, W5
-000640  420000     ADD W4, W0, W0
-000642  4A80E0     ADDC W5, #0x0, W1
-80:                    while (frame_cntr<f0);
-000644  805544     MOV frame_cntr, W4
-000646  805555     MOV 0xAAA, W5
-000648  500F84     SUB W0, W4, [W15]
-00064A  588F85     SUBB W1, W5, [W15]
-00064C  3EFFFB     BRA GTU, 0x644
-81:                }//f()
-00064E  060000     RETURN
-82:                
-83:                void clear_screen(){ // clear screen
-84:                    flags |= F_CLEAR;
-000650  A82AA6     BSET flags, #1
-85:                    while (flags & F_CLEAR);
-000652  AB2AA6     BTST flags, #1
-000654  3AFFFE     BRA NZ, 0x652
-86:                }//f()
-000656  060000     RETURN
-87:                
-88:                void clear_eol(){// clear line from cursor to end of line
-89:                    flags |= F_CLREOL;
-000658  A84AA6     BSET flags, #2
-90:                }//f()
-00065A  060000     RETURN
-91:                
-92:                void move_cursor(unsigned line, unsigned column){
-93:                    cursor_pos.y=line;
-00065C  B7EAAC     MOV.B WREG, cursor_pos
-94:                    cursor_pos.x=column;
-00065E  780001     MOV W1, W0
-000660  B7EAAD     MOV.B WREG, 0xAAD
-95:                }//f()
-000662  060000     RETURN
-96:                
-97:                unsigned get_cursor(){
-98:                    return cursor_pos.yx;
-000664  805560     MOV cursor_pos, W0
-99:                }//f()
-000666  060000     RETURN
-100:               
-101:               void put_char(char c){// put character at current cursor position & move cursor forward
-102:                   pchar_queue[tail++]=c;
-000668  805684     MOV tail, W4
-00066A  20AB05     MOV #0xAB0, W5
-00066C  7A7280     MOV.B W0, [W5+W4]
-00066E  E80204     INC W4, W4
-000670  885684     MOV W4, tail
-103:                   tail %= QUEUE_SIZE;
-000672  2001F0     MOV #0x1F, W0
-000674  B62AD0     AND tail
-104:                   flags |= F_PCHAR;
-000676  A80AA6     BSET flags, #0
-105:               }//f()
+00061A  207000     MOV #0x700, W0
+00061C  B720A4     IOR IPC0
+60:                    IPC4bits.CNIP=7;
+00061E  270000     MOV #0x7000, W0
+000620  B720AC     IOR IPC4
+61:                    CNEN1bits.CN15IE=1;
+000622  A8E061     BSET 0x61, #7
+62:                    // timer 2 interrupt enabling
+63:                    IFS0bits.T2IF=0;
+000624  A9E084     BCLR IFS0, #7
+64:                    IPC1bits.T2IP=7; // plus haute priorité
+000626  B720A6     IOR IPC1
+65:                    IEC0bits.T2IE=1;
+000628  A8E094     BSET IEC0, #7
+66:                    // SPI1 configuration (pixel output)
+67:                    SPI1CON1=0;
+00062A  881215     MOV W5, SPI1CON1
+68:                    SPI1CON1bits.DISSCK=1;
+00062C  A88243     BSET 0x243, #4
+69:                    SPI1CON1bits.MSTEN=1;
+00062E  A8A242     BSET SPI1CON1, #5
+70:                    SPI1CON1bits.SPRE=7;
+000630  2001C0     MOV #0x1C, W0
+000632  B72242     IOR SPI1CON1
+71:                    SPI1CON1bits.PPRE=2;
+000634  801214     MOV SPI1CON1, W4
+000636  A10004     BCLR W4, #0
+000638  A01004     BSET W4, #1
+00063A  881214     MOV W4, SPI1CON1
+72:                    SPI1CON2=1;
+00063C  200014     MOV #0x1, W4
+00063E  881224     MOV W4, SPI1CON2
+73:                    SPI1STATbits.SPIEN=1;
+000640  A8E241     BSET 0x241, #7
+74:                    T2CONbits.TON=1;
+000642  A8E111     BSET 0x111, #7
+75:                    cursor_pos.y=0;
+000644  FD0280     EXCH W0, W5
+000646  B7EAAC     MOV.B WREG, cursor_pos
+000648  B7EAAD     MOV.B WREG, 0xAAD
+00064A  FD0280     EXCH W0, W5
+76:                    cursor_pos.x=0;
+77:                }//horz_sync_init()
+00064C  060000     RETURN
+78:                
+79:                void  wait_n_frame(unsigned n){
+80:                unsigned long f0;
+81:                    f0=frame_cntr+n;
+00064E  805544     MOV frame_cntr, W4
+000650  805555     MOV 0xAAA, W5
+000652  420000     ADD W4, W0, W0
+000654  4A80E0     ADDC W5, #0x0, W1
+82:                    while (frame_cntr<f0);
+000656  805544     MOV frame_cntr, W4
+000658  805555     MOV 0xAAA, W5
+00065A  500F84     SUB W0, W4, [W15]
+00065C  588F85     SUBB W1, W5, [W15]
+00065E  3EFFFB     BRA GTU, 0x656
+83:                }//f()
+000660  060000     RETURN
+84:                
+85:                void clear_screen(){ // clear screen
+86:                    flags |= F_CLEAR;
+000662  A82AA6     BSET flags, #1
+87:                    while (flags & F_CLEAR);
+000664  AB2AA6     BTST flags, #1
+000666  3AFFFE     BRA NZ, 0x664
+88:                }//f()
+000668  060000     RETURN
+89:                
+90:                void clear_eol(){// clear line from cursor to end of line
+91:                    flags |= F_CLREOL;
+00066A  A84AA6     BSET flags, #2
+92:                }//f()
+00066C  060000     RETURN
+93:                
+94:                void move_cursor(unsigned line, unsigned column){
+95:                    cursor_pos.y=line;
+00066E  B7EAAC     MOV.B WREG, cursor_pos
+96:                    cursor_pos.x=column;
+000670  780001     MOV W1, W0
+000672  B7EAAD     MOV.B WREG, 0xAAD
+97:                }//f()
+000674  060000     RETURN
+98:                
+99:                unsigned get_cursor(){
+100:                   return cursor_pos.yx;
+000676  805560     MOV cursor_pos, W0
+101:               }//f()
 000678  060000     RETURN
-106:               
-107:               void print(const char *str){
-00067A  781F88     MOV W8, [W15++]
-00067C  780400     MOV W0, W8
-108:                   while (*str){
-00067E  784018     MOV.B [W8], W0
-000680  504FE0     SUB.B W0, #0x0, [W15]
-000682  320004     BRA Z, 0x68C
-000686  784058     MOV.B [++W8], W0
-000688  504FE0     SUB.B W0, #0x0, [W15]
-00068A  3AFFFC     BRA NZ, 0x684
-109:                       put_char(*str++);
-000684  07FFF1     RCALL put_char
-110:                   }
-111:               }//f()
-00068C  78044F     MOV [--W15], W8
-00068E  060000     RETURN
-112:               
-113:               void wait_while_printing(){
-114:                   while (flags & F_PCHAR);
-000690  AB0AA6     BTST flags, #0
-000692  3AFFFE     BRA NZ, wait_while_printing
-115:               }//f()
-000694  060000     RETURN
-116:               
-117:               void scroll_up(){ //scroll screen 1 line up
-118:                   memmove((char*)video_buffer,(char*)video_buffer[1],sizeof(char)*COLUMNS*(LINES-1));
-000696  2028A2     MOV #0x28A, W2
-000698  208191     MOV #0x819, W1
-00069A  208000     MOV #0x800, W0
-00069C  07FDFD     RCALL 0x298
-119:                   memset((char*)video_buffer[LINES-1],0,sizeof(char)*COLUMNS);
-00069E  20A8A4     MOV #0xA8A, W4
-0006A0  090018     REPEAT #0x18
-0006A2  EB5A00     CLR.B [W4++]
-120:               }//f()
-0006A4  060000     RETURN
-121:               
-122:               void cursor_forward(){
-123:                   cursor_pos.x++;
-0006A6  EC6AAD     INC.B 0xAAD
-124:                   if (cursor_pos.x>=COLUMNS){
-0006A8  20AAD4     MOV #0xAAD, W4
-0006AA  784214     MOV.B [W4], W4
-0006AC  524FF8     SUB.B W4, #0x18, [W15]
-0006AE  360008     BRA LEU, 0x6C0
-125:                       cursor_pos.x=0;
-0006B0  EF6AAD     CLR.B 0xAAD
-126:                       cursor_pos.y++;
-0006B2  EC6AAC     INC.B cursor_pos
-127:                       if (cursor_pos.y>=LINES){
-0006B4  20AAC4     MOV #0xAAC, W4
-0006B6  784214     MOV.B [W4], W4
-0006B8  524FFA     SUB.B W4, #0x1A, [W15]
-0006BA  360002     BRA LEU, 0x6C0
-128:                           cursor_pos.y--;
-0006BC  ED6AAC     DEC.B cursor_pos
-129:                           scroll_up();
-0006BE  07FFEB     RCALL scroll_up
-130:                       }//if
-131:                   }//if
-132:               }//f()
-0006C0  060000     RETURN
-133:               
-134:               // video sync signal generation
-135:               void __attribute__((interrupt,no_auto_psv,shadow)) _T2Interrupt(void){
-0006C2  FEA000     PUSH.S
-0006C4  F80036     PUSH RCOUNT
-0006C6  BE9F84     MOV.D W4, [W15++]
-0006C8  BE9F86     MOV.D W6, [W15++]
-136:                   frame_line_cntr++;
-0006CA  805524     MOV frame_line_cntr, W4
-0006CC  E80204     INC W4, W4
-0006CE  885524     MOV W4, frame_line_cntr
-137:                   switch (frame_line_cntr){
-0006D0  520FFC     SUB W4, #0x1C, [W15]
-0006D2  320013     BRA Z, 0x6FA
-0006D4  3E0005     BRA GTU, 0x6E0
-0006D6  520FE1     SUB W4, #0x1, [W15]
-0006D8  32000A     BRA Z, 0x6EE
-0006DA  520FE4     SUB W4, #0x4, [W15]
-0006DC  3A001D     BRA NZ, 0x718
-0006DE  37000A     BRA 0x6F4
-0006E0  200F45     MOV #0xF4, W5
-0006E2  520F85     SUB W4, W5, [W15]
-0006E4  32000E     BRA Z, 0x702
-0006E6  4282F3     ADD W5, #0x13, W5
-0006E8  520F85     SUB W4, W5, [W15]
-0006EA  3A0016     BRA NZ, 0x718
-0006EC  37000D     BRA 0x708
-138:                       case 1:
-139:                           OC1R=HPERIOD-HPULSE;
-0006EE  203AD4     MOV #0x3AD, W4
-0006F0  880C14     MOV W4, OC1R
-140:                           break;
-0006F2  37004D     BRA 0x78E
-141:                       case 4:
-142:                           OC1R=HPULSE;
-0006F4  2004B4     MOV #0x4B, W4
-0006F6  880C14     MOV W4, OC1R
+102:               
+103:               void put_char(char c){// put character at current cursor position & move cursor forward
+104:                   pchar_queue[tail++]=c;
+00067A  805684     MOV tail, W4
+00067C  20AB05     MOV #0xAB0, W5
+00067E  7A7280     MOV.B W0, [W5+W4]
+000680  E80204     INC W4, W4
+000682  885684     MOV W4, tail
+105:                   tail %= QUEUE_SIZE;
+000684  2001F0     MOV #0x1F, W0
+000686  B62AD0     AND tail
+106:                   flags |= F_PCHAR;
+000688  A80AA6     BSET flags, #0
+107:               }//f()
+00068A  060000     RETURN
+108:               
+109:               void print(const char *str){
+00068C  781F88     MOV W8, [W15++]
+00068E  780400     MOV W0, W8
+110:                   while (*str){
+000690  784018     MOV.B [W8], W0
+000692  504FE0     SUB.B W0, #0x0, [W15]
+000694  320004     BRA Z, 0x69E
+000698  784058     MOV.B [++W8], W0
+00069A  504FE0     SUB.B W0, #0x0, [W15]
+00069C  3AFFFC     BRA NZ, 0x696
+111:                       put_char(*str++);
+000696  07FFF1     RCALL put_char
+112:                   }
+113:               }//f()
+00069E  78044F     MOV [--W15], W8
+0006A0  060000     RETURN
+114:               
+115:               void wait_while_printing(){
+116:                   while (flags & F_PCHAR);
+0006A2  AB0AA6     BTST flags, #0
+0006A4  3AFFFE     BRA NZ, wait_while_printing
+117:               }//f()
+0006A6  060000     RETURN
+118:               
+119:               void scroll_up(){ //scroll screen 1 line up
+120:                   memmove((char*)video_buffer,(char*)video_buffer[1],sizeof(char)*COLUMNS*(LINES-1));
+0006A8  2028A2     MOV #0x28A, W2
+0006AA  208191     MOV #0x819, W1
+0006AC  208000     MOV #0x800, W0
+0006AE  07FDF4     RCALL 0x298
+121:                   memset((char*)video_buffer[LINES-1],0,sizeof(char)*COLUMNS);
+0006B0  20A8A4     MOV #0xA8A, W4
+0006B2  090018     REPEAT #0x18
+0006B4  EB5A00     CLR.B [W4++]
+122:               }//f()
+0006B6  060000     RETURN
+123:               
+124:               void cursor_forward(){
+125:                   cursor_pos.x++;
+0006B8  EC6AAD     INC.B 0xAAD
+126:                   if (cursor_pos.x>=COLUMNS){
+0006BA  20AAD4     MOV #0xAAD, W4
+0006BC  784214     MOV.B [W4], W4
+0006BE  524FF8     SUB.B W4, #0x18, [W15]
+0006C0  360008     BRA LEU, 0x6D2
+127:                       cursor_pos.x=0;
+0006C2  EF6AAD     CLR.B 0xAAD
+128:                       cursor_pos.y++;
+0006C4  EC6AAC     INC.B cursor_pos
+129:                       if (cursor_pos.y>=LINES){
+0006C6  20AAC4     MOV #0xAAC, W4
+0006C8  784214     MOV.B [W4], W4
+0006CA  524FFA     SUB.B W4, #0x1A, [W15]
+0006CC  360002     BRA LEU, 0x6D2
+130:                           cursor_pos.y--;
+0006CE  ED6AAC     DEC.B cursor_pos
+131:                           scroll_up();
+0006D0  07FFEB     RCALL scroll_up
+132:                       }//if
+133:                   }//if
+134:               }//f()
+0006D2  060000     RETURN
+135:               
+136:               // video sync signal generation
+137:               void __attribute__((interrupt,no_auto_psv,shadow)) _T2Interrupt(void){
+0006D4  FEA000     PUSH.S
+0006D6  F80036     PUSH RCOUNT
+0006D8  BE9F84     MOV.D W4, [W15++]
+0006DA  BE9F86     MOV.D W6, [W15++]
+138:                   frame_line_cntr++;
+0006DC  805524     MOV frame_line_cntr, W4
+0006DE  E80204     INC W4, W4
+0006E0  885524     MOV W4, frame_line_cntr
+139:                   switch (frame_line_cntr){
+0006E2  520FFE     SUB W4, #0x1E, [W15]
+0006E4  320016     BRA Z, 0x712
+0006E6  3E0005     BRA GTU, 0x6F2
+0006E8  520FE1     SUB W4, #0x1, [W15]
+0006EA  32000A     BRA Z, 0x700
+0006EC  520FE4     SUB W4, #0x4, [W15]
+0006EE  3A0020     BRA NZ, 0x730
+0006F0  37000B     BRA 0x708
+0006F2  200F65     MOV #0xF6, W5
+0006F4  520F85     SUB W4, W5, [W15]
+0006F6  320011     BRA Z, 0x71A
+0006F8  4282F1     ADD W5, #0x11, W5
+0006FA  520F85     SUB W4, W5, [W15]
+0006FC  3A0019     BRA NZ, 0x730
+0006FE  370010     BRA 0x720
+140:                       case 1:
+141:                           OC1R=HPERIOD-HPULSE;
+000700  203AD4     MOV #0x3AD, W4
+000702  880C14     MOV W4, OC1R
+142:                           OC3CON=0;
+000704  EF2190     CLR OC3CON
 143:                           break;
-0006F8  37004A     BRA 0x78E
-144:                       case FIRST_VISIBLE:
-145:                           IFS0bits.OC1IF=0;
-0006FA  A94084     BCLR IFS0, #2
-146:                           IEC0bits.OC1IE=1;
-0006FC  A84094     BSET IEC0, #2
-147:                           //SPI1STATbits.SPIEN=1;
-148:                           flags &= ~F_RETRACE;
-0006FE  A96AA6     BCLR flags, #3
-149:                           break;
-000700  370046     BRA 0x78E
-150:                       case LAST_VISIBLE:
-151:                           IEC0bits.OC1IE=0;
-000702  A94094     BCLR IEC0, #2
-152:                           //SPI1STATbits.SPIEN=0;
-153:                           flags |= F_RETRACE;
-000704  A86AA6     BSET flags, #3
-154:                           break;
-000706  370043     BRA 0x78E
-155:                       case 263:
-156:                           frame_line_cntr=0;
-000708  EF2AA4     CLR frame_line_cntr
-157:                           frame_cntr++;
-00070A  805544     MOV frame_cntr, W4
-00070C  805555     MOV 0xAAA, W5
-00070E  420261     ADD W4, #0x1, W4
-000710  4A82E0     ADDC W5, #0x0, W5
-000712  885544     MOV W4, frame_cntr
-000714  885555     MOV W5, 0xAAA
-158:                           break;
-000716  37003B     BRA 0x78E
-159:                       default:
-160:                           if (flags & F_RETRACE){
-000718  AB6AA6     BTST flags, #3
-00071A  320039     BRA Z, 0x78E
-161:                               if (flags & F_CLEAR){
-00071C  AB2AA6     BTST flags, #1
-00071E  32000A     BRA Z, 0x734
-162:                                   memset((char*)video_buffer,0,sizeof(char)*LINES*COLUMNS);
-000720  208005     MOV #0x800, W5
-000722  0902A2     REPEAT #0x2A2
-000724  EB5A80     CLR.B [W5++]
-163:                                   flags &= ~F_CLEAR;
-000726  A92AA6     BCLR flags, #1
-164:                                   cursor_pos.y=0;
-000728  EB4200     CLR.B W4
-00072A  FD0200     EXCH W0, W4
-00072C  B7EAAC     MOV.B WREG, cursor_pos
-00072E  B7EAAD     MOV.B WREG, 0xAAD
-000730  FD0200     EXCH W0, W4
-000732  37002D     BRA 0x78E
-165:                                   cursor_pos.x=0;
-166:                               } else if (flags & F_CLREOL){
-000734  AB4AA6     BTST flags, #2
-000736  320012     BRA Z, 0x75C
-167:                                   memset((char*)video_buffer[cursor_pos.y]+cursor_pos.x,
-00073C  BFCAAC     MOV.B cursor_pos, WREG
-00073E  20AAD5     MOV #0xAAD, W5
-000740  784295     MOV.B [W5], W5
-000746  B3C192     MOV #0x19, W2
-000748  BC4004     MUL.B WREG2
-00074A  FB8285     ZE W5, W5
-00074C  410005     ADD W2, W5, W0
-00074E  208006     MOV #0x800, W6
-000750  400006     ADD W0, W6, W0
-000752  780104     MOV W4, W2
-000754  EB0080     CLR W1
-000756  07FDB1     RCALL 0x2BA
-168:                                           0,sizeof(char)*(COLUMNS-cursor_pos.x));
-000738  20AAD4     MOV #0xAAD, W4
-00073A  784214     MOV.B [W4], W4
-000742  FB8204     ZE W4, W4
-000744  120279     SUBR W4, #0x19, W4
-169:                                   flags &= ~F_CLREOL;
-000758  A94AA6     BCLR flags, #2
-00075A  370019     BRA 0x78E
-170:                               }else if (flags & F_PCHAR){
-00075C  AB0AA6     BTST flags, #0
-00075E  320017     BRA Z, 0x78E
-171:                                   video_buffer[cursor_pos.y][cursor_pos.x]=pchar_queue[head]-32;
-000760  BFCAAC     MOV.B cursor_pos, WREG
-000762  20AAD5     MOV #0xAAD, W5
-000764  784295     MOV.B [W5], W5
-000766  805574     MOV head, W4
-000768  20AB06     MOV #0xAB0, W6
-00076A  7A4266     MOV.B [W6+W4], W4
-00076C  FB8285     ZE W5, W5
-00076E  B3C192     MOV #0x19, W2
-000770  BC4004     MUL.B WREG2
-000772  410285     ADD W2, W5, W5
-000774  208006     MOV #0x800, W6
-000776  430285     ADD W6, W5, W5
-000778  B3CE06     MOV #0xE0, W6
-00077A  424A86     ADD.B W4, W6, [W5]
-172:                                   cursor_forward();
-00077C  07FF94     RCALL cursor_forward
-173:                                   head++;
-00077E  EC2AAE     INC head
-174:                                   head %= QUEUE_SIZE;
-000780  2001F0     MOV #0x1F, W0
-000782  B62AAE     AND head
-175:                                   if (head==tail){
-000784  805575     MOV head, W5
-000786  805684     MOV tail, W4
-000788  528F84     SUB W5, W4, [W15]
-00078A  3A0001     BRA NZ, 0x78E
-176:                                       flags &= ~F_PCHAR;
-00078C  A90AA6     BCLR flags, #0
-177:                                   }
-178:                               }//if
-179:                           }//if
-180:                           break;
-181:                   }//switch
-182:                   IFS0bits.T2IF=0;
-00078E  A9E084     BCLR IFS0, #7
-183:               }// _T2Interrupt()
-000790  BE034F     MOV.D [--W15], W6
-000792  BE024F     MOV.D [--W15], W4
-000794  F90036     POP RCOUNT
-000796  FE8000     POP.S
-000798  064000     RETFIE
-184:               
-185:               // video pixels output
-186:               void __attribute__((interrupt,no_auto_psv,shadow)) _OC1Interrupt(void){
-00079A  FEA000     PUSH.S
-00079C  BE9F84     MOV.D W4, [W15++]
-00079E  BE9F86     MOV.D W6, [W15++]
-0007B6  4283F9     ADD W5, #0x19, W7
-187:                   int y,x,l;
-188:                   char *b;
-189:                   y=(frame_line_cntr-FIRST_VISIBLE)>>3;
-0007A0  805524     MOV frame_line_cntr, W4
-0007A2  52027C     SUB W4, #0x1C, W4
-0007A6  DE2243     LSR W4, #3, W4
-190:                   l=(frame_line_cntr-FIRST_VISIBLE)&7;
-0007A4  620067     AND W4, #0x7, W0
-191:                   b=(char*)&video_buffer[y];
-0007A8  B92279     MUL.SU W4, #25, W4
-0007AA  208006     MOV #0x800, W6
-0007AC  430284     ADD W6, W4, W5
-192:                   while (!PORTBbits.RB11);
-0007AE  208006     MOV #0x800, W6
-0007B0  801654     MOV PORTB, W4
-0007B2  620206     AND W4, W6, W4
-0007B4  32FFFD     BRA Z, 0x7B0
-193:                   for (x=0;x<COLUMNS;x++){
-0007CA  528F87     SUB W5, W7, [W15]
-0007CC  3AFFF6     BRA NZ, 0x7BA
-194:                       while (SPI1STATbits.SPITBF);
-0007BA  AB2240     BTST SPI1STAT, #1
-0007BC  3AFFFE     BRA NZ, 0x7BA
-195:                       SPI1BUF=font6x8[(int)*b++][l];
-0007B8  282C86     MOV #0x82C8, W6
-0007BE  FB0235     SE [W5++], W4
-0007C0  DD2243     SL W4, #3, W4
-0007C2  420200     ADD W4, W0, W4
-0007C4  7A4266     MOV.B [W6+W4], W4
-0007C6  FB8204     ZE W4, W4
-0007C8  881244     MOV W4, SPI1BUF
-196:                   }//for
-197:                   while (SPI1STATbits.SPITBF);
-0007CE  AB2240     BTST SPI1STAT, #1
-0007D0  3AFFFE     BRA NZ, 0x7CE
-198:                   SPI1BUF=0;
-0007D2  EF2248     CLR SPI1BUF
-199:                   IFS0bits.OC1IF=0;
-0007D4  A94084     BCLR IFS0, #2
-200:               }// _OC1Interrupt()
-0007D6  BE034F     MOV.D [--W15], W6
-0007D8  BE024F     MOV.D [--W15], W4
-0007DA  FE8000     POP.S
-0007DC  064000     RETFIE
-201:               
+000706  37004F     BRA 0x7A6
+144:                       case 4:
+145:                           OC3CON=5;
+000708  200054     MOV #0x5, W4
+00070A  880C84     MOV W4, OC3CON
+146:                           OC1R=HPULSE;
+00070C  2004B4     MOV #0x4B, W4
+00070E  880C14     MOV W4, OC1R
+147:                           break;
+000710  37004A     BRA 0x7A6
+148:                       case FIRST_VISIBLE:
+149:                           IFS1bits.CNIF=0;
+000712  A96086     BCLR IFS1, #3
+150:                           IEC1bits.CNIE=1;
+000714  A86096     BSET IEC1, #3
+151:               
+152:                           flags &= ~F_RETRACE;
+000716  A96AA6     BCLR flags, #3
+153:                           break;
+000718  370046     BRA 0x7A6
+154:                       case LAST_VISIBLE:
+155:                           IEC1bits.CNIE=0;
+00071A  A96096     BCLR IEC1, #3
+156:                           flags |= F_RETRACE;
+00071C  A86AA6     BSET flags, #3
+157:                           break;
+00071E  370043     BRA 0x7A6
+158:                       case 263:
+159:                           frame_line_cntr=0;
+000720  EF2AA4     CLR frame_line_cntr
+160:                           frame_cntr++;
+000722  805544     MOV frame_cntr, W4
+000724  805555     MOV 0xAAA, W5
+000726  420261     ADD W4, #0x1, W4
+000728  4A82E0     ADDC W5, #0x0, W5
+00072A  885544     MOV W4, frame_cntr
+00072C  885555     MOV W5, 0xAAA
+161:                           break;
+00072E  37003B     BRA 0x7A6
+162:                       default:
+163:                           if (flags & F_RETRACE){
+000730  AB6AA6     BTST flags, #3
+000732  320039     BRA Z, 0x7A6
+164:                               if (flags & F_CLEAR){
+000734  AB2AA6     BTST flags, #1
+000736  32000A     BRA Z, 0x74C
+165:                                   memset((char*)video_buffer,0,sizeof(char)*LINES*COLUMNS);
+000738  208005     MOV #0x800, W5
+00073A  0902A2     REPEAT #0x2A2
+00073C  EB5A80     CLR.B [W5++]
+166:                                   flags &= ~F_CLEAR;
+00073E  A92AA6     BCLR flags, #1
+167:                                   cursor_pos.y=0;
+000740  EB4200     CLR.B W4
+000742  FD0200     EXCH W0, W4
+000744  B7EAAC     MOV.B WREG, cursor_pos
+000746  B7EAAD     MOV.B WREG, 0xAAD
+000748  FD0200     EXCH W0, W4
+00074A  37002D     BRA 0x7A6
+168:                                   cursor_pos.x=0;
+169:                               } else if (flags & F_CLREOL){
+00074C  AB4AA6     BTST flags, #2
+00074E  320012     BRA Z, 0x774
+170:                                   memset((char*)video_buffer[cursor_pos.y]+cursor_pos.x,
+000754  BFCAAC     MOV.B cursor_pos, WREG
+000756  20AAD5     MOV #0xAAD, W5
+000758  784295     MOV.B [W5], W5
+00075E  B3C192     MOV #0x19, W2
+000760  BC4004     MUL.B WREG2
+000762  FB8285     ZE W5, W5
+000764  410005     ADD W2, W5, W0
+000766  208006     MOV #0x800, W6
+000768  400006     ADD W0, W6, W0
+00076A  780104     MOV W4, W2
+00076C  EB0080     CLR W1
+00076E  07FDA5     RCALL 0x2BA
+171:                                           0,sizeof(char)*(COLUMNS-cursor_pos.x));
+000750  20AAD4     MOV #0xAAD, W4
+000752  784214     MOV.B [W4], W4
+00075A  FB8204     ZE W4, W4
+00075C  120279     SUBR W4, #0x19, W4
+172:                                   flags &= ~F_CLREOL;
+000770  A94AA6     BCLR flags, #2
+000772  370019     BRA 0x7A6
+173:                               }else if (flags & F_PCHAR){
+000774  AB0AA6     BTST flags, #0
+000776  320017     BRA Z, 0x7A6
+174:                                   video_buffer[cursor_pos.y][cursor_pos.x]=pchar_queue[head]-32;
+000778  BFCAAC     MOV.B cursor_pos, WREG
+00077A  20AAD5     MOV #0xAAD, W5
+00077C  784295     MOV.B [W5], W5
+00077E  805574     MOV head, W4
+000780  20AB06     MOV #0xAB0, W6
+000782  7A4266     MOV.B [W6+W4], W4
+000784  FB8285     ZE W5, W5
+000786  B3C192     MOV #0x19, W2
+000788  BC4004     MUL.B WREG2
+00078A  410285     ADD W2, W5, W5
+00078C  208006     MOV #0x800, W6
+00078E  430285     ADD W6, W5, W5
+000790  B3CE06     MOV #0xE0, W6
+000792  424A86     ADD.B W4, W6, [W5]
+175:                                   cursor_forward();
+000794  07FF91     RCALL cursor_forward
+176:                                   head++;
+000796  EC2AAE     INC head
+177:                                   head %= QUEUE_SIZE;
+000798  2001F0     MOV #0x1F, W0
+00079A  B62AAE     AND head
+178:                                   if (head==tail){
+00079C  805575     MOV head, W5
+00079E  805684     MOV tail, W4
+0007A0  528F84     SUB W5, W4, [W15]
+0007A2  3A0001     BRA NZ, 0x7A6
+179:                                       flags &= ~F_PCHAR;
+0007A4  A90AA6     BCLR flags, #0
+180:                                   }
+181:                               }//if
+182:                           }//if
+183:                           break;
+184:                   }//switch
+185:                   IFS0bits.T2IF=0;
+0007A6  A9E084     BCLR IFS0, #7
+186:               }// _T2Interrupt()
+0007A8  BE034F     MOV.D [--W15], W6
+0007AA  BE024F     MOV.D [--W15], W4
+0007AC  F90036     POP RCOUNT
+0007AE  FE8000     POP.S
+0007B0  064000     RETFIE
+187:               
+188:               void __attribute__((interrupt,no_auto_psv,shadow)) _CNInterrupt(void){
+0007B2  FEA000     PUSH.S
+0007B4  BE9F84     MOV.D W4, [W15++]
+0007B6  BE9F86     MOV.D W6, [W15++]
+0007CE  4283F9     ADD W5, #0x19, W7
+189:                   int y,x,l;
+190:                   char *b;
+191:                   if (PORTBbits.RB11){
+0007B8  801655     MOV PORTB, W5
+0007BA  208004     MOV #0x800, W4
+0007BC  628204     AND W5, W4, W4
+0007BE  320016     BRA Z, 0x7EC
+192:                       y=(frame_line_cntr-FIRST_VISIBLE)>>3;
+0007C0  805524     MOV frame_line_cntr, W4
+0007C2  52027E     SUB W4, #0x1E, W4
+0007C6  DE2243     LSR W4, #3, W4
+193:                       l=(frame_line_cntr-FIRST_VISIBLE)&7;
+0007C4  620067     AND W4, #0x7, W0
+194:                       b=(char*)&video_buffer[y];
+0007C8  B92279     MUL.SU W4, #25, W4
+0007CA  208006     MOV #0x800, W6
+0007CC  430284     ADD W6, W4, W5
+195:                       for (x=0;x<COLUMNS;x++){
+0007E2  528F87     SUB W5, W7, [W15]
+0007E4  3AFFF6     BRA NZ, 0x7D2
+196:                           while (SPI1STATbits.SPITBF);
+0007D2  AB2240     BTST SPI1STAT, #1
+0007D4  3AFFFE     BRA NZ, 0x7D2
+197:                           SPI1BUF=font6x8[(int)*b++][l];
+0007D0  282C86     MOV #0x82C8, W6
+0007D6  FB0235     SE [W5++], W4
+0007D8  DD2243     SL W4, #3, W4
+0007DA  420200     ADD W4, W0, W4
+0007DC  7A4266     MOV.B [W6+W4], W4
+0007DE  FB8204     ZE W4, W4
+0007E0  881244     MOV W4, SPI1BUF
+198:                       }//for
+199:                       while (SPI1STATbits.SPITBF);
+0007E6  AB2240     BTST SPI1STAT, #1
+0007E8  3AFFFE     BRA NZ, 0x7E6
+200:                       SPI1BUF=0;
+0007EA  EF2248     CLR SPI1BUF
+201:                   }
+202:                   IFS1bits.CNIF=0;
+0007EC  A96086     BCLR IFS1, #3
+203:               }// _CNInterrupt
+0007EE  BE034F     MOV.D [--W15], W6
+0007F0  BE024F     MOV.D [--W15], W4
+0007F2  FE8000     POP.S
+0007F4  064000     RETFIE
+204:               
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/PICvision.c  ------------------------------------
 1:                 /* 
 2:                  * File:   PICvision.c
@@ -499,98 +506,102 @@ Generated From:
 43:                
 44:                void HardwareConfig(){
 45:                    PPSUnLock;
-0007DE  803A16     MOV OSCCON, W6
-0007E0  B20BF6     AND #0xBF, W6
-0007E2  200464     MOV #0x46, W4
-0007E4  200575     MOV #0x57, W5
-0007E6  207427     MOV #0x742, W7
-0007E8  784B84     MOV.B W4, [W7]
-0007EA  784B85     MOV.B W5, [W7]
-0007EC  784B86     MOV.B W6, [W7]
+0007F6  803A16     MOV OSCCON, W6
+0007F8  B20BF6     AND #0xBF, W6
+0007FA  200464     MOV #0x46, W4
+0007FC  200575     MOV #0x57, W5
+0007FE  207427     MOV #0x742, W7
+000800  784B84     MOV.B W4, [W7]
+000802  784B85     MOV.B W5, [W7]
+000804  784B86     MOV.B W6, [W7]
 46:                    PPSOutput(PPS_RP5,PPS_OC2);   // audio output
-0007EE  803626     MOV RPOR2, W6
-0007F0  2E0FF7     MOV #0xE0FF, W7
-0007F2  630307     AND W6, W7, W6
-0007F4  213000     MOV #0x1300, W0
-0007F6  730300     IOR W6, W0, W6
-0007F8  883626     MOV W6, RPOR2
+000806  803626     MOV RPOR2, W6
+000808  2E0FF7     MOV #0xE0FF, W7
+00080A  630307     AND W6, W7, W6
+00080C  213000     MOV #0x1300, W0
+00080E  730300     IOR W6, W0, W6
+000810  883626     MOV W6, RPOR2
 47:                    PPSOutput(PPS_RP6,PPS_OC1);   // video sync
-0007FA  803630     MOV RPOR3, W0
-0007FC  2FFE06     MOV #0xFFE0, W6
-0007FE  600006     AND W0, W6, W0
-000800  B30120     IOR #0x12, W0
-000802  883630     MOV W0, RPOR3
+000812  803630     MOV RPOR3, W0
+000814  2FFE06     MOV #0xFFE0, W6
+000816  600006     AND W0, W6, W0
+000818  B30120     IOR #0x12, W0
+00081A  883630     MOV W0, RPOR3
 48:                    PPSOutput(PPS_RP7,PPS_SDO1);  // video pixels
-000804  803630     MOV RPOR3, W0
-000806  600387     AND W0, W7, W7
-000808  207000     MOV #0x700, W0
-00080A  738380     IOR W7, W0, W7
-00080C  883637     MOV W7, RPOR3
+00081C  803630     MOV RPOR3, W0
+00081E  600387     AND W0, W7, W7
+000820  207000     MOV #0x700, W0
+000822  738380     IOR W7, W0, W7
+000824  883637     MOV W7, RPOR3
 49:                    PPSOutput(PPS_RP10,PPS_OC3);  // video pedestal (black level)
-00080E  803657     MOV RPOR5, W7
-000810  638306     AND W7, W6, W6
-000812  B30146     IOR #0x14, W6
-000814  883656     MOV W6, RPOR5
+000826  803657     MOV RPOR5, W7
+000828  638306     AND W7, W6, W6
+00082A  B30146     IOR #0x14, W6
+00082C  883656     MOV W6, RPOR5
 50:                    TRISBbits.TRISB5=0;
-000816  A9A2C8     BCLR TRISB, #5
+00082E  A9A2C8     BCLR TRISB, #5
 51:                    TRISBbits.TRISB6=0;
-000818  A9C2C8     BCLR TRISB, #6
+000830  A9C2C8     BCLR TRISB, #6
 52:                    TRISBbits.TRISB7=0;
-00081A  A9E2C8     BCLR TRISB, #7
+000832  A9E2C8     BCLR TRISB, #7
 53:                    TRISBbits.TRISB10=0;
-00081C  A942C9     BCLR 0x2C9, #2
-54:                    PPSLock;
-00081E  803A16     MOV OSCCON, W6
-000820  A06006     BSET W6, #6
-000822  207427     MOV #0x742, W7
-000824  784B84     MOV.B W4, [W7]
-000826  784B85     MOV.B W5, [W7]
-000828  784B86     MOV.B W6, [W7]
-55:                }//f()
-00082A  060000     RETURN
-56:                
-57:                const char msg[]="hello world!";
-58:                const char numbers[]=" 234567890123456789012|";
-59:                
-60:                int main(void) {
-00082C  BE9F88     MOV.D W8, [W15++]
-00082E  781F8A     MOV W10, [W15++]
-61:                    int y;
-62:                    HardwareConfig();
-000830  07FFD6     RCALL HardwareConfig
-63:                    video_init();
-000832  07FEDD     RCALL video_init
-64:                    for (y=0;y<LINES;y++){
-000834  EB0400     CLR W8
-000856  E80408     INC W8, W8
-000858  540FFB     SUB W8, #0x1B, [W15]
-00085A  3AFFEF     BRA NZ, 0x83A
-00085C  37FFFF     BRA 0x85C
-65:                        move_cursor(y,0);
-00083A  EB0080     CLR W1
-00083C  780008     MOV W8, W0
-00083E  07FF0E     RCALL move_cursor
-66:                        put_char(y%10+'0');
-000836  2000A9     MOV #0xA, W9
-000840  781F81     MOV W1, [W15++]
-000842  090011     REPEAT #0x11
-000844  D80409     DIV.SW W8, W9
-000846  780001     MOV W1, W0
-000848  7800CF     MOV [--W15], W1
-00084A  B04300     ADD.B #0x30, W0
-00084C  07FF0D     RCALL put_char
-67:                        print(numbers);
-000838  285D5A     MOV #0x85D5, W10
-00084E  78000A     MOV W10, W0
-000850  07FF14     RCALL print
-68:                        wait_n_frame(2);
-000852  200020     MOV #0x2, W0
-000854  07FEF3     RCALL wait_n_frame
-69:                    }
-70:                    while (1){
-71:                        
-72:                    }//while
-73:                    return (EXIT_SUCCESS);
-74:                }//main()
-75:                
-76:                
+000834  A942C9     BCLR 0x2C9, #2
+54:                    TRISBbits.TRISB11=1;
+000836  A862C9     BSET 0x2C9, #3
+55:                    PPSLock;
+000838  803A16     MOV OSCCON, W6
+00083A  A06006     BSET W6, #6
+00083C  207427     MOV #0x742, W7
+00083E  784B84     MOV.B W4, [W7]
+000840  784B85     MOV.B W5, [W7]
+000842  784B86     MOV.B W6, [W7]
+56:                }//f()
+000844  060000     RETURN
+57:                
+58:                const char msg[]="hello world!";
+59:                const char numbers[]=" 234567890123456789012|";
+60:                
+61:                int main(void) {
+000846  BE9F88     MOV.D W8, [W15++]
+000848  781F8A     MOV W10, [W15++]
+62:                    int y;
+63:                    HardwareConfig();
+00084A  07FFD5     RCALL HardwareConfig
+64:                    video_init();
+00084C  07FED8     RCALL video_init
+65:                    for (y=0;y<LINES;y++){
+00084E  EB0400     CLR W8
+000870  E80408     INC W8, W8
+000872  540FFB     SUB W8, #0x1B, [W15]
+000874  3AFFEF     BRA NZ, 0x854
+000876  37FFFF     BRA 0x876
+66:                        move_cursor(y,0);
+000854  EB0080     CLR W1
+000856  780008     MOV W8, W0
+000858  07FF0A     RCALL move_cursor
+67:                        put_char(96+' ');
+000850  B3C809     MOV #0x80, W9
+00085A  784009     MOV.B W9, W0
+00085C  07FF0E     RCALL put_char
+68:                        wait_n_frame(1);
+00085E  200010     MOV #0x1, W0
+000860  07FEF6     RCALL wait_n_frame
+69:                        move_cursor(y,COLUMNS-1);
+000862  200181     MOV #0x18, W1
+000864  780008     MOV W8, W0
+000866  07FF03     RCALL move_cursor
+70:                        put_char(97+' ');
+000852  B3C81A     MOV #0x81, W10
+000868  78400A     MOV.B W10, W0
+00086A  07FF07     RCALL put_char
+71:                        wait_n_frame(1);
+00086C  200010     MOV #0x1, W0
+00086E  07FEEF     RCALL wait_n_frame
+72:                    }
+73:                    while (1){
+74:                        
+75:                    }//while
+76:                    return (EXIT_SUCCESS);
+77:                }//main()
+78:                
+79:                

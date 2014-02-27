@@ -1,7 +1,27 @@
+/*
+* Copyright 2014, Jacques Deschênes
+* This file is part of PICvision.
+*
+*     PICvision is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     PICvision is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU General Public License for more details.
+*
+*     You should have received a copy of the GNU General Public License
+*     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 /* 
  * File:   TVout.c
  * Author: jacques Deschênes
  * Description:  NTSC/PAL signal generator
+ * NTSC REF: http://www.ntsc-tv.com/ntsc-index-02.htm
+ * NTSC/PAL/SECAM REF: http://www.videointerchange.com/pal_secam_conversions.htm
  * Created on 25 février 2014, 16:28
  */
 
@@ -13,9 +33,9 @@
 
 #define HPERIOD 1016  // timer count for 15748Hz horizontal frequency ( no prescale)
 #define HPULSE 75 // 4,7µsec horizontal pulse width
-#define FIRST_VISIBLE 28 // première ligne visible
+#define FIRST_VISIBLE 30 // première ligne visible
 #define LAST_VISIBLE (FIRST_VISIBLE+VPIXELS) // dernière ligne visible
-
+#define FRONT_PORCH  (1.5*FCY/1000000UL)
 #define F_PCHAR 1    // flag put_char() pending
 #define F_CLEAR 2    // flag clear_screen() pending
 #define F_CLREOL 4   // flag clear to end of line
@@ -50,18 +70,18 @@ void  video_init(){ // initialisation sorties NTSC
     OC1R=HPULSE;
     OC1RS=HPERIOD;
     OC1CON=5; // mode 5, timer 2
-    //OC3 video delay timer
+    //OC3 video delay timer black level fixer.
     OC3R=2*HPULSE;
-    OC3RS=HPERIOD-16;
-    OC3CON=5; // mode 5, timer 2
-    // OC1 interrupt service  routine trigger video pixels output via SPI1
+    OC3RS=HPERIOD-FRONT_PORCH;
     IFS0bits.OC1IF=0;
     IPC0bits.OC1IP=7;
+    IPC4bits.CNIP=7;
+    CNEN1bits.CN15IE=1;
     // timer 2 interrupt enabling
     IFS0bits.T2IF=0;
     IPC1bits.T2IP=7; // plus haute priorité
     IEC0bits.T2IE=1;
-    // SPI1 configuratio (pixel output)
+    // SPI1 configuration (pixel output)
     SPI1CON1=0;
     SPI1CON1bits.DISSCK=1;
     SPI1CON1bits.MSTEN=1;
@@ -137,19 +157,20 @@ void __attribute__((interrupt,no_auto_psv,shadow)) _T2Interrupt(void){
     switch (frame_line_cntr){
         case 1:
             OC1R=HPERIOD-HPULSE;
+            OC3CON=0;
             break;
         case 4:
+            OC3CON=5;
             OC1R=HPULSE;
             break;
         case FIRST_VISIBLE:
-            IFS0bits.OC1IF=0;
-            IEC0bits.OC1IE=1;
-            //SPI1STATbits.SPIEN=1;
+            IFS1bits.CNIF=0;
+            IEC1bits.CNIE=1;
+
             flags &= ~F_RETRACE;
             break;
         case LAST_VISIBLE:
-            IEC0bits.OC1IE=0;
-            //SPI1STATbits.SPIEN=0;
+            IEC1bits.CNIE=0;
             flags |= F_RETRACE;
             break;
         case 263:
@@ -182,20 +203,20 @@ void __attribute__((interrupt,no_auto_psv,shadow)) _T2Interrupt(void){
     IFS0bits.T2IF=0;
 }// _T2Interrupt()
 
-// video pixels output
-void __attribute__((interrupt,no_auto_psv,shadow)) _OC1Interrupt(void){
+void __attribute__((interrupt,no_auto_psv,shadow)) _CNInterrupt(void){
     int y,x,l;
     char *b;
-    y=(frame_line_cntr-FIRST_VISIBLE)>>3;
-    l=(frame_line_cntr-FIRST_VISIBLE)&7;
-    b=(char*)&video_buffer[y];
-    while (!PORTBbits.RB11);
-    for (x=0;x<COLUMNS;x++){
+    if (PORTBbits.RB11){
+        y=(frame_line_cntr-FIRST_VISIBLE)>>3;
+        l=(frame_line_cntr-FIRST_VISIBLE)&7;
+        b=(char*)&video_buffer[y];
+        for (x=0;x<COLUMNS;x++){
+            while (SPI1STATbits.SPITBF);
+            SPI1BUF=font6x8[(int)*b++][l];
+        }//for
         while (SPI1STATbits.SPITBF);
-        SPI1BUF=font6x8[(int)*b++][l];
-    }//for
-    while (SPI1STATbits.SPITBF);
-    SPI1BUF=0;
-    IFS0bits.OC1IF=0;
-}// _OC1Interrupt()
+        SPI1BUF=0;
+    }
+    IFS1bits.CNIF=0;
+}// _CNInterrupt
 

@@ -1,3 +1,21 @@
+/*
+* Copyright 2014, Jacques Deschênes
+* This file is part of PICvision.
+*
+*     PICvision is free software: you can redistribute it and/or modify
+*     it under the terms of the GNU General Public License as published by
+*     the Free Software Foundation, either version 3 of the License, or
+*     (at your option) any later version.
+*
+*     PICvision is distributed in the hope that it will be useful,
+*     but WITHOUT ANY WARRANTY; without even the implied warranty of
+*     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*     GNU General Public License for more details.
+*
+*     You should have received a copy of the GNU General Public License
+*     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 /* 
  * File:   PICvision.c
  * Author: jacques Deschênes
@@ -51,6 +69,7 @@ void HardwareConfig(){
     TRISBbits.TRISB6=0;
     TRISBbits.TRISB7=0;
     TRISBbits.TRISB10=0;
+    TRISBbits.TRISB11=1;
     PPSLock;
 }//f()
 
@@ -63,9 +82,11 @@ int main(void) {
     video_init();
     for (y=0;y<LINES;y++){
         move_cursor(y,0);
-        put_char(y%10+'0');
-        print(numbers);
-        wait_n_frame(2);
+        put_char(96+' ');
+        wait_n_frame(1);
+        move_cursor(y,COLUMNS-1);
+        put_char(97+' ');
+        wait_n_frame(1);
     }
     while (1){
         

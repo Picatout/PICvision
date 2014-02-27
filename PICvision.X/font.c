@@ -1,19 +1,19 @@
 /*
-* Copyright 2013, Jacques Deschênes
-* This file is part of VPC-32.
+* Copyright 2014, Jacques Deschênes
+* This file is part of PICvision.
 *
-*     VPC-32 is free software: you can redistribute it and/or modify
+*     PICvision is free software: you can redistribute it and/or modify
 *     it under the terms of the GNU General Public License as published by
 *     the Free Software Foundation, either version 3 of the License, or
 *     (at your option) any later version.
 *
-*     VPC-32 is distributed in the hope that it will be useful,
+*     PICvision is distributed in the hope that it will be useful,
 *     but WITHOUT ANY WARRANTY; without even the implied warranty of
 *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 *     GNU General Public License for more details.
 *
 *     You should have received a copy of the GNU General Public License
-*     along with VPC-32.  If not, see <http://www.gnu.org/licenses/>.
+*     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /*
@@ -122,4 +122,6 @@ const unsigned char font6x8[FONT_SIZE][CHAR_HEIGHT]={
         {0x10,0x08,0x08,0x04,0x08,0x08,0x10,0x00}, // }
         {0x00,0x00,0x10,0x2a,0x04,0x00,0x00,0x00}, // ~
         {0x3e,0x22,0x22,0x22,0x22,0x22,0x3e,0x00}, // rectangle
+        {0x20,0x20,0x20,0x20,0x20,0x20,0x20,0x20}, // 96 left vertical bar
+        {0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01}, // 97 right vertical bar
 };
