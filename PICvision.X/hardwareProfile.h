@@ -32,10 +32,11 @@ extern "C" {
 #include <xc.h>
 
 
-#define FOSC 32000000UL  // 8Mhz crystal x 4 (PLL)
+#define MHZ 1000000UL
+#define FOSC (32*MHZ)  // 8Mhz crystal x 4 (internal PLL)
 #define FCY  (FOSC/2)    // core cycle frequency
 
-
+#define P_VIDEO_MODE PORTBbits.RB12
 
 #ifdef	__cplusplus
 }

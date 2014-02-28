@@ -20,12 +20,12 @@
  * File:   PICvision.c
  * Author: jacques Deschênes
  * Description:  a simple video game console on PIC24FJ64GA002 MCU
- *               inpiration come from HACKvision console.
+ *               inspiration come from HACKvision console.
  *               REF: https://nootropicdesign.com/hackvision/
  *     - display  NTSC/PAL  monochrome
- *     - resolution  200x216 pixels
+ *     - resolution  200x216 pixels  (HxV)
  *     - controls: 2 SNES paddle  (cheap and easy to find.)
- *     - audio out:  monophonic  PWM DAC
+ *     - audio out:  monophonic  PWM DAC  or square wave tones
  *
  * Created on 25 février 2014, 16:22
  */
@@ -62,14 +62,16 @@
 void HardwareConfig(){
     PPSUnLock;
     PPSOutput(PPS_RP5,PPS_OC2);   // audio output
-    PPSOutput(PPS_RP6,PPS_OC1);   // video sync
+    PPSOutput(PPS_RP6,PPS_OC1);   // video sync signal
     PPSOutput(PPS_RP7,PPS_SDO1);  // video pixels
-    PPSOutput(PPS_RP10,PPS_OC3);  // video pedestal (black level)
-    TRISBbits.TRISB5=0;
-    TRISBbits.TRISB6=0;
-    TRISBbits.TRISB7=0;
-    TRISBbits.TRISB10=0;
-    TRISBbits.TRISB11=1;
+    PPSOutput(PPS_RP10,PPS_OC3);  // video delay output
+    TRISBbits.TRISB5=0;     //output
+    TRISBbits.TRISB6=0;     //output
+    TRISBbits.TRISB7=0;     //output
+    TRISBbits.TRISB10=0;    //output
+    TRISBbits.TRISB11=1;    //input   video delay synchronisation
+    AD1PCFGbits.PCFG12=1;   //disable analog input
+    TRISBbits.TRISB12=1;    //input   NTSC/PAL select input
     PPSLock;
 }//f()
 

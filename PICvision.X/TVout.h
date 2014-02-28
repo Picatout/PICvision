@@ -35,13 +35,8 @@ extern "C" {
 #include "hardwareProfile.h"
 #include "font.h"
 
-#define NTSC
 
-#ifdef NTSC
-#define VPERIOD 17
-#else
-#define VPERIOD 20
-#endif
+
 
 #define VPIXELS 216
 #define HPIXELS 200
