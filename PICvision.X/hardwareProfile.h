@@ -36,7 +36,7 @@ extern "C" {
 #define FOSC (32*MHZ)  // 8Mhz crystal x 4 (internal PLL)
 #define FCY  (FOSC/2)    // core cycle frequency
 
-#define P_VIDEO_MODE PORTBbits.RB12
+#define P_VIDEO_MODE PORTBbits.RB12 // video mode detect input pin
 
 #ifdef	__cplusplus
 }

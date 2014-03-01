@@ -23,7 +23,7 @@
  *               inspiration come from HACKvision console.
  *               REF: https://nootropicdesign.com/hackvision/
  *     - display  NTSC/PAL  monochrome
- *     - resolution  200x216 pixels  (HxV)
+ *     - resolution  216x216 pixels
  *     - controls: 2 SNES paddle  (cheap and easy to find.)
  *     - audio out:  monophonic  PWM DAC  or square wave tones
  *
@@ -32,10 +32,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <PPS.h>
 
 #include "hardwareProfile.h"
 #include "TVout.h"
+#include "text_console.h"
+#include "graphics.h"
 
 // PIC24FJ64GA002 Configuration Bit Settings
 // CONFIG2
@@ -61,37 +64,58 @@
 
 void HardwareConfig(){
     PPSUnLock;
-    PPSOutput(PPS_RP5,PPS_OC2);   // audio output
-    PPSOutput(PPS_RP6,PPS_OC1);   // video sync signal
-    PPSOutput(PPS_RP7,PPS_SDO1);  // video pixels
-    PPSOutput(PPS_RP10,PPS_OC3);  // video delay output
-    TRISBbits.TRISB5=0;     //output
-    TRISBbits.TRISB6=0;     //output
-    TRISBbits.TRISB7=0;     //output
-    TRISBbits.TRISB10=0;    //output
-    TRISBbits.TRISB11=1;    //input   video delay synchronisation
-    AD1PCFGbits.PCFG12=1;   //disable analog input
-    TRISBbits.TRISB12=1;    //input   NTSC/PAL select input
+    PPSOutput(PPS_RP5,PPS_SDO1);   // video pixels output
+    PPSOutput(PPS_RP6,PPS_OC4);  // video delay output
+    PPSOutput(PPS_RP7,PPS_OC1);  // video sync output
+    PPSOutput(PPS_RP8,PPS_OC2);  // audio output
+    TRISBbits.TRISB5=0;     // video pixels output
+    TRISBbits.TRISB6=0;     // video delay output
+    TRISBbits.TRISB7=0;     // video sync output
+    TRISBbits.TRISB8=0;     // audio output
+    TRISBbits.TRISB9=1;    //input video delay synchronisation
+    TRISBbits.TRISB12=1;    //input NTSC/PAL select input
+    AD1PCFGbits.PCFG12=1;   // disable ADC
     PPSLock;
 }//f()
 
-const char msg[]="hello world!";
-const char numbers[]=" 234567890123456789012|";
+const char msg[]="bouncing ring demo.";
 
 int main(void) {
-    int y;
+    int y,x,dx,dy;
     HardwareConfig();
     video_init();
-    for (y=0;y<LINES;y++){
-        move_cursor(y,0);
-        put_char(96+' ');
-        wait_n_frame(1);
-        move_cursor(y,COLUMNS-1);
-        put_char(97+' ');
-        wait_n_frame(1);
+    print(msg);
+    rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
+    y=108;
+    x=100;
+    ellipse(x,y,10,10,WHITE);
+    dx=0;
+    dy=0;
+    srand(time(0));
+    while (!(dx&&dy)){
+        dx=rand()%4-1;
+        dy=rand()%4-1;
     }
     while (1){
-        
+        wait_n_frame(1);
+        ellipse(x,y,10,10,BLACK);
+        x +=dx;
+        if (x<=10){
+            x=11;
+            dx=-dx;
+        }else if (x>=HPIXELS-12){
+            x=HPIXELS-12;
+            dx=-dx;
+        }
+        y +=dy;
+        if (y<=CHAR_HEIGHT+10){
+            y=CHAR_HEIGHT+11;
+            dy = -dy;
+        }else if (y>=VPIXELS-12){
+            y=VPIXELS-12;
+            dy=-dy;
+        }
+        ellipse(x,y,10,10,WHITE);
     }//while
     return (EXIT_SUCCESS);
 }//main()

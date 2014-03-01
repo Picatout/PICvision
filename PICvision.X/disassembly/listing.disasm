@@ -1,8 +1,1544 @@
 Disassembly Listing for PICvision
 Generated From:
 /home/jacques/MPLABXProjects/PICvision/PICvision.X/dist/default/production/PICvision.X.production.elf
-2014-02-27 22:47:19
+2014-03-01 14:38:07
 
+---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/text_console.c  ---------------------------------
+1:                 /*
+2:                 * Copyright 2014, Jacques Deschênes
+3:                 * This file is part of PICvision.
+4:                 *
+5:                 *     PICvision is free software: you can redistribute it and/or modify
+6:                 *     it under the terms of the GNU General Public License as published by
+7:                 *     the Free Software Foundation, either version 3 of the License, or
+8:                 *     (at your option) any later version.
+9:                 *
+10:                *     PICvision is distributed in the hope that it will be useful,
+11:                *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+12:                *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+13:                *     GNU General Public License for more details.
+14:                *
+15:                *     You should have received a copy of the GNU General Public License
+16:                *     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
+17:                */
+18:                
+19:                /*
+20:                 * File:   text_console.h
+21:                 * Author: jacques Deschênes
+22:                 * Description: manage text writing in video_buffer
+23:                 * Created on 28 février 2014, 10:04
+24:                 */
+25:                
+26:                #include <stdlib.h>
+27:                #include <string.h>
+28:                #include "text_console.h"
+29:                
+30:                //static text_coord_t cursor_pos;
+31:                
+32:                //#define X_OFS  ((HPIXELS-CHAR_PER_LINE*CHAR_WIDTH)/2)  // x offset to cursor from screen edge
+33:                //#define Y_OFS  ((VPIXELS-LINE_PER_SCREEN*CHAR_HEIGHT)/2) // y offset to cursor from screen edge
+34:                
+35:                // boolean flags
+36:                #define CUR_SHOW 1  // cursor active
+37:                #define CUR_VIS  2  // cursor state visible
+38:                #define INV_VID  4  // invert video
+39:                
+40:                
+41:                static unsigned short cx=0, cy=0;  // coordonnée courante du curseur texte en pixels.
+42:                static unsigned char tab_width=TAB_WIDTH;
+43:                static cursor_t cur_shape=CR_UNDER;
+44:                static unsigned short flags=0;
+45:                
+46:                
+47:                
+48:                void scroll_up(void){
+49:                    char *src, *dst;
+50:                    dst = (char*)video_buffer;
+51:                    src = (char*)video_buffer + CHAR_HEIGHT*BYTES_PER_LINE;
+52:                    memmove(dst,src,(LINE_PER_SCREEN-1)*CHAR_HEIGHT*BYTES_PER_LINE);
+000DB0  215F02     MOV #0x15F0, W2
+000DB2  208D81     MOV #0x8D8, W1
+000DB4  208000     MOV #0x800, W0
+000DB6  07FBC5     RCALL 0x542
+53:                    dst= (char*)video_buffer+(CHAR_HEIGHT*(LINE_PER_SCREEN-1))*BYTES_PER_LINE;
+54:                    memset(dst,0,HPIXELS/8*CHAR_HEIGHT);
+000DB8  21DF04     MOV #0x1DF0, W4
+000DBA  0900D7     REPEAT #0xD7
+000DBC  EB5A00     CLR.B [W4++]
+55:                }//scroll_up();
+000DBE  060000     RETURN
+56:                
+57:                void scroll_down(void){
+58:                    char *src, *dst;
+59:                    src = (char*)video_buffer;
+60:                    dst = (char*)video_buffer+CHAR_HEIGHT*BYTES_PER_LINE;
+61:                    memmove(dst,src,(LINE_PER_SCREEN-1)*CHAR_HEIGHT*BYTES_PER_LINE);
+000DC0  215F02     MOV #0x15F0, W2
+000DC2  208001     MOV #0x800, W1
+000DC4  200D80     MOV #0xD8, W0
+000DC6  400001     ADD W0, W1, W0
+000DC8  07FBBC     RCALL 0x542
+62:                    dst=(char*)video_buffer;
+63:                    memset(dst,0,HPIXELS/8*CHAR_HEIGHT);
+000DCA  208004     MOV #0x800, W4
+000DCC  0900D7     REPEAT #0xD7
+000DCE  EB5A00     CLR.B [W4++]
+64:                }//scroll_down()
+000DD0  060000     RETURN
+65:                
+66:                
+67:                void cursor_right(void){
+68:                    cx += CHAR_WIDTH;
+000DD2  80F6D4     MOV cx, W4
+000DD4  420266     ADD W4, #0x6, W4
+000DD6  88F6D4     MOV W4, cx
+69:                    if (cx>(CHAR_PER_LINE*CHAR_WIDTH)){
+000DD8  200D25     MOV #0xD2, W5
+000DDA  520F85     SUB W4, W5, [W15]
+000DDC  36000A     BRA LEU, 0xDF2
+70:                        cx = 0;
+000DDE  EF3EDA     CLR cx
+71:                        cy += CHAR_HEIGHT;
+000DE0  80F6E4     MOV cy, W4
+000DE2  420268     ADD W4, #0x8, W4
+000DE4  88F6E4     MOV W4, cy
+72:                        if (cy>(LINE_PER_SCREEN*CHAR_HEIGHT)){
+000DE6  4282E6     ADD W5, #0x6, W5
+000DE8  520F85     SUB W4, W5, [W15]
+000DEA  360003     BRA LEU, 0xDF2
+73:                            scroll_up();
+000DEC  07FFE1     RCALL scroll_up
+74:                            cy -= CHAR_HEIGHT;
+000DEE  2FFF80     MOV #0xFFF8, W0
+000DF0  B43EDC     ADD cy
+75:                        }
+76:                    }
+77:                } // cursor_right()
+000DF2  060000     RETURN
+78:                
+79:                void cursor_left(void){
+80:                    if (cx>=CHAR_WIDTH){
+000DF4  80F6D4     MOV cx, W4
+000DF6  520FE5     SUB W4, #0x5, [W15]
+000DF8  360003     BRA LEU, 0xE00
+81:                        cx -= CHAR_WIDTH;
+000DFA  520266     SUB W4, #0x6, W4
+000DFC  88F6D4     MOV W4, cx
+000DFE  370009     BRA 0xE12
+82:                    }else{
+83:                        cx = CHAR_WIDTH*(CHAR_PER_LINE-1);
+000E00  200CC4     MOV #0xCC, W4
+000E02  88F6D4     MOV W4, cx
+84:                        if (cy>=CHAR_HEIGHT){
+000E04  80F6E4     MOV cy, W4
+000E06  520FE7     SUB W4, #0x7, [W15]
+000E08  360003     BRA LEU, 0xE10
+85:                            cy -= CHAR_HEIGHT;
+000E0A  520268     SUB W4, #0x8, W4
+000E0C  88F6E4     MOV W4, cy
+000E0E  370001     BRA 0xE12
+86:                        }else{
+87:                            scroll_down();
+000E10  07FFD7     RCALL scroll_down
+88:                        }
+89:                    }
+90:                }// cursor_left()
+000E12  060000     RETURN
+91:                
+92:                void cursor_up(void){
+93:                    if (cy>=CHAR_HEIGHT){
+000E14  80F6E4     MOV cy, W4
+000E16  520FE7     SUB W4, #0x7, [W15]
+000E18  360003     BRA LEU, 0xE20
+94:                        cy -= CHAR_HEIGHT;
+000E1A  520268     SUB W4, #0x8, W4
+000E1C  88F6E4     MOV W4, cy
+000E1E  370001     BRA 0xE22
+95:                    }else{
+96:                        scroll_down();
+000E20  07FFCF     RCALL scroll_down
+97:                    }
+98:                }// cursor_up()
+000E22  060000     RETURN
+99:                
+100:               void cursor_down(void){
+101:                   if (cy<=(CHAR_HEIGHT*(LINE_PER_SCREEN-2))){
+000E24  80F6E4     MOV cy, W4
+000E26  200C85     MOV #0xC8, W5
+000E28  520F85     SUB W4, W5, [W15]
+000E2A  3E0003     BRA GTU, 0xE32
+102:                       cy += CHAR_HEIGHT;
+000E2C  420268     ADD W4, #0x8, W4
+000E2E  88F6E4     MOV W4, cy
+000E30  370001     BRA 0xE34
+103:                   }else{
+104:                       scroll_up();
+000E32  07FFBE     RCALL scroll_up
+105:                   }
+106:               }//cursor_down()
+000E34  060000     RETURN
+107:               
+108:               void crlf(void){
+109:                   cx=0;
+000E36  EF3EDA     CLR cx
+110:                   if (cy==(LINE_PER_SCREEN-1)*CHAR_HEIGHT){
+000E38  80F6E4     MOV cy, W4
+000E3A  200D05     MOV #0xD0, W5
+000E3C  520F85     SUB W4, W5, [W15]
+000E3E  3A0002     BRA NZ, 0xE44
+111:                       scroll_up();
+000E40  07FFB7     RCALL scroll_up
+000E42  370002     BRA 0xE48
+112:                   }else{
+113:                       cy += CHAR_HEIGHT;
+000E44  420268     ADD W4, #0x8, W4
+000E46  88F6E4     MOV W4, cy
+114:                   }
+115:               }//crlf()
+000E48  060000     RETURN
+116:               
+117:               void put_char(char c){
+000E4A  4787E6     ADD W15, #0x6, W15
+000E4C  BE9F88     MOV.D W8, [W15++]
+000E4E  BE9F8A     MOV.D W10, [W15++]
+000E50  BE9F8C     MOV.D W12, [W15++]
+000E52  781F8E     MOV W14, [W15++]
+000EC8  E80381     INC W1, W7
+000ECA  B90A7B     MUL.SU W1, #27, W4
+000ECC  780284     MOV W4, W5
+000ECE  428209     ADD W5, W9, W4
+000ED0  20800D     MOV #0x800, W13
+000ED2  42020D     ADD W4, W13, W4
+000ED6  DD3743     SL W6, #3, W14
+000ED8  285A66     MOV #0x85A6, W6
+000EDA  470306     ADD W14, W6, W6
+000EDC  E80489     INC W9, W9
+000EDE  428289     ADD W5, W9, W5
+000EE0  42828D     ADD W5, W13, W5
+000EE2  4080E9     ADD W1, #0x9, W1
+118:                   register int i,l,r,b,x,y;
+119:                   x=cx;
+000E54  80F6D3     MOV cx, W3
+120:                   y=cy;
+000E56  80F6E1     MOV cy, W1
+121:                   switch (c){
+000E58  504FE9     SUB.B W0, #0x9, [W15]
+000E5A  320007     BRA Z, 0xE6A
+000E5C  504FED     SUB.B W0, #0xD, [W15]
+000E5E  320003     BRA Z, 0xE66
+000E60  504FE8     SUB.B W0, #0x8, [W15]
+000E62  3A001B     BRA NZ, 0xE9A
+000E64  370018     BRA 0xE96
+122:                       case CR:
+123:                           crlf();
+000E66  07FFE7     RCALL crlf
+124:                           break;
+000E68  37006D     BRA 0xF44
+125:                       case TAB:
+126:                           cx += (cx%tab_width);
+000E6A  21EDE4     MOV #0x1EDE, W4
+000E6C  784214     MOV.B [W4], W4
+000E6E  FB8204     ZE W4, W4
+000E70  BE9F80     MOV.D W0, [W15++]
+000E72  090011     REPEAT #0x11
+000E74  D88184     DIV.UW W3, W4
+000E76  780201     MOV W1, W4
+000E78  BE004F     MOV.D [--W15], W0
+000E7A  420183     ADD W4, W3, W3
+000E7C  88F6D3     MOV W3, cx
+127:                           if (cx>=(CHAR_PER_LINE*CHAR_WIDTH)){
+000E7E  200D14     MOV #0xD1, W4
+000E80  518F84     SUB W3, W4, [W15]
+000E82  360060     BRA LEU, 0xF44
+128:                               cx = 0;
+000E84  EF3EDA     CLR cx
+129:                               if (cy==(LINE_PER_SCREEN-1)*CHAR_HEIGHT){
+000E86  E90204     DEC W4, W4
+000E88  508F84     SUB W1, W4, [W15]
+000E8A  3A0002     BRA NZ, 0xE90
+130:                                   scroll_up();
+000E8C  07FF91     RCALL scroll_up
+000E8E  37005A     BRA 0xF44
+131:                               }else{
+132:                                   cy += CHAR_HEIGHT;
+000E90  4080E8     ADD W1, #0x8, W1
+000E92  88F6E1     MOV W1, cy
+000E94  370057     BRA 0xF44
+133:                               }
+134:                           }
+135:                           break;
+136:                       case '\b':
+137:                           cursor_left();
+000E96  07FFAE     RCALL cursor_left
+138:                           break;
+000E98  370055     BRA 0xF44
+139:                       default:
+140:                           if ((c<32) || (c>=(FONT_SIZE+32))) break;
+000E9A  504FFF     SUB.B W0, #0x1F, [W15]
+000E9C  340053     BRA LE, 0xF44
+141:                           c -=32;
+000E9E  B3CE06     MOV #0xE0, W6
+000EA0  404306     ADD.B W0, W6, W6
+142:                           b=x>>3; // character position in video_buffer
+000EA2  DE9CC3     ASR W3, #3, W9
+143:                           r=0;
+144:                           l=(8-CHAR_WIDTH)-(x&7); // shift inside this byte
+000EA4  6181E7     AND W3, #0x7, W3
+000EA6  1181E2     SUBR W3, #0x2, W3
+145:                           if (l<0){
+146:                               r=-l;
+000EA8  DE9A4F     ASR W3, #15, W4
+000EAA  EA0003     NEG W3, W0
+000EAC  600004     AND W0, W4, W0
+147:                           }
+148:                           for (i=0;i<8;i++){
+000F3E  538F81     SUB W7, W1, [W15]
+000F40  3AFFD1     BRA NZ, 0xEE4
+149:                               if (r){
+000EE4  500FE0     SUB W0, #0x0, [W15]
+000EE6  320018     BRA Z, 0xF18
+150:                                   if (flags & INV_VID){
+000EAE  80F6B2     MOV flags, W2
+000EB0  610164     AND W2, #0x4, W2
+000EE8  510FE0     SUB W2, #0x0, [W15]
+000EEA  32000B     BRA Z, 0xF02
+151:                                       video_buffer[y][b] |= (0x3f>>r);
+000EB2  2003FA     MOV #0x3F, W10
+000EB4  DED600     ASR W10, W0, W12
+000EF4  764694     IOR.B W12, [W4], W13
+152:                                       video_buffer[y][b] &=~(font6x8[(int)c][i]>>r);
+000EEC  784696     MOV.B [W6], W13
+000EEE  FB848D     ZE W13, W9
+000EF0  DECF00     ASR W9, W0, W14
+000EF2  EAC70E     COM.B W14, W14
+000EF6  674A0D     AND.B W14, W13, [W4]
+153:                                       video_buffer[y][b+1] |= (0x3f<<(8-r));
+000EB6  100468     SUBR W0, #0x8, W8
+000EB8  DD5588     SL W10, W8, W11
+000EFC  75C695     IOR.B W11, [W5], W13
+154:                                       video_buffer[y][b+1] &= ~(font6x8[(int)c][i]<<(8-r));
+000EF8  DD4C88     SL W9, W8, W9
+000EFA  EAC489     COM.B W9, W9
+000EFE  64CA8D     AND.B W9, W13, [W5]
+000F00  37001A     BRA 0xF36
+155:                                   }else{
+156:                                       video_buffer[y][b] &= ~(0x3f>>r);
+000EBA  EAC20C     COM.B W12, W4
+000EBC  9FF784     MOV.B W4, [W15-16]
+000F06  97F68F     MOV.B [W15-16], W13
+000F08  66C714     AND.B W13, [W4], W14
+157:                                       video_buffer[y][b] |= font6x8[(int)c][i]>>r;
+000F02  784716     MOV.B [W6], W14
+000F04  FB848E     ZE W14, W9
+000F0A  DECE80     ASR W9, W0, W13
+000F0C  774A0D     IOR.B W14, W13, [W4]
+158:                                       video_buffer[y][b+1] &= ~(0x3f<<(8-r));
+000EBE  EAC68B     COM.B W11, W13
+000EC0  9FEFFD     MOV.B W13, [W15-17]
+000F0E  97EF7F     MOV.B [W15-17], W14
+000F10  674695     AND.B W14, [W5], W13
+159:                                       video_buffer[y][b+1] |= font6x8[(int)c][i]<<(8-r);
+000F12  DD4C88     SL W9, W8, W9
+000F14  76CA89     IOR.B W13, W9, [W5]
+000F16  37000F     BRA 0xF36
+160:                                   }
+161:                                   y++;
+162:                               } else{
+163:                                   if (flags & INV_VID){
+000F18  510FE0     SUB W2, #0x0, [W15]
+000F1A  320007     BRA Z, 0xF2A
+164:                                       video_buffer[y][b] |= (0x3f<<l);
+000EC2  DD5503     SL W10, W3, W10
+000F24  754494     IOR.B W10, [W4], W9
+165:                                       video_buffer[y++][b] &=~(font6x8[(int)c][i]<<l);
+000ED4  FB0306     SE W6, W6
+000F1C  784496     MOV.B [W6], W9
+000F1E  FB8689     ZE W9, W13
+000F20  DD6E83     SL W13, W3, W13
+000F22  EAC68D     COM.B W13, W13
+000F26  66CA09     AND.B W13, W9, [W4]
+000F28  370006     BRA 0xF36
+166:                                   }else{
+167:                                       video_buffer[y][b] &= ~(0x3f<<l);
+000EC4  EAC70A     COM.B W10, W14
+000EC6  9FEFEE     MOV.B W14, [W15-18]
+000F2A  97EF6F     MOV.B [W15-18], W14
+000F2C  674694     AND.B W14, [W4], W13
+168:                                       video_buffer[y++][b] |= font6x8[(int)c][i]<<l;
+000F2E  784716     MOV.B [W6], W14
+000F30  FB848E     ZE W14, W9
+000F32  DD4C83     SL W9, W3, W9
+000F34  76CA09     IOR.B W13, W9, [W4]
+000F36  E80387     INC W7, W7
+000F38  42027B     ADD W4, #0x1B, W4
+000F3A  E80306     INC W6, W6
+000F3C  4282FB     ADD W5, #0x1B, W5
+169:                                   }
+170:                               }
+171:                           }
+172:                           cursor_right();
+000F42  07FF47     RCALL cursor_right
+173:                   }//switch(c)
+174:               }//put_char()
+000F44  78074F     MOV [--W15], W14
+000F46  BE064F     MOV.D [--W15], W12
+000F48  BE054F     MOV.D [--W15], W10
+000F4A  BE044F     MOV.D [--W15], W8
+000F4C  B1006F     SUB #0x6, W15
+000F4E  060000     RETURN
+175:               
+176:               void clear_screen(){
+177:                   memset(video_buffer,0,HPIXELS/8*VPIXELS);
+000F50  208004     MOV #0x800, W4
+000F52  0916C7     REPEAT #0x16C7
+000F54  EB5A00     CLR.B [W4++]
+178:                   cx=0;
+000F56  EB0200     CLR W4
+000F58  88F6D4     MOV W4, cx
+179:                   cy=0;
+000F5A  88F6E4     MOV W4, cy
+180:               } // clear_screen()
+000F5C  060000     RETURN
+181:               
+182:               void print(const char *text){
+000F5E  781F88     MOV W8, [W15++]
+000F60  780400     MOV W0, W8
+183:                   while (*text){
+000F62  784018     MOV.B [W8], W0
+000F64  504FE0     SUB.B W0, #0x0, [W15]
+000F66  320004     BRA Z, 0xF70
+000F6A  784058     MOV.B [++W8], W0
+000F6C  504FE0     SUB.B W0, #0x0, [W15]
+000F6E  3AFFFC     BRA NZ, 0xF68
+184:                       put_char(*text++);
+000F68  07FF70     RCALL put_char
+185:                   }
+186:               }// print()
+000F70  78044F     MOV [--W15], W8
+000F72  060000     RETURN
+187:               
+188:               void print_hex(unsigned int hex, unsigned char width){
+000F74  FA000C     LNK #0xC
+189:                   char c[12], *d;
+190:                   int i;
+191:                   c[11]=0;
+000F76  EB4200     CLR.B W4
+000F78  9FFFF4     MOV.B W4, [W15-1]
+192:                   d= &c[10];
+000F7C  E9820F     DEC2 W15, W4
+193:                   for(i=width;i>=0||hex;i--){
+000F7A  FB8301     ZE W1, W6
+000F7E  37000C     BRA 0xF98
+000F96  E90306     DEC W6, W6
+000F98  530FE0     SUB W6, #0x0, [W15]
+000F9A  3DFFF2     BRA GE, 0xF80
+000F9C  500FE0     SUB W0, #0x0, [W15]
+000F9E  3AFFF0     BRA NZ, 0xF80
+194:                       *d=(hex%16);
+000F80  6042EF     AND.B W0, #0xF, W5
+000F82  784A05     MOV.B W5, [W4]
+195:                       if (*d<10)
+000F84  52CFE9     SUB.B W5, #0x9, [W15]
+000F86  3C0003     BRA GT, 0xF8E
+196:                           *d += '0';
+000F88  B3C307     MOV #0x30, W7
+000F8A  42CA07     ADD.B W5, W7, [W4]
+000F8C  370002     BRA 0xF92
+197:                       else
+198:                           *d += 'A'-10;
+000F8E  B3C377     MOV #0x37, W7
+000F90  42CA07     ADD.B W5, W7, [W4]
+199:                       hex /=16;
+000F92  DE0044     LSR W0, #4, W0
+200:                       d--;
+000F94  E90204     DEC W4, W4
+201:                   }
+202:                   print(++d);
+000FA0  E80004     INC W4, W0
+000FA2  07FFDD     RCALL print
+203:               } // print_hex()
+000FA4  FA8000     ULNK
+000FA6  060000     RETURN
+204:               
+205:               void print_int(int number, unsigned short width){ // imprime entier,width inclus le signe
+000FA8  FA000E     LNK #0xE
+000FEE  538005     SUB W7, W5, W0
+000FF0  780207     MOV W7, W4
+206:                   int sign=0, i;
+000FB4  EB0100     CLR W2
+207:                   char str[14], *d;
+208:                   str[13]=0;
+000FAA  EB4200     CLR.B W4
+000FAC  9FFFF4     MOV.B W4, [W15-1]
+000FAE  508FED     SUB W1, #0xD, [W15]
+000FB0  360001     BRA LEU, 0xFB4
+000FB2  2000D1     MOV #0xD, W1
+209:                   d=&str[12];
+000FC4  E9820F     DEC2 W15, W4
+000FDE  E9838F     DEC2 W15, W7
+210:                   if (width>13){width=13;}
+211:                   if (number<0){
+000FB6  500F82     SUB W0, W2, [W15]
+000FB8  3D0002     BRA GE, 0xFBE
+212:                       sign=1;
+000FBC  200012     MOV #0x1, W2
+213:                       number = -number;
+000FBA  EA0000     NEG W0, W0
+214:                   }
+215:                   //for (i=--width;i>=0||number;i--){
+216:                   i=width;
+000FBE  780281     MOV W1, W5
+217:                   while (number>0){
+000FC0  500FE0     SUB W0, #0x0, [W15]
+000FC2  34000D     BRA LE, 0xFDE
+000FD8  500FE0     SUB W0, #0x0, [W15]
+000FDA  3CFFF6     BRA GT, 0xFC8
+000FDC  370001     BRA 0xFE0
+218:                      *d--=(number%10)+'0';
+000FC6  2000A6     MOV #0xA, W6
+000FC8  780381     MOV W1, W7
+000FCA  090011     REPEAT #0x11
+000FCC  D80006     DIV.SW W0, W6
+000FCE  FD0381     EXCH W1, W7
+000FD0  B3C303     MOV #0x30, W3
+000FD2  43D203     ADD.B W7, W3, [W4--]
+000FD4  780384     MOV W4, W7
+219:                       number /= 10;
+220:                       i--;
+000FD6  E90285     DEC W5, W5
+221:                   }
+222:                   if (i==width){
+000FE0  508F85     SUB W1, W5, [W15]
+000FE2  3A0003     BRA NZ, 0xFEA
+223:                       *d--='0';
+000FE4  B3C304     MOV #0x30, W4
+000FE6  785384     MOV.B W4, [W7--]
+224:                       i--;
+000FE8  E90285     DEC W5, W5
+225:                   }
+226:                   while (i>0){
+000FEA  528FE0     SUB W5, #0x0, [W15]
+000FEC  340007     BRA LE, 0xFFC
+000FF6  520F80     SUB W4, W0, [W15]
+000FF8  3AFFFD     BRA NZ, 0xFF4
+000FFA  538385     SUB W7, W5, W7
+227:                       *d--=' ';
+000FF2  B3C206     MOV #0x20, W6
+000FF4  785206     MOV.B W6, [W4--]
+228:                       i--;
+229:                   }
+230:                   if (sign){*d='-';}else{*d=' ';}
+000FFC  510FE0     SUB W2, #0x0, [W15]
+000FFE  320003     BRA Z, 0x1006
+001000  B3C2D4     MOV #0x2D, W4
+001002  784B84     MOV.B W4, [W7]
+001004  370002     BRA 0x100A
+001006  B3C204     MOV #0x20, W4
+001008  784B84     MOV.B W4, [W7]
+231:                   print(d);
+00100A  780007     MOV W7, W0
+00100C  07FFA8     RCALL print
+232:               }// print_int()
+00100E  FA8000     ULNK
+001010  060000     RETURN
+233:               
+234:               void set_tab_width(unsigned char width){
+235:                   tab_width=width;
+001012  B7FEDE     MOV.B WREG, tab_width
+236:               }// set_tab_width()
+001014  060000     RETURN
+237:               
+238:               void clear_eol(void){
+001016  BE9F88     MOV.D W8, [W15++]
+001018  BE9F8A     MOV.D W10, [W15++]
+239:                   int x,y;
+240:                   x=cx;
+00101A  80F6DA     MOV cx, W10
+241:                   y=cy;
+00101C  80F6EB     MOV cy, W11
+242:                   while (cx<(CHAR_WIDTH*(CHAR_PER_LINE-2))){
+00101E  200C54     MOV #0xC5, W4
+001020  550F84     SUB W10, W4, [W15]
+001022  3E0007     BRA GTU, 0x1032
+001026  780484     MOV W4, W9
+00102C  80F6D4     MOV cx, W4
+00102E  520F89     SUB W4, W9, [W15]
+001030  36FFFB     BRA LEU, 0x1028
+243:                       put_char(32);
+001024  B3C208     MOV #0x20, W8
+001028  784008     MOV.B W8, W0
+00102A  07FF0F     RCALL put_char
+244:                   }
+245:                   put_char(32);
+001032  B3C200     MOV #0x20, W0
+001034  07FF0A     RCALL put_char
+246:                   cx=x;
+001036  88F6DA     MOV W10, cx
+247:                   cy=y;
+001038  88F6EB     MOV W11, cy
+248:               }// clear_eol()
+00103A  BE054F     MOV.D [--W15], W10
+00103C  BE044F     MOV.D [--W15], W8
+00103E  060000     RETURN
+249:               
+250:               text_coord_t get_curpos(){
+251:                   text_coord_t cpos;
+252:                   cpos.x = cx/CHAR_WIDTH;
+001040  80F6D5     MOV cx, W5
+001042  200064     MOV #0x6, W4
+001044  781F80     MOV W0, [W15++]
+001046  090011     REPEAT #0x11
+001048  D88284     DIV.UW W5, W4
+00104A  780200     MOV W0, W4
+00104C  78004F     MOV [--W15], W0
+00104E  780804     MOV W4, [W0]
+253:                   cpos.y = cy/CHAR_HEIGHT;
+001050  80F6E4     MOV cy, W4
+001052  DE2243     LSR W4, #3, W4
+001054  980014     MOV W4, [W0+2]
+254:                   return cpos;
+255:               } // get_cursor_pos()
+001056  060000     RETURN
+256:               
+257:               void set_curpos(unsigned short x, unsigned short y){// {x,y} character coord.
+258:                   if (x>(CHAR_PER_LINE-1) || y>(LINE_PER_SCREEN-1))
+001058  200224     MOV #0x22, W4
+00105A  500F84     SUB W0, W4, [W15]
+00105C  3E0006     BRA GTU, 0x106A
+00105E  508FFA     SUB W1, #0x1A, [W15]
+001060  3E0004     BRA GTU, 0x106A
+259:                       return;
+260:                   cx=x*CHAR_WIDTH;
+001062  B90266     MUL.SU W0, #6, W4
+001064  88F6D4     MOV W4, cx
+261:                   cy=y*CHAR_HEIGHT;
+001066  DD08C3     SL W1, #3, W1
+001068  88F6E1     MOV W1, cy
+262:               }//set_curpos()
+00106A  060000     RETURN
+263:               
+264:               void invert_char(void){// invert pixels of character at cursor position
+00106C  BE9F88     MOV.D W8, [W15++]
+001088  E80287     INC W7, W5
+00108A  B93C7B     MUL.SU W7, #27, W8
+00108C  420008     ADD W4, W8, W0
+00108E  208004     MOV #0x800, W4
+001090  400204     ADD W0, W4, W4
+001092  4383EA     ADD W7, #0xA, W7
+265:                   register int i,l,r,b,x,y;
+266:                   x=cx;
+00106E  80F6D1     MOV cx, W1
+267:                   y=cy;
+001070  80F6E7     MOV cy, W7
+268:                   b=x>>3;
+001072  DE8A43     ASR W1, #3, W4
+269:                   r=0;
+270:                   l=(8-CHAR_WIDTH)-(x&7);
+001074  6080E7     AND W1, #0x7, W1
+001076  1080E2     SUBR W1, #0x2, W1
+271:                   if (l<0){
+272:                       r=-l;
+001078  DE8ACF     ASR W1, #15, W5
+00107A  EA0301     NEG W1, W6
+00107C  630305     AND W6, W5, W6
+273:                   }
+274:                   for (i=9;i;i--){
+0010A8  528F87     SUB W5, W7, [W15]
+0010AA  3AFFF4     BRA NZ, 0x1094
+275:                       if (r){
+001094  530FE0     SUB W6, #0x0, [W15]
+001096  320005     BRA Z, 0x10A2
+276:                           video_buffer[y][b] ^= (0x3f>>r);
+00107E  2003F5     MOV #0x3F, W5
+001080  DEA986     ASR W5, W6, W3
+001098  69CA14     XOR.B W3, [W4], [W4]
+277:                           video_buffer[y][b+1] ^= (0x3f<<(8-r));
+001082  130168     SUBR W6, #0x8, W2
+001084  DD2902     SL W5, W2, W2
+00109A  904014     MOV.B [W4+1], W0
+00109C  684002     XOR.B W0, W2, W0
+00109E  984210     MOV.B W0, [W4+1]
+0010A0  370001     BRA 0x10A4
+278:                           y++;
+279:                       } else{
+280:                           video_buffer[y++][b] ^= (0x3f<<l);
+001086  DD2881     SL W5, W1, W1
+0010A2  68CA14     XOR.B W1, [W4], [W4]
+0010A4  E80285     INC W5, W5
+0010A6  42027B     ADD W4, #0x1B, W4
+281:                       }
+282:                   }
+283:               }//invert_char()
+0010AC  BE044F     MOV.D [--W15], W8
+0010AE  060000     RETURN
+284:               
+285:               static void toggle_underscore(void){
+286:                   register int l,r,b,x;
+287:                   x=cx;
+000D68  80F6D4     MOV cx, W4
+288:                   b=x>>5;
+000D6A  DEA2C5     ASR W4, #5, W5
+289:                   r=0;
+290:                   l=(8-CHAR_WIDTH)-(x&7);
+000D6C  620267     AND W4, #0x7, W4
+000D6E  120262     SUBR W4, #0x2, W4
+291:                   if (l<0){
+000D70  3B0014     BRA NN, 0xD9A
+292:                       r=-l;
+000D72  EA0304     NEG W4, W6
+293:                   }
+294:                   if (r){
+000D74  320012     BRA Z, 0xD9A
+295:                       video_buffer[cy+CHAR_HEIGHT-1][b] ^= (0x3f>>r);
+000D76  80F6E0     MOV cy, W0
+000D78  400067     ADD W0, #0x7, W0
+000D7A  208004     MOV #0x800, W4
+000D7C  B9007B     MUL.SU W0, #27, W0
+000D7E  400085     ADD W0, W5, W1
+000D80  420101     ADD W4, W1, W2
+000D82  2003F7     MOV #0x3F, W7
+000D84  DEB986     ASR W7, W6, W3
+000D86  78C0E4     MOV.B [W4+W1], W1
+000D88  68C903     XOR.B W1, W3, [W2]
+296:                       video_buffer[cy+CHAR_HEIGHT-1][b+1] ^= (0x3f<<(8-r));
+000D8A  E80285     INC W5, W5
+000D8C  400285     ADD W0, W5, W5
+000D8E  420005     ADD W4, W5, W0
+000D90  130368     SUBR W6, #0x8, W6
+000D92  DD3B86     SL W7, W6, W7
+000D94  7AC264     MOV.B [W4+W5], W4
+000D96  6A4807     XOR.B W4, W7, [W0]
+000D98  37000A     BRA 0xDAE
+297:                   } else{
+298:                       video_buffer[cy+CHAR_HEIGHT-1][b] ^= (0x3f<<l);
+000D9A  80F6E0     MOV cy, W0
+000D9C  400067     ADD W0, #0x7, W0
+000D9E  208006     MOV #0x800, W6
+000DA0  B9007B     MUL.SU W0, #27, W0
+000DA2  428280     ADD W5, W0, W5
+000DA4  430385     ADD W6, W5, W7
+000DA6  2003F0     MOV #0x3F, W0
+000DA8  DD0204     SL W0, W4, W4
+000DAA  7AC2E6     MOV.B [W6+W5], W5
+000DAC  6ACB84     XOR.B W5, W4, [W7]
+299:                   }
+300:               }//toggle_underscore()
+000DAE  060000     RETURN
+301:               
+302:               void show_cursor(BOOL show){
+0010B0  781F88     MOV W8, [W15++]
+303:                   if (show){
+0010B2  500FE0     SUB W0, #0x0, [W15]
+0010B4  32000B     BRA Z, 0x10CC
+304:                       flags |= CUR_SHOW;
+0010B6  80F6B4     MOV flags, W4
+0010B8  A00004     BSET W4, #0
+305:                       flags ^= CUR_VIS;
+0010BA  A21004     BTG W4, #1
+0010BC  88F6B4     MOV W4, flags
+306:                       if (cur_shape==CR_BLOCK){
+0010BE  80F6C4     MOV cur_shape, W4
+0010C0  520FE1     SUB W4, #0x1, [W15]
+0010C2  3A0002     BRA NZ, 0x10C8
+307:                           invert_char();
+0010C4  07FFD3     RCALL invert_char
+0010C6  37000E     BRA 0x10E4
+308:                       }else{
+309:                           toggle_underscore();
+0010C8  07FE4F     RCALL toggle_underscore
+0010CA  37000C     BRA 0x10E4
+310:                       }
+311:                   }else{
+312:                       if (flags & CUR_VIS){
+0010CC  80F6B8     MOV flags, W8
+0010CE  640262     AND W8, #0x2, W4
+0010D0  320008     BRA Z, 0x10E2
+313:                           if (cur_shape==CR_BLOCK){
+0010D2  80F6C4     MOV cur_shape, W4
+0010D4  520FE1     SUB W4, #0x1, [W15]
+0010D6  3A0002     BRA NZ, 0x10DC
+314:                               invert_char();
+0010D8  07FFC9     RCALL invert_char
+0010DA  370001     BRA 0x10DE
+315:                           }else{
+316:                               toggle_underscore();
+0010DC  07FE45     RCALL toggle_underscore
+317:                           }
+318:                           flags &= ~CUR_VIS;
+0010DE  A11008     BCLR W8, #1
+0010E0  88F6B8     MOV W8, flags
+319:                       }
+320:                       flags &= ~CUR_SHOW;
+0010E2  A91ED6     BCLR flags, #0
+321:                   }
+322:               
+323:               }// show_cursor()
+0010E4  78044F     MOV [--W15], W8
+0010E6  060000     RETURN
+324:               
+325:               void set_cursor(cursor_t shape){
+0010E8  781F88     MOV W8, [W15++]
+0010EA  780400     MOV W0, W8
+326:                   if (flags & CUR_VIS){
+0010EC  AB3ED6     BTST flags, #1
+0010EE  320006     BRA Z, 0x10FC
+327:                       show_cursor(FALSE);
+0010F0  EB0000     CLR W0
+0010F2  07FFDE     RCALL show_cursor
+328:                       cur_shape=shape;
+0010F4  88F6C8     MOV W8, cur_shape
+329:                       show_cursor(TRUE);
+0010F6  200010     MOV #0x1, W0
+0010F8  07FFDB     RCALL show_cursor
+0010FA  370001     BRA 0x10FE
+330:                   }else{
+331:                       cur_shape=shape;
+0010FC  88F6C8     MOV W8, cur_shape
+332:                   }
+333:               }// set_cursor()
+0010FE  78044F     MOV [--W15], W8
+001100  060000     RETURN
+334:               
+335:               
+336:               void invert_video(){
+337:                   flags |= INV_VID;
+001102  A85ED6     BSET flags, #2
+338:               }//invert_video()
+001104  060000     RETURN
+339:               
+340:               void normal_video(){
+341:                   flags &= ~INV_VID;
+001106  A95ED6     BCLR flags, #2
+342:               }//normal_video()
+001108  060000     RETURN
+---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/graphics.c  -------------------------------------
+1:                 /*
+2:                 * Copyright 2014, Jacques Deschênes
+3:                 * This file is part of PICvision.
+4:                 *
+5:                 *     PICvision is free software: you can redistribute it and/or modify
+6:                 *     it under the terms of the GNU General Public License as published by
+7:                 *     the Free Software Foundation, either version 3 of the License, or
+8:                 *     (at your option) any later version.
+9:                 *
+10:                *     PICvision is distributed in the hope that it will be useful,
+11:                *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+12:                *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+13:                *     GNU General Public License for more details.
+14:                *
+15:                *     You should have received a copy of the GNU General Public License
+16:                *     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
+17:                */
+18:                
+19:                /*
+20:                 * File:   graphics.h
+21:                 * Author: jacques Deschênes
+22:                 * Description: Draw geometrics figures.
+23:                 *      coordinates origin is screen top,left, x increase to right, y increase to bottom
+24:                 * Created on 28 février 2014, 13:07
+25:                 */
+26:                
+27:                #include <stdlib.h>
+28:                #include "graphics.h"
+29:                
+30:                // draw a dot
+31:                
+32:                void plot(int x, int y, int color){
+33:                    int h,ofs;
+34:                    if ((y>=VPIXELS)||(x>=HPIXELS)) return; // bound check
+0008CA  200D74     MOV #0xD7, W4
+0008CC  508F84     SUB W1, W4, [W15]
+0008CE  3C001E     BRA GT, 0x90C
+0008D0  500F84     SUB W0, W4, [W15]
+0008D2  3C001C     BRA GT, 0x90C
+35:                    h= x/8;
+0008D4  200084     MOV #0x8, W4
+0008D6  781F81     MOV W1, [W15++]
+0008D8  090011     REPEAT #0x11
+0008DA  D80004     DIV.SW W0, W4
+0008DC  780380     MOV W0, W7
+0008DE  780001     MOV W1, W0
+0008E0  7800CF     MOV [--W15], W1
+36:                    ofs = 7 - x%8;
+0008E2  100367     SUBR W0, #0x7, W6
+37:                    if (color==WHITE)
+0008E4  510FE1     SUB W2, #0x1, [W15]
+0008E6  3A0009     BRA NZ, 0x8FA
+38:                        video_buffer[y][h]|= (1<<ofs);
+0008E8  208005     MOV #0x800, W5
+0008EA  B9087B     MUL.SU W1, #27, W0
+0008EC  438080     ADD W7, W0, W1
+0008EE  428381     ADD W5, W1, W7
+0008F0  200014     MOV #0x1, W4
+0008F2  DD2306     SL W4, W6, W6
+0008F4  78C265     MOV.B [W5+W1], W4
+0008F6  724B86     IOR.B W4, W6, [W7]
+0008F8  370009     BRA 0x90C
+39:                    else
+40:                        video_buffer[y][h]&= ~(1<<ofs);
+0008FA  208005     MOV #0x800, W5
+0008FC  B9087B     MUL.SU W1, #27, W0
+0008FE  438080     ADD W7, W0, W1
+000900  428381     ADD W5, W1, W7
+000902  200014     MOV #0x1, W4
+000904  DD2306     SL W4, W6, W6
+000906  EAC306     COM.B W6, W6
+000908  78C2E5     MOV.B [W5+W1], W5
+00090A  634B85     AND.B W6, W5, [W7]
+41:                } // plot()
+00090C  060000     RETURN
+42:                
+43:                // dessine une droite en utilisant l'algorithme de Bresenham
+44:                void line(int x1, int y1, int x2, int y2, int color){
+00090E  4787EA     ADD W15, #0xA, W15
+000910  BE9F88     MOV.D W8, [W15++]
+000912  BE9F8A     MOV.D W10, [W15++]
+000914  BE9F8C     MOV.D W12, [W15++]
+000916  781F8E     MOV W14, [W15++]
+000918  780400     MOV W0, W8
+00091A  780501     MOV W1, W10
+00091C  780582     MOV W2, W11
+00091E  9FB7F3     MOV W3, [W15-18]
+000920  780604     MOV W4, W12
+000936  448408     ADD W9, W8, W8
+000938  370004     BRA 0x942
+00094C  540209     SUB W8, W9, W4
+000962  44850A     ADD W9, W10, W10
+00096E  550209     SUB W10, W9, W4
+45:                    int deltax,deltay;
+46:                    plot(x1,y1,color);
+000922  78010C     MOV W12, W2
+000924  78008A     MOV W10, W1
+000926  780008     MOV W8, W0
+000928  07FFD0     RCALL plot
+47:                    if (y1==y2){// cas particulier ligne horizontale
+00092A  97B27F     MOV [W15-18], W4
+00092C  550F84     SUB W10, W4, [W15]
+00092E  3A0012     BRA NZ, 0x954
+48:                        deltax= x1<x2?1:-1;
+000930  540F8B     SUB W8, W11, [W15]
+000932  3D0003     BRA GE, 0x93A
+000934  200019     MOV #0x1, W9
+00093A  EB8480     SETM W9
+49:                        while (x1!=x2){
+00093C  540F8B     SUB W8, W11, [W15]
+00093E  3AFFFB     BRA NZ, 0x936
+000940  37004B     BRA 0x9D8
+00094E  558F84     SUB W11, W4, [W15]
+000950  3AFFF8     BRA NZ, 0x942
+000952  370042     BRA 0x9D8
+50:                            x1 += deltax;
+51:                            plot(x1,y1,color);
+000942  78010C     MOV W12, W2
+000944  78008A     MOV W10, W1
+000946  780008     MOV W8, W0
+000948  07FFC0     RCALL plot
+00094A  440409     ADD W8, W9, W8
+52:                        }
+53:                    }else if (x1==x2){ // cas particulier ligne verticale
+000954  540F8B     SUB W8, W11, [W15]
+000956  3A0010     BRA NZ, 0x978
+54:                        deltay= y1<y2?1:-1;
+000958  EB8480     SETM W9
+00095A  97B2FF     MOV [W15-18], W5
+00095C  550F85     SUB W10, W5, [W15]
+00095E  3D0001     BRA GE, 0x962
+000960  200019     MOV #0x1, W9
+55:                        while (y1!=y2){
+000970  97B2FF     MOV [W15-18], W5
+000972  528F84     SUB W5, W4, [W15]
+000974  3AFFF7     BRA NZ, 0x964
+000976  370030     BRA 0x9D8
+56:                            y1+=deltay;
+57:                            plot(x1,y1,color);
+000964  78010C     MOV W12, W2
+000966  78008A     MOV W10, W1
+000968  780008     MOV W8, W0
+00096A  07FFAF     RCALL plot
+00096C  450509     ADD W10, W9, W10
+58:                        }
+59:                    }else{
+60:                        int sx,sy,err,e2;
+61:                        deltax=abs(x2-x1);
+000978  558708     SUB W11, W8, W14
+00097A  A7F00E     BTSC W14, #15
+00097C  EA070E     NEG W14, W14
+62:                        deltay=abs(y2-y1);
+00097E  97B2FF     MOV [W15-18], W5
+000980  52820A     SUB W5, W10, W4
+000982  A7F004     BTSC W4, #15
+000984  EA0204     NEG W4, W4
+000986  9FBF84     MOV W4, [W15-16]
+63:                        sx = x1<x2?1:-1;
+000988  EB8200     SETM W4
+00098A  9FB7E4     MOV W4, [W15-20]
+00098C  540F8B     SUB W8, W11, [W15]
+00098E  3D0002     BRA GE, 0x994
+000990  200015     MOV #0x1, W5
+000992  9FB7E5     MOV W5, [W15-20]
+64:                        sy = y1<y2?1:-1;
+000994  EB8200     SETM W4
+000996  9FB7D4     MOV W4, [W15-22]
+000998  97B2FF     MOV [W15-18], W5
+00099A  550F85     SUB W10, W5, [W15]
+00099C  3D0002     BRA GE, 0x9A2
+00099E  200014     MOV #0x1, W4
+0009A0  9FB7D4     MOV W4, [W15-22]
+65:                        err=deltax-deltay;
+0009A2  97BA8F     MOV [W15-16], W5
+0009A4  570485     SUB W14, W5, W9
+66:                        while (!((x1==x2) && (y1==y2))){
+0009AA  78040B     MOV W11, W8
+0009CE  540F8B     SUB W8, W11, [W15]
+0009D0  3AFFED     BRA NZ, 0x9AC
+0009D2  97B2FF     MOV [W15-18], W5
+0009D4  550F85     SUB W10, W5, [W15]
+0009D6  3AFFE9     BRA NZ, 0x9AA
+67:                            e2=err<<1;
+0009AC  448209     ADD W9, W9, W4
+68:                            if (e2>-deltay){
+0009A6  EA0685     NEG W5, W13
+0009A8  370001     BRA 0x9AC
+0009AE  520F8D     SUB W4, W13, [W15]
+0009B0  340005     BRA LE, 0x9BC
+69:                               err -= deltay;
+0009B2  97BA0F     MOV [W15-16], W4
+0009B4  548484     SUB W9, W4, W9
+70:                               x1 += sx;
+0009B6  97B2EF     MOV [W15-20], W5
+0009B8  440405     ADD W8, W5, W8
+0009BA  370005     BRA 0x9C6
+71:                            }else if (e2<deltax){
+0009BC  570F84     SUB W14, W4, [W15]
+0009BE  340003     BRA LE, 0x9C6
+72:                                err +=deltax;
+0009C0  44848E     ADD W9, W14, W9
+73:                                y1 += sy;
+0009C2  97B25F     MOV [W15-22], W4
+0009C4  450504     ADD W10, W4, W10
+74:                            }
+75:                            plot(x1,y1,color);
+0009C6  78010C     MOV W12, W2
+0009C8  78008A     MOV W10, W1
+0009CA  780008     MOV W8, W0
+0009CC  07FF7E     RCALL plot
+76:                        }
+77:                    }
+78:                } // line()
+0009D8  78074F     MOV [--W15], W14
+0009DA  BE064F     MOV.D [--W15], W12
+0009DC  BE054F     MOV.D [--W15], W10
+0009DE  BE044F     MOV.D [--W15], W8
+0009E0  B100AF     SUB #0xA, W15
+0009E2  060000     RETURN
+79:                
+80:                void rectangle(int x1, int y1, int x2, int y2, int color){
+0009E4  BE9F88     MOV.D W8, [W15++]
+0009E6  BE9F8A     MOV.D W10, [W15++]
+0009E8  781F8C     MOV W12, [W15++]
+0009EA  780480     MOV W0, W9
+0009EC  780401     MOV W1, W8
+0009EE  780502     MOV W2, W10
+0009F0  780603     MOV W3, W12
+0009F2  780584     MOV W4, W11
+81:                    line(x1,y1,x1,y2,color);
+0009F4  780109     MOV W9, W2
+0009F6  780088     MOV W8, W1
+0009F8  780009     MOV W9, W0
+0009FA  07FF89     RCALL line
+82:                    line(x2,y1,x2,y2,color);
+0009FC  78020B     MOV W11, W4
+0009FE  78018C     MOV W12, W3
+000A00  78010A     MOV W10, W2
+000A02  780088     MOV W8, W1
+000A04  78000A     MOV W10, W0
+000A06  07FF83     RCALL line
+83:                    line(x1,y1,x2,y1,color);
+000A08  78020B     MOV W11, W4
+000A0A  780188     MOV W8, W3
+000A0C  78010A     MOV W10, W2
+000A0E  780088     MOV W8, W1
+000A10  780009     MOV W9, W0
+000A12  07FF7D     RCALL line
+84:                    line(x1,y2,x2,y2,color);
+000A14  78020B     MOV W11, W4
+000A16  78018C     MOV W12, W3
+000A18  78010A     MOV W10, W2
+000A1A  78008C     MOV W12, W1
+000A1C  780009     MOV W9, W0
+000A1E  07FF77     RCALL line
+85:                }//rectangle()
+000A20  78064F     MOV [--W15], W12
+000A22  BE054F     MOV.D [--W15], W10
+000A24  BE044F     MOV.D [--W15], W8
+000A26  060000     RETURN
+86:                
+87:                /*  algorthme mid-point
+88:                 * REF: http://www.hhhprogram.com/2013/05/draw-elipse-midpoint-elipse-algorithm.html
+89:                 */
+90:                void ellipse (int xc, int yc, long rx, long ry, int color){
+000A28  B0036F     ADD #0x36, W15
+000A2A  BE9F88     MOV.D W8, [W15++]
+000A2C  BE9F8A     MOV.D W10, [W15++]
+000A2E  BE9F8C     MOV.D W12, [W15++]
+000A30  781F8E     MOV W14, [W15++]
+000A32  9FAF90     MOV W0, [W15-46]
+000A34  9FAFE1     MOV W1, [W15-36]
+000A36  BE0504     MOV.D W4, W10
+000A38  780706     MOV W6, W14
+000AB4  9FA7F2     MOV W2, [W15-50]
+000AB6  9FAF83     MOV W3, [W15-48]
+000AC2  97AA9F     MOV [W15-46], W5
+000AC4  E90285     DEC W5, W5
+000AC6  9FA7C5     MOV W5, [W15-56]
+000AC8  97AB1F     MOV [W15-46], W6
+000ACA  E80306     INC W6, W6
+000ACC  9FA7B6     MOV W6, [W15-58]
+000ACE  9F9FFA     MOV W10, [W15-66]
+000AD0  9FA78B     MOV W11, [W15-64]
+000ADA  97B47F     MOV [W15-18], W8
+000ADC  97A0CF     MOV [W15-56], W1
+000ADE  408088     ADD W1, W8, W1
+000AE0  9FB791     MOV W1, [W15-30]
+000AEE  97A1BF     MOV [W15-58], W3
+000AF0  518408     SUB W3, W8, W8
+000B1A  97A07F     MOV [W15-50], W0
+000B1C  97A88F     MOV [W15-48], W1
+000B1E  40030C     ADD W0, W12, W6
+000B20  48838D     ADDC W1, W13, W7
+000B50  97A47F     MOV [W15-50], W8
+000B52  97AC8F     MOV [W15-48], W9
+000B54  44030C     ADD W8, W12, W6
+000B56  4C838D     ADDC W9, W13, W7
+000B74  97B37F     MOV [W15-18], W6
+000B76  97BB8F     MOV [W15-16], W7
+000B78  530061     SUB W6, #0x1, W0
+000B7A  5B80E0     SUBB W7, #0x0, W1
+000C24  97AA4F     MOV [W15-40], W4
+000C26  97AADF     MOV [W15-38], W5
+000C28  120260     SUBR W4, #0x0, W4
+000C2A  1A82E0     SUBBR W5, #0x0, W5
+000C2C  9FB794     MOV W4, [W15-30]
+000C2E  9FB7A5     MOV W5, [W15-28]
+000C30  97AADF     MOV [W15-38], W5
+000C32  97B47F     MOV [W15-18], W8
+000C34  B9AB08     MUL.SS W5, W8, W6
+000C36  97BC8F     MOV [W15-16], W9
+000C38  97A84F     MOV [W15-40], W0
+000C3A  B9CA00     MUL.SS W9, W0, W4
+000C3C  420206     ADD W4, W6, W4
+000C3E  97A9CF     MOV [W15-40], W3
+000C40  97B15F     MOV [W15-22], W2
+000C42  B81902     MUL.UU W3, W2, W2
+000C44  9FB7B2     MOV W2, [W15-26]
+000C46  9FB7C3     MOV W3, [W15-24]
+000C48  420183     ADD W4, W3, W3
+000C4A  9FB7C3     MOV W3, [W15-24]
+000C4C  97B23F     MOV [W15-26], W4
+000C4E  97B2CF     MOV [W15-24], W5
+000C50  9FB7D4     MOV W4, [W15-22]
+000C52  9FB7E5     MOV W5, [W15-20]
+000C5C  97ABEF     MOV [W15-36], W7
+000C5E  53858C     SUB W7, W12, W11
+000C6C  97A8EF     MOV [W15-36], W1
+000C6E  40848C     ADD W1, W12, W9
+000C94  560261     SUB W12, #0x1, W4
+000C96  5E82E0     SUBB W13, #0x0, W5
+000CB2  560261     SUB W12, #0x1, W4
+000CB4  5E82E0     SUBB W13, #0x0, W5
+91:                          long  x=0,y=ry;
+92:                          long  p=(ry*ry)-(rx*rx*ry)+((rx*rx)/4);
+000A3A  B99A02     MUL.SS W3, W2, W4
+000A3C  420204     ADD W4, W4, W4
+000A3E  B81002     MUL.UU W2, W2, W0
+000A40  9FAFA0     MOV W0, [W15-44]
+000A42  9FAFB1     MOV W1, [W15-42]
+000A44  420081     ADD W4, W1, W1
+000A46  9FAFB1     MOV W1, [W15-42]
+000A48  97A92F     MOV [W15-44], W2
+000A4A  97A9BF     MOV [W15-42], W3
+000A4C  550202     SUB W10, W2, W4
+000A4E  5D8283     SUBB W11, W3, W5
+000A50  B9AB0A     MUL.SS W5, W10, W6
+000A52  B9D804     MUL.SS W11, W4, W0
+000A54  400306     ADD W0, W6, W6
+000A56  B8220A     MUL.UU W4, W10, W4
+000A58  430285     ADD W6, W5, W5
+000A5A  BE0302     MOV.D W2, W6
+000A5C  510FE0     SUB W2, #0x0, [W15]
+000A5E  598FE0     SUBB W3, #0x0, [W15]
+000A60  3D0002     BRA GE, 0xA66
+000A62  410363     ADD W2, #0x3, W6
+000A64  4983E0     ADDC W3, #0x0, W7
+000A66  DD39CE     SL W7, #14, W3
+000A68  DE3342     LSR W6, #2, W6
+000A6A  718306     IOR W3, W6, W6
+000A6C  DEBBC2     ASR W7, #2, W7
+000A6E  430404     ADD W6, W4, W8
+000A70  4B8485     ADDC W7, W5, W9
+000A72  9FB7B8     MOV W8, [W15-26]
+000A74  9FB7C9     MOV W9, [W15-24]
+93:                          while((2*x*ry*ry)<(2*y*rx*rx)){
+000A76  B9DA0A     MUL.SS W11, W10, W4
+000A78  420204     ADD W4, W4, W4
+000A7A  B8500A     MUL.UU W10, W10, W0
+000A7C  9FA7D0     MOV W0, [W15-54]
+000A7E  9FA7E1     MOV W1, [W15-52]
+000A80  420081     ADD W4, W1, W1
+000A82  9FA7E1     MOV W1, [W15-52]
+000A84  97A15F     MOV [W15-54], W2
+000A86  97A1EF     MOV [W15-52], W3
+000A88  410102     ADD W2, W2, W2
+000A8A  498183     ADDC W3, W3, W3
+000A8C  9FA792     MOV W2, [W15-62]
+000A8E  9FA7A3     MOV W3, [W15-60]
+000A90  97AA2F     MOV [W15-44], W4
+000A92  97AABF     MOV [W15-42], W5
+000A94  420204     ADD W4, W4, W4
+000A96  4A8285     ADDC W5, W5, W5
+000A98  9FB7D4     MOV W4, [W15-22]
+000A9A  9FB7E5     MOV W5, [W15-20]
+000AB8  200014     MOV #0x1, W4
+000ABA  200005     MOV #0x0, W5
+000ABC  9FB7F4     MOV W4, [W15-18]
+000ABE  9FBF85     MOV W5, [W15-16]
+000AC0  B86660     MUL.UU W12, #0, W12
+000AD2  370050     BRA 0xB74
+000B7C  97B3DF     MOV [W15-22], W7
+000B7E  B9DA07     MUL.SS W11, W7, W4
+000B80  97B46F     MOV [W15-20], W8
+000B82  B9C30A     MUL.SS W8, W10, W6
+000B84  430304     ADD W6, W4, W6
+000B86  97B4DF     MOV [W15-22], W9
+000B88  B85209     MUL.UU W10, W9, W4
+000B8A  430285     ADD W6, W5, W5
+000B8C  520F8C     SUB W4, W12, [W15]
+000B8E  5A8F8D     SUBB W5, W13, [W15]
+000B90  3CFFA1     BRA GT, 0xAD4
+000B92  BE010A     MOV.D W10, W2
+000B94  9FB79A     MOV W10, [W15-30]
+000B96  9FB7AB     MOV W11, [W15-28]
+000B98  9FAFF0     MOV W0, [W15-34]
+000B9A  9FB781     MOV W1, [W15-32]
+000B9C  979D7F     MOV [W15-66], W10
+000B9E  97A58F     MOV [W15-64], W11
+000BA0  BE0600     MOV.D W0, W12
+94:                               plot(xc+x,yc-y,color);
+000AD4  97A86F     MOV [W15-36], W0
+000AD6  50000A     SUB W0, W10, W0
+000AD8  9FAFF0     MOV W0, [W15-34]
+000AE2  78010E     MOV W14, W2
+000AE4  780080     MOV W0, W1
+000AE6  97B01F     MOV [W15-30], W0
+000AE8  07FEF0     RCALL plot
+95:                               plot(xc-x,yc+y,color);
+000AEA  97A96F     MOV [W15-36], W2
+000AEC  450482     ADD W10, W2, W9
+000AF2  78010E     MOV W14, W2
+000AF4  BE0008     MOV.D W8, W0
+000AF6  07FEE9     RCALL plot
+96:                               plot(xc+x,yc+y,color);
+000AF8  78010E     MOV W14, W2
+000AFA  780089     MOV W9, W1
+000AFC  97B01F     MOV [W15-30], W0
+000AFE  07FEE5     RCALL plot
+97:                               plot(xc-x,yc-y,color);
+000B00  78010E     MOV W14, W2
+000B02  97A8FF     MOV [W15-34], W1
+000B04  780008     MOV W8, W0
+000B06  07FEE1     RCALL plot
+98:                               if(p<0){
+000B08  97B23F     MOV [W15-26], W4
+000B0A  97B2CF     MOV [W15-24], W5
+000B0C  520FE0     SUB W4, #0x0, [W15]
+000B0E  5A8FE0     SUBB W5, #0x0, [W15]
+000B10  3D000D     BRA GE, 0xB2C
+99:                                   x=x+1;
+100:                                  p=p+(2*ry*ry*x)+(ry*ry);
+000B12  97A45F     MOV [W15-54], W8
+000B14  97A4EF     MOV [W15-52], W9
+000B16  440204     ADD W8, W4, W4
+000B18  4C8285     ADDC W9, W5, W5
+000B22  420106     ADD W4, W6, W2
+000B24  4A8187     ADDC W5, W7, W3
+000B26  9FB7B2     MOV W2, [W15-26]
+000B28  9FB7C3     MOV W3, [W15-24]
+000B2A  37001A     BRA 0xB60
+101:                              }else {
+102:                                  x=x+1;
+103:                                  y=y-1;
+000B2C  550561     SUB W10, #0x1, W10
+000B2E  5D85E0     SUBB W11, #0x0, W11
+104:                                  p=p+(2*ry*ry*x+ry*ry)-(2*rx*rx*y);
+000A9C  2FFFE4     MOV #0xFFFE, W4
+000A9E  97AB3F     MOV [W15-42], W6
+000AA0  B9B204     MUL.SS W6, W4, W4
+000AA2  97ABAF     MOV [W15-44], W7
+000AA4  520207     SUB W4, W7, W4
+000AA6  2FFFE5     MOV #0xFFFE, W5
+000AA8  97ACAF     MOV [W15-44], W9
+000AAA  B84C05     MUL.UU W9, W5, W8
+000AAC  9FAFC8     MOV W8, [W15-40]
+000AAE  9FAFD9     MOV W9, [W15-38]
+000AB0  420489     ADD W4, W9, W9
+000AB2  9FAFD9     MOV W9, [W15-38]
+000B30  97B23F     MOV [W15-26], W4
+000B32  97B2CF     MOV [W15-24], W5
+000B34  97A45F     MOV [W15-54], W8
+000B36  97A4EF     MOV [W15-52], W9
+000B38  440304     ADD W8, W4, W6
+000B3A  4C8385     ADDC W9, W5, W7
+000B3C  97ACCF     MOV [W15-40], W9
+000B3E  B9DA09     MUL.SS W11, W9, W4
+000B40  97A95F     MOV [W15-38], W2
+000B42  B9900A     MUL.SS W2, W10, W0
+000B44  400004     ADD W0, W4, W0
+000B46  97A9CF     MOV [W15-40], W3
+000B48  B85203     MUL.UU W10, W3, W4
+000B4A  400285     ADD W0, W5, W5
+000B4C  420206     ADD W4, W6, W4
+000B4E  4A8287     ADDC W5, W7, W5
+000B58  420006     ADD W4, W6, W0
+000B5A  4A8087     ADDC W5, W7, W1
+000B5C  9FB7B0     MOV W0, [W15-26]
+000B5E  9FB7C1     MOV W1, [W15-24]
+000B60  97A17F     MOV [W15-50], W2
+000B62  97A98F     MOV [W15-48], W3
+000B64  41060C     ADD W2, W12, W12
+000B66  49868D     ADDC W3, W13, W13
+000B68  97B27F     MOV [W15-18], W4
+000B6A  97BA8F     MOV [W15-16], W5
+000B6C  420261     ADD W4, #0x1, W4
+000B6E  4A82E0     ADDC W5, #0x0, W5
+000B70  9FB7F4     MOV W4, [W15-18]
+000B72  9FBF85     MOV W5, [W15-16]
+105:                              }
+106:                         }
+107:                         p=((float)x+0.5)*((float)x+0.5)*ry*ry+(y-1)*(y-1)*rx*rx-rx*rx*ry*ry;
+000BA8  BE000A     MOV.D W10, W0
+000BAA  07FC02     RCALL 0x3B0
+000BAC  BE0400     MOV.D W0, W8
+000BAE  97B31F     MOV [W15-30], W6
+000BB0  97B3AF     MOV [W15-28], W7
+000BB2  530361     SUB W6, #0x1, W6
+000BB4  5B83E0     SUBB W7, #0x0, W7
+000BB6  9FB7F6     MOV W6, [W15-18]
+000BB8  9FBF87     MOV W7, [W15-16]
+000BBA  BE000C     MOV.D W12, W0
+000BBC  07FBF9     RCALL 0x3B0
+000BBE  200002     MOV #0x0, W2
+000BC0  23F003     MOV #0x3F00, W3
+000BC2  07FB78     RCALL 0x2B4
+000BC4  BE0100     MOV.D W0, W2
+000BC6  07FC4A     RCALL 0x45C
+000BC8  BE0108     MOV.D W8, W2
+000BCA  07FC48     RCALL 0x45C
+000BCC  BE0100     MOV.D W0, W2
+000BCE  BE0008     MOV.D W8, W0
+000BD0  07FC45     RCALL 0x45C
+000BD2  BE0400     MOV.D W0, W8
+000BD4  97BB8F     MOV [W15-16], W7
+000BD6  97B07F     MOV [W15-18], W0
+000BD8  B9BA00     MUL.SS W7, W0, W4
+000BDA  420204     ADD W4, W4, W4
+000BDC  97B0FF     MOV [W15-18], W1
+000BDE  9FB7D1     MOV W1, [W15-22]
+000BE0  780101     MOV W1, W2
+000BE2  B81002     MUL.UU W2, W2, W0
+000BE4  420081     ADD W4, W1, W1
+000BE6  97A9AF     MOV [W15-44], W3
+000BE8  B98B03     MUL.SS W1, W3, W6
+000BEA  97A93F     MOV [W15-42], W2
+000BEC  B99200     MUL.SS W2, W0, W4
+000BEE  420206     ADD W4, W6, W4
+000BF0  97AD2F     MOV [W15-44], W10
+000BF2  B8000A     MUL.UU W0, W10, W0
+000BF4  420081     ADD W4, W1, W1
+000BF6  07FBDC     RCALL 0x3B0
+000BF8  BE0100     MOV.D W0, W2
+000BFA  BE0008     MOV.D W8, W0
+000BFC  07FB5B     RCALL 0x2B4
+000BFE  BE0400     MOV.D W0, W8
+000C00  97A9BF     MOV [W15-42], W3
+000C02  97A25F     MOV [W15-54], W4
+000C04  B99B04     MUL.SS W3, W4, W6
+000C06  97A06F     MOV [W15-52], W0
+000C08  97A8AF     MOV [W15-44], W1
+000C0A  B98201     MUL.SS W0, W1, W4
+000C0C  420206     ADD W4, W6, W4
+000C0E  97A15F     MOV [W15-54], W2
+000C10  B85002     MUL.UU W10, W2, W0
+000C12  420081     ADD W4, W1, W1
+000C14  07FBCD     RCALL 0x3B0
+000C16  BE0100     MOV.D W0, W2
+000C18  BE0008     MOV.D W8, W0
+000C1A  07FB4B     RCALL 0x2B2
+000C1C  07FBA8     RCALL 0x36E
+000C1E  BE0500     MOV.D W0, W10
+000C20  97B61F     MOV [W15-30], W12
+000C22  97B6AF     MOV [W15-28], W13
+108:                         while(y>=0){
+000BA2  510FE0     SUB W2, #0x0, [W15]
+000BA4  598FE0     SUBB W3, #0x0, [W15]
+000BA6  3500B8     BRA LT, 0xD18
+000D12  520FE0     SUB W4, #0x0, [W15]
+000D14  5A8FE0     SUBB W5, #0x0, [W15]
+000D16  3DFFA2     BRA GE, 0xC5C
+109:                              plot(xc+x,yc-y,color);
+000C60  97AC7F     MOV [W15-34], W8
+000C62  97A81F     MOV [W15-46], W0
+000C64  440500     ADD W8, W0, W10
+000C66  78010E     MOV W14, W2
+000C68  BE000A     MOV.D W10, W0
+000C6A  07FE2F     RCALL plot
+110:                              plot(xc-x,yc+y,color);
+000C70  97A91F     MOV [W15-46], W2
+000C72  510408     SUB W2, W8, W8
+000C74  78010E     MOV W14, W2
+000C76  BE0008     MOV.D W8, W0
+000C78  07FE28     RCALL plot
+111:                              plot(xc+x,yc+y,color);
+000C7A  78010E     MOV W14, W2
+000C7C  780089     MOV W9, W1
+000C7E  78000A     MOV W10, W0
+000C80  07FE24     RCALL plot
+112:                              plot(xc-x,yc-y,color);
+000C82  78010E     MOV W14, W2
+000C84  78008B     MOV W11, W1
+000C86  780008     MOV W8, W0
+000C88  07FE20     RCALL plot
+113:                              if(p>0){
+000C8A  97B27F     MOV [W15-18], W4
+000C8C  97BA8F     MOV [W15-16], W5
+000C8E  520FE0     SUB W4, #0x0, [W15]
+000C90  5A8FE0     SUBB W5, #0x0, [W15]
+000C92  34000F     BRA LE, 0xCB2
+114:                                  y=y-1;
+115:                                  p=p-(2*rx*rx*y)+(rx*rx);
+000C98  97B47F     MOV [W15-18], W8
+000C9A  97BC8F     MOV [W15-16], W9
+000C9C  97A82F     MOV [W15-44], W0
+000C9E  97A8BF     MOV [W15-42], W1
+000CA0  400308     ADD W0, W8, W6
+000CA2  488389     ADDC W1, W9, W7
+000CA4  97B15F     MOV [W15-22], W2
+000CA6  97B1EF     MOV [W15-20], W3
+000CA8  430102     ADD W6, W2, W2
+000CAA  4B8183     ADDC W7, W3, W3
+000CAC  9FB7F2     MOV W2, [W15-18]
+000CAE  9FBF83     MOV W3, [W15-16]
+000CB0  370020     BRA 0xCF2
+116:                              }else{
+117:                                  y=y-1;
+118:                                  x=x+1;
+000CB6  97AB7F     MOV [W15-34], W6
+000CB8  97B38F     MOV [W15-32], W7
+000CBA  430361     ADD W6, #0x1, W6
+000CBC  4B83E0     ADDC W7, #0x0, W7
+000CBE  9FAFF6     MOV W6, [W15-34]
+000CC0  9FB787     MOV W7, [W15-32]
+119:                                  p=p+(2*ry*ry*x)-(2*rx*rx*y)-(rx*rx);
+000C54  97A29F     MOV [W15-62], W5
+000C56  9FAFC5     MOV W5, [W15-40]
+000C58  9FB7FA     MOV W10, [W15-18]
+000C5A  9FBF8B     MOV W11, [W15-16]
+000CC2  97B47F     MOV [W15-18], W8
+000CC4  97BC8F     MOV [W15-16], W9
+000CC6  97A82F     MOV [W15-44], W0
+000CC8  97A8BF     MOV [W15-42], W1
+000CCA  540100     SUB W8, W0, W2
+000CCC  5C8181     SUBB W9, W1, W3
+000CCE  97A3AF     MOV [W15-60], W7
+000CD0  B9B806     MUL.SS W7, W6, W0
+000CD2  97B40F     MOV [W15-32], W8
+000CD4  97A49F     MOV [W15-62], W9
+000CD6  B9C309     MUL.SS W8, W9, W6
+000CD8  430000     ADD W6, W0, W0
+000CDA  97A8CF     MOV [W15-40], W1
+000CDC  97AC7F     MOV [W15-34], W8
+000CDE  B80B08     MUL.UU W1, W8, W6
+000CE0  400387     ADD W0, W7, W7
+000CE2  430302     ADD W6, W2, W6
+000CE4  4B8383     ADDC W7, W3, W7
+000CE6  97B03F     MOV [W15-26], W0
+000CE8  97B0CF     MOV [W15-24], W1
+000CEA  430000     ADD W6, W0, W0
+000CEC  4B8081     ADDC W7, W1, W1
+000CEE  9FB7F0     MOV W0, [W15-18]
+000CF0  9FBF81     MOV W1, [W15-16]
+000CF2  560661     SUB W12, #0x1, W12
+000CF4  5E86E0     SUBB W13, #0x0, W13
+000CF6  97B15F     MOV [W15-22], W2
+000CF8  97B1EF     MOV [W15-20], W3
+000CFA  97B31F     MOV [W15-30], W6
+000CFC  97B3AF     MOV [W15-28], W7
+000CFE  430102     ADD W6, W2, W2
+000D00  4B8183     ADDC W7, W3, W3
+000D02  9FB7D2     MOV W2, [W15-22]
+000D04  9FB7E3     MOV W3, [W15-20]
+000D06  97B43F     MOV [W15-26], W8
+000D08  97B4CF     MOV [W15-24], W9
+000D0A  430408     ADD W6, W8, W8
+000D0C  4B8489     ADDC W7, W9, W9
+000D0E  9FB7B8     MOV W8, [W15-26]
+000D10  9FB7C9     MOV W9, [W15-24]
+120:                              }
+121:                         }
+122:               }//ellipse()
+000D18  78074F     MOV [--W15], W14
+000D1A  BE064F     MOV.D [--W15], W12
+000D1C  BE054F     MOV.D [--W15], W10
+000D1E  BE044F     MOV.D [--W15], W8
+000D20  B1036F     SUB #0x36, W15
+000D22  060000     RETURN
+123:               
+124:               /*
+125:                * points[]={x1,y1,x2,y2,x3,y3,...}
+126:                * vertices est le nombre de points
+127:                */
+128:               void polygon(int points[], int vertices, int color){
+000D24  BE9F88     MOV.D W8, [W15++]
+000D26  BE9F8A     MOV.D W10, [W15++]
+000D28  781F8C     MOV W12, [W15++]
+000D2A  780600     MOV W0, W12
+000D2C  780582     MOV W2, W11
+129:                   int i;
+130:                   for(i=0;i<(2*vertices-2);i+=2){
+000D2E  E90501     DEC W1, W10
+000D30  45050A     ADD W10, W10, W10
+000D32  EB0480     CLR W9
+000D34  550F89     SUB W10, W9, [W15]
+000D36  34000B     BRA LE, 0xD4E
+000D38  78040C     MOV W12, W8
+000D46  E88489     INC2 W9, W9
+000D48  440464     ADD W8, #0x4, W8
+000D4A  550F89     SUB W10, W9, [W15]
+000D4C  3CFFF6     BRA GT, 0xD3A
+131:                       line(points[i],points[i+1],points[i+2],points[i+3],color);
+000D3A  900128     MOV [W8+4], W2
+000D3C  900098     MOV [W8+2], W1
+000D3E  78020B     MOV W11, W4
+000D40  9001B8     MOV [W8+6], W3
+000D42  780018     MOV [W8], W0
+000D44  07FDE4     RCALL line
+132:                   }
+133:                   line(points[0],points[1],points[i],points[i+1],color);
+000D4E  E80289     INC W9, W5
+000D50  428285     ADD W5, W5, W5
+000D52  448489     ADD W9, W9, W9
+000D54  90009C     MOV [W12+2], W1
+000D56  78020B     MOV W11, W4
+000D58  7A81EC     MOV [W12+W5], W3
+000D5A  7C816C     MOV [W12+W9], W2
+000D5C  78001C     MOV [W12], W0
+000D5E  07FDD7     RCALL line
+134:               }//polygon()
+000D60  78064F     MOV [--W15], W12
+000D62  BE054F     MOV.D [--W15], W10
+000D64  BE044F     MOV.D [--W15], W8
+000D66  060000     RETURN
+135:               
+136:               
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/TVout.c  ----------------------------------------
 1:                 /*
 2:                 * Copyright 2014, Jacques Deschênes
@@ -44,7 +1580,7 @@ Generated From:
 38:                #define NTSC_HPULSE (4.7*FCY/MHZ)
 39:                #define NTSC_FIRST_VISIBLE  30
 40:                #define NTSC_LAST_VISIBLE (NTSC_FIRST_VISIBLE+VPIXELS)
-41:                #define NTSC_VIDEO_DELAY (2*NTSC_HPULSE-10)
+41:                #define NTSC_VIDEO_DELAY (2*NTSC_HPULSE+40)
 42:                
 43:                // PAL composite signal parameters
 44:                #define PAL_LINES_PER_FRAME (625/2)  // progressive scan
@@ -54,7 +1590,7 @@ Generated From:
 48:                #define PAL_HPULSE (4.7*FCY/MHZ)
 49:                #define PAL_FIRST_VISIBLE  55
 50:                #define PAL_LAST_VISIBLE (PAL_FIRST_VISIBLE+VPIXELS)
-51:                #define PAL_VIDEO_DELAY (2*PAL_HPULSE-10)
+51:                #define PAL_VIDEO_DELAY (2*PAL_HPULSE+45)
 52:                
 53:                #define NTSC_MODE 0
 54:                #define PAL_MODE 1
@@ -64,567 +1600,363 @@ Generated From:
 58:                #define F_CLREOL 4   // flag clear to end of line
 59:                #define F_RETRACE 8 // flag screen in retrace phase
 60:                
-61:                #define QUEUE_SIZE 32  // put_char queue
-62:                
-63:                static unsigned int frame_line_cntr=0; // count line in video frame
-64:                volatile static unsigned long frame_cntr=0; // number of frame since reset
-65:                volatile static unsigned int flags;
+61:                
+62:                static unsigned int frame_line_cntr=0; // count line in video frame
+63:                volatile static unsigned long frame_cntr=0; // number of frame since reset
+64:                volatile static unsigned int flags;
+65:                
 66:                
-67:                typedef union coord_type{
-68:                    unsigned int yx;
-69:                    struct{
-70:                        unsigned char y;
-71:                        unsigned char x;
-72:                    };
-73:                }coord_t;
-74:                
-75:                volatile static coord_t cursor_pos;
-76:                
-77:                volatile static char pchar_queue[QUEUE_SIZE];
-78:                
-79:                char video_buffer[LINES][COLUMNS];
-80:                volatile static unsigned  head=0, tail=0;
-81:                int vsync, hsync, video_mode;
-82:                
-83:                void ntsc_init(){
-84:                    PR2 = NTSC_LINE_PERIOD;
-0005FE  203F85     MOV #0x3F8, W5
-000600  880865     MOV W5, PR2
-85:                    OC1R= NTSC_HPULSE;
-000602  2004B4     MOV #0x4B, W4
-000604  880C14     MOV W4, OC1R
-86:                    OC1RS=NTSC_LINE_PERIOD;
-000606  880C05     MOV W5, OC1RS
-87:                    OC3R=NTSC_VIDEO_DELAY;
-000608  2008C5     MOV #0x8C, W5
-00060A  880C75     MOV W5, OC3R
-88:                    OC3RS=NTSC_LINE_PERIOD-NTSC_FRONT_PORCH;
-00060C  203E05     MOV #0x3E0, W5
-00060E  880C65     MOV W5, OC3RS
-89:                    hsync=NTSC_HPULSE;
-000610  885534     MOV W4, hsync
-90:                    vsync=NTSC_LINE_PERIOD-NTSC_HPULSE;
-000612  203AC4     MOV #0x3AC, W4
-000614  885524     MOV W4, vsync
-91:                    video_mode=NTSC_MODE;
-000616  EF2AA8     CLR video_mode
-92:                }//f()
-000618  060000     RETURN
-93:                
-94:                void pal_init(){
-95:                    PR2 = PAL_LINE_PERIOD;
-00061A  204005     MOV #0x400, W5
-00061C  880865     MOV W5, PR2
-96:                    OC1R= PAL_HPULSE;
-00061E  2004B4     MOV #0x4B, W4
-000620  880C14     MOV W4, OC1R
-97:                    OC1RS=PAL_LINE_PERIOD;
-000622  880C05     MOV W5, OC1RS
-98:                    OC3R=PAL_VIDEO_DELAY;
-000624  2008C5     MOV #0x8C, W5
-000626  880C75     MOV W5, OC3R
-99:                    OC3RS=PAL_LINE_PERIOD-PAL_FRONT_PORCH;
-000628  203E65     MOV #0x3E6, W5
-00062A  880C65     MOV W5, OC3RS
-100:                   hsync=PAL_HPULSE;
-00062C  885534     MOV W4, hsync
-101:                   vsync=PAL_LINE_PERIOD-PAL_HPULSE;
-00062E  203B44     MOV #0x3B4, W4
-000630  885524     MOV W4, vsync
-102:                   video_mode=PAL_MODE;
-000632  200014     MOV #0x1, W4
-000634  885544     MOV W4, video_mode
-103:               }//f()
-000636  060000     RETURN
-104:               
-105:               void  video_init(){ // initialisation sorties NTSC
-106:                   T2CON=0; // désactivation TIMER2
-000638  EF2110     CLR T2CON
-107:                   if (P_VIDEO_MODE){
-00063A  801655     MOV PORTB, W5
-00063C  210004     MOV #0x1000, W4
-00063E  628204     AND W5, W4, W4
-000640  320002     BRA Z, 0x646
-108:                       ntsc_init();
-000642  07FFDD     RCALL ntsc_init
-000644  370001     BRA 0x648
-109:                   }else{
-110:                       pal_init();
-000646  07FFE9     RCALL pal_init
-111:                   }
-112:                   // OC1 video sync
-113:                   OC1CON=5; // mode 5, timer 2
-000648  200054     MOV #0x5, W4
-00064A  880C24     MOV W4, OC1CON
-114:                   //OC3 video delay timer black level fixer.
-115:                   IFS0bits.OC1IF=0;
-00064C  A94084     BCLR IFS0, #2
-116:                   IPC0bits.OC1IP=7;
-00064E  207000     MOV #0x700, W0
-000650  B720A4     IOR IPC0
-117:                   IPC4bits.CNIP=7;
-000652  270000     MOV #0x7000, W0
-000654  B720AC     IOR IPC4
-118:                   CNEN1bits.CN15IE=1;
-000656  A8E061     BSET 0x61, #7
-119:                   // timer 2 interrupt enabling
-120:                   IFS0bits.T2IF=0;
-000658  A9E084     BCLR IFS0, #7
-121:                   IPC1bits.T2IP=7; // plus haute priorité
-00065A  B720A6     IOR IPC1
-122:                   IEC0bits.T2IE=1;
-00065C  A8E094     BSET IEC0, #7
-123:                   // SPI1 configuration (pixel output)
-124:                   SPI1CON1=0;
-00065E  EB0280     CLR W5
-000660  881215     MOV W5, SPI1CON1
-125:                   SPI1CON1bits.DISSCK=1;
-000662  A88243     BSET 0x243, #4
-126:                   SPI1CON1bits.MSTEN=1;
-000664  A8A242     BSET SPI1CON1, #5
-127:                   SPI1CON1bits.SPRE=7;
-000666  2001C0     MOV #0x1C, W0
-000668  B72242     IOR SPI1CON1
-128:                   SPI1CON1bits.PPRE=2;
-00066A  801214     MOV SPI1CON1, W4
-00066C  A10004     BCLR W4, #0
-00066E  A01004     BSET W4, #1
-000670  881214     MOV W4, SPI1CON1
-129:                   SPI1CON2=1;
-000672  200014     MOV #0x1, W4
-000674  881224     MOV W4, SPI1CON2
-130:                   SPI1STATbits.SPIEN=1;
-000676  A8E241     BSET 0x241, #7
-131:                   T2CONbits.TON=1;
-000678  A8E111     BSET 0x111, #7
-132:                   cursor_pos.y=0;
-00067A  FD0280     EXCH W0, W5
-00067C  B7EAB2     MOV.B WREG, cursor_pos
-00067E  B7EAB3     MOV.B WREG, 0xAB3
-000680  FD0280     EXCH W0, W5
-133:                   cursor_pos.x=0;
-134:               }//horz_sync_init()
-000682  060000     RETURN
-135:               
-136:               void  wait_n_frame(unsigned n){
-137:               unsigned long f0;
-138:                   f0=frame_cntr+n;
-000684  805574     MOV frame_cntr, W4
-000686  805585     MOV 0xAB0, W5
-000688  420000     ADD W4, W0, W0
-00068A  4A80E0     ADDC W5, #0x0, W1
-139:                   while (frame_cntr<f0);
-00068C  805574     MOV frame_cntr, W4
-00068E  805585     MOV 0xAB0, W5
-000690  500F84     SUB W0, W4, [W15]
-000692  588F85     SUBB W1, W5, [W15]
-000694  3EFFFB     BRA GTU, 0x68C
-140:               }//f()
-000696  060000     RETURN
-141:               
-142:               void clear_screen(){ // clear screen
-143:                   flags |= F_CLEAR;
-000698  A82AAC     BSET flags, #1
-144:                   while (flags & F_CLEAR);
-00069A  AB2AAC     BTST flags, #1
-00069C  3AFFFE     BRA NZ, 0x69A
-145:               }//f()
-00069E  060000     RETURN
-146:               
-147:               void clear_eol(){// clear line from cursor to end of line
-148:                   flags |= F_CLREOL;
-0006A0  A84AAC     BSET flags, #2
-149:               }//f()
-0006A2  060000     RETURN
-150:               
-151:               void move_cursor(unsigned line, unsigned column){
-152:                   cursor_pos.y=line;
-0006A4  B7EAB2     MOV.B WREG, cursor_pos
-153:                   cursor_pos.x=column;
-0006A6  780001     MOV W1, W0
-0006A8  B7EAB3     MOV.B WREG, 0xAB3
-154:               }//f()
-0006AA  060000     RETURN
-155:               
-156:               unsigned get_cursor(){
-157:                   return cursor_pos.yx;
-0006AC  805590     MOV cursor_pos, W0
-158:               }//f()
-0006AE  060000     RETURN
-159:               
-160:               void put_char(char c){// put character at current cursor position & move cursor forward
-161:                   pchar_queue[tail++]=c;
-0006B0  8056B4     MOV tail, W4
-0006B2  20AB65     MOV #0xAB6, W5
-0006B4  7A7280     MOV.B W0, [W5+W4]
-0006B6  E80204     INC W4, W4
-0006B8  8856B4     MOV W4, tail
-162:                   tail %= QUEUE_SIZE;
-0006BA  2001F0     MOV #0x1F, W0
-0006BC  B62AD6     AND tail
-163:                   flags |= F_PCHAR;
-0006BE  A80AAC     BSET flags, #0
-164:               }//f()
-0006C0  060000     RETURN
-165:               
-166:               void print(const char *str){
-0006C2  781F88     MOV W8, [W15++]
-0006C4  780400     MOV W0, W8
-167:                   while (*str){
-0006C6  784018     MOV.B [W8], W0
-0006C8  504FE0     SUB.B W0, #0x0, [W15]
-0006CA  320004     BRA Z, 0x6D4
-0006CE  784058     MOV.B [++W8], W0
-0006D0  504FE0     SUB.B W0, #0x0, [W15]
-0006D2  3AFFFC     BRA NZ, 0x6CC
-168:                       put_char(*str++);
-0006CC  07FFF1     RCALL put_char
-169:                   }
-170:               }//f()
-0006D4  78044F     MOV [--W15], W8
-0006D6  060000     RETURN
-171:               
-172:               void wait_while_printing(){
-173:                   while (flags & F_PCHAR);
-0006D8  AB0AAC     BTST flags, #0
-0006DA  3AFFFE     BRA NZ, wait_while_printing
-174:               }//f()
-0006DC  060000     RETURN
-175:               
-176:               void scroll_up(){ //scroll screen 1 line up
-177:                   memmove((char*)video_buffer,(char*)video_buffer[1],sizeof(char)*COLUMNS*(LINES-1));
-0006DE  2028A2     MOV #0x28A, W2
-0006E0  208191     MOV #0x819, W1
-0006E2  208000     MOV #0x800, W0
-0006E4  07FDD9     RCALL 0x298
-178:                   memset((char*)video_buffer[LINES-1],0,sizeof(char)*COLUMNS);
-0006E6  20A8A4     MOV #0xA8A, W4
-0006E8  090018     REPEAT #0x18
-0006EA  EB5A00     CLR.B [W4++]
-179:               }//f()
-0006EC  060000     RETURN
+67:                char video_buffer[VPIXELS][BYTES_PER_LINE];
+68:                int vsync, hsync, video_mode;
+69:                
+70:                void ntsc_init(){
+71:                    PR2 = NTSC_LINE_PERIOD;
+00110A  203F85     MOV #0x3F8, W5
+00110C  880865     MOV W5, PR2
+72:                    OC1R= NTSC_HPULSE;
+00110E  2004B4     MOV #0x4B, W4
+001110  880C14     MOV W4, OC1R
+73:                    OC1RS=NTSC_LINE_PERIOD;
+001112  880C05     MOV W5, OC1RS
+74:                    OC4R=NTSC_VIDEO_DELAY;
+001114  200BE5     MOV #0xBE, W5
+001116  880CA5     MOV W5, OC4R
+75:                    OC4RS=NTSC_LINE_PERIOD-NTSC_FRONT_PORCH;
+001118  203E05     MOV #0x3E0, W5
+00111A  880C95     MOV W5, OC4RS
+76:                    hsync=NTSC_HPULSE;
+00111C  88F654     MOV W4, hsync
+77:                    vsync=NTSC_LINE_PERIOD-NTSC_HPULSE;
+00111E  203AC4     MOV #0x3AC, W4
+001120  88F644     MOV W4, vsync
+78:                    video_mode=NTSC_MODE;
+001122  EF3ECC     CLR video_mode
+79:                }//f()
+001124  060000     RETURN
+80:                
+81:                void pal_init(){
+82:                    PR2 = PAL_LINE_PERIOD;
+001126  204005     MOV #0x400, W5
+001128  880865     MOV W5, PR2
+83:                    OC1R= PAL_HPULSE;
+00112A  2004B4     MOV #0x4B, W4
+00112C  880C14     MOV W4, OC1R
+84:                    OC1RS=PAL_LINE_PERIOD;
+00112E  880C05     MOV W5, OC1RS
+85:                    OC4R=PAL_VIDEO_DELAY;
+001130  200C35     MOV #0xC3, W5
+001132  880CA5     MOV W5, OC4R
+86:                    OC4RS=PAL_LINE_PERIOD-PAL_FRONT_PORCH;
+001134  203E65     MOV #0x3E6, W5
+001136  880C95     MOV W5, OC4RS
+87:                    hsync=PAL_HPULSE;
+001138  88F654     MOV W4, hsync
+88:                    vsync=PAL_LINE_PERIOD-PAL_HPULSE;
+00113A  203B44     MOV #0x3B4, W4
+00113C  88F644     MOV W4, vsync
+89:                    video_mode=PAL_MODE;
+00113E  200014     MOV #0x1, W4
+001140  88F664     MOV W4, video_mode
+90:                }//f()
+001142  060000     RETURN
+91:                
+92:                void  video_init(){ // initialisation sorties NTSC
+93:                    T2CON=0; // désactivation TIMER2
+001144  EF2110     CLR T2CON
+94:                    if (P_VIDEO_MODE){
+001146  801655     MOV PORTB, W5
+001148  210004     MOV #0x1000, W4
+00114A  628204     AND W5, W4, W4
+00114C  320002     BRA Z, 0x1152
+95:                        ntsc_init();
+00114E  07FFDD     RCALL ntsc_init
+001150  370001     BRA 0x1154
+96:                    }else{
+97:                        pal_init();
+001152  07FFE9     RCALL pal_init
+98:                    }
+99:                    // OC1 video sync
+100:                   OC1CON=5; // mode 5, timer 2
+001154  200054     MOV #0x5, W4
+001156  880C24     MOV W4, OC1CON
+101:                   //video sync interrupt setting.
+102:                   //IFS0bits.OC1IF=0;
+103:                   //IPC0bits.OC1IP=7;
+104:                   IPC4bits.CNIP=7;
+001158  270000     MOV #0x7000, W0
+00115A  B720AC     IOR IPC4
+105:                   CNEN2bits.CN21IE=1;
+00115C  A8A062     BSET CNEN2, #5
+106:                   // timer 2 interrupt enabling
+107:                   IFS0bits.T2IF=0;
+00115E  A9E084     BCLR IFS0, #7
+108:                   IPC1bits.T2IP=7; // plus haute priorité
+001160  B720A6     IOR IPC1
+109:                   IEC0bits.T2IE=1;
+001162  A8E094     BSET IEC0, #7
+110:                   // SPI1 configuration (pixel output)
+111:                   SPI1CON1=0;
+001164  EF2242     CLR SPI1CON1
+112:                   SPI1CON1bits.DISSCK=1;
+001166  A88243     BSET 0x243, #4
+113:                   SPI1CON1bits.MSTEN=1;
+001168  A8A242     BSET SPI1CON1, #5
+114:                   SPI1CON1bits.SPRE=5;
+00116A  801214     MOV SPI1CON1, W4
+00116C  A02004     BSET W4, #2
+00116E  A13004     BCLR W4, #3
+001170  A04004     BSET W4, #4
+001172  881214     MOV W4, SPI1CON1
+115:                   SPI1CON1bits.PPRE=3;
+001174  200030     MOV #0x3, W0
+001176  B72242     IOR SPI1CON1
+116:                   SPI1CON2=1;
+001178  200014     MOV #0x1, W4
+00117A  881224     MOV W4, SPI1CON2
+117:                   SPI1STATbits.SPIEN=1;
+00117C  A8E241     BSET 0x241, #7
+118:                   T2CONbits.TON=1;
+00117E  A8E111     BSET 0x111, #7
+119:               }//horz_sync_init()
+001180  060000     RETURN
+120:               
+121:               void  wait_n_frame(unsigned n){
+122:               unsigned long f0;
+123:                   f0=frame_cntr+n;
+001182  80F694     MOV frame_cntr, W4
+001184  80F6A5     MOV 0x1ED4, W5
+001186  420000     ADD W4, W0, W0
+001188  4A80E0     ADDC W5, #0x0, W1
+124:                   while (frame_cntr<f0);
+00118A  80F694     MOV frame_cntr, W4
+00118C  80F6A5     MOV 0x1ED4, W5
+00118E  500F84     SUB W0, W4, [W15]
+001190  588F85     SUBB W1, W5, [W15]
+001192  3EFFFB     BRA GTU, 0x118A
+125:               }//f()
+001194  060000     RETURN
+126:               
+127:               
+128:               
+129:               
+130:               // video sync signal generation
+131:               void __attribute__((interrupt,no_auto_psv,shadow)) _T2Interrupt(void){
+001196  FEA000     PUSH.S
+001198  BE9F84     MOV.D W4, [W15++]
+132:                   frame_line_cntr++;
+00119A  80F674     MOV frame_line_cntr, W4
+00119C  E80204     INC W4, W4
+00119E  88F674     MOV W4, frame_line_cntr
+133:                   switch (frame_line_cntr){
+0011A0  200375     MOV #0x37, W5
+0011A2  520F85     SUB W4, W5, [W15]
+0011A4  32002D     BRA Z, 0x1200
+0011A6  3E0007     BRA GTU, 0x11B6
+0011A8  520FE4     SUB W4, #0x4, [W15]
+0011AA  320018     BRA Z, 0x11DC
+0011AC  520FFE     SUB W4, #0x1E, [W15]
+0011AE  32001B     BRA Z, 0x11E6
+0011B0  520FE1     SUB W4, #0x1, [W15]
+0011B2  3A0048     BRA NZ, 0x1244
+0011B4  37000F     BRA 0x11D4
+0011B6  201075     MOV #0x107, W5
+0011B8  520F85     SUB W4, W5, [W15]
+0011BA  32002F     BRA Z, 0x121A
+0011BC  3E0004     BRA GTU, 0x11C6
+0011BE  5282F1     SUB W5, #0x11, W5
+0011C0  520F85     SUB W4, W5, [W15]
+0011C2  3A0040     BRA NZ, 0x1244
+0011C4  370017     BRA 0x11F4
+0011C6  2010F5     MOV #0x10F, W5
+0011C8  520F85     SUB W4, W5, [W15]
+0011CA  320021     BRA Z, 0x120E
+0011CC  201395     MOV #0x139, W5
+0011CE  520F85     SUB W4, W5, [W15]
+0011D0  3A0039     BRA NZ, 0x1244
+0011D2  37002E     BRA 0x1230
+134:                       case 1:
+135:                           OC1R=vsync;
+0011D4  F81EC8     PUSH vsync
+0011D6  F90182     POP OC1R
+136:                           OC4CON=0;
+0011D8  EF2196     CLR OC4CON
+137:                           break;
+0011DA  370034     BRA 0x1244
+138:                       case 4:
+139:                           OC4CON=5;
+0011DC  200054     MOV #0x5, W4
+0011DE  880CB4     MOV W4, OC4CON
+140:                           OC1R=hsync;
+0011E0  F81ECA     PUSH hsync
+0011E2  F90182     POP OC1R
+141:                           break;
+0011E4  37002F     BRA 0x1244
+142:                       case NTSC_FIRST_VISIBLE:
+143:                           if (video_mode==NTSC_MODE){
+0011E6  80F664     MOV video_mode, W4
+0011E8  520FE0     SUB W4, #0x0, [W15]
+0011EA  3A002C     BRA NZ, 0x1244
+144:                               IFS1bits.CNIF=0;
+0011EC  A96086     BCLR IFS1, #3
+145:                               IEC1bits.CNIE=1;
+0011EE  A86096     BSET IEC1, #3
+146:                               flags &= ~F_RETRACE;
+0011F0  A97ED0     BCLR flags, #3
+0011F2  370028     BRA 0x1244
+147:                           }
+148:                           break;
+149:                       case NTSC_LAST_VISIBLE:
+150:                           if (video_mode==NTSC_MODE){
+0011F4  80F664     MOV video_mode, W4
+0011F6  520FE0     SUB W4, #0x0, [W15]
+0011F8  3A0025     BRA NZ, 0x1244
+151:                               IEC1bits.CNIE=0;
+0011FA  A96096     BCLR IEC1, #3
+152:                               flags |= F_RETRACE;
+0011FC  A87ED0     BSET flags, #3
+0011FE  370022     BRA 0x1244
+153:                           }
+154:                           break;
+155:                       case PAL_FIRST_VISIBLE:
+156:                           if (video_mode==PAL_MODE){
+001200  80F664     MOV video_mode, W4
+001202  520FE1     SUB W4, #0x1, [W15]
+001204  3A001F     BRA NZ, 0x1244
+157:                               IFS1bits.CNIF=0;
+001206  A96086     BCLR IFS1, #3
+158:                               IEC1bits.CNIE=1;
+001208  A86096     BSET IEC1, #3
+159:                               flags &= ~F_RETRACE;
+00120A  A97ED0     BCLR flags, #3
+00120C  37001B     BRA 0x1244
+160:                           }
+161:                           break;
+162:                       case PAL_LAST_VISIBLE:
+163:                           if (video_mode==PAL_MODE){
+00120E  80F664     MOV video_mode, W4
+001210  520FE1     SUB W4, #0x1, [W15]
+001212  3A0018     BRA NZ, 0x1244
+164:                               IEC1bits.CNIE=0;
+001214  A96096     BCLR IEC1, #3
+165:                               flags |= F_RETRACE;
+001216  A87ED0     BSET flags, #3
+001218  370015     BRA 0x1244
+166:                           }
+167:                           break;
+168:                       case NTSC_LINES_PER_FRAME+1:
+169:                           if (video_mode==NTSC_MODE){
+00121A  80F664     MOV video_mode, W4
+00121C  520FE0     SUB W4, #0x0, [W15]
+00121E  3A0012     BRA NZ, 0x1244
+170:                               frame_line_cntr=0;
+001220  EF3ECE     CLR frame_line_cntr
+171:                               frame_cntr++;
+001222  80F694     MOV frame_cntr, W4
+001224  80F6A5     MOV 0x1ED4, W5
+001226  420261     ADD W4, #0x1, W4
+001228  4A82E0     ADDC W5, #0x0, W5
+00122A  88F694     MOV W4, frame_cntr
+00122C  88F6A5     MOV W5, 0x1ED4
+00122E  37000A     BRA 0x1244
+172:                           }
+173:                           break;
+174:                       case PAL_LINES_PER_FRAME+1:
+175:                           if (video_mode==PAL_MODE){
+001230  80F664     MOV video_mode, W4
+001232  520FE1     SUB W4, #0x1, [W15]
+001234  3A0007     BRA NZ, 0x1244
+176:                               frame_line_cntr=0;
+001236  EF3ECE     CLR frame_line_cntr
+177:                               frame_cntr++;
+001238  80F694     MOV frame_cntr, W4
+00123A  80F6A5     MOV 0x1ED4, W5
+00123C  420261     ADD W4, #0x1, W4
+00123E  4A82E0     ADDC W5, #0x0, W5
+001240  88F694     MOV W4, frame_cntr
+001242  88F6A5     MOV W5, 0x1ED4
+178:                           }
+179:                           break;
 180:               
-181:               void cursor_forward(){
-182:                   cursor_pos.x++;
-0006EE  EC6AB3     INC.B 0xAB3
-183:                   if (cursor_pos.x>=COLUMNS){
-0006F0  20AB34     MOV #0xAB3, W4
-0006F2  784214     MOV.B [W4], W4
-0006F4  524FF8     SUB.B W4, #0x18, [W15]
-0006F6  360008     BRA LEU, 0x708
-184:                       cursor_pos.x=0;
-0006F8  EF6AB3     CLR.B 0xAB3
-185:                       cursor_pos.y++;
-0006FA  EC6AB2     INC.B cursor_pos
-186:                       if (cursor_pos.y>=LINES){
-0006FC  20AB24     MOV #0xAB2, W4
-0006FE  784214     MOV.B [W4], W4
-000700  524FFA     SUB.B W4, #0x1A, [W15]
-000702  360002     BRA LEU, 0x708
-187:                           cursor_pos.y--;
-000704  ED6AB2     DEC.B cursor_pos
-188:                           scroll_up();
-000706  07FFEB     RCALL scroll_up
-189:                       }//if
-190:                   }//if
-191:               }//f()
-000708  060000     RETURN
-192:               
-193:               // video sync signal generation
-194:               void __attribute__((interrupt,no_auto_psv,shadow)) _T2Interrupt(void){
-00070A  FEA000     PUSH.S
-00070C  F80036     PUSH RCOUNT
-00070E  BE9F84     MOV.D W4, [W15++]
-000710  BE9F86     MOV.D W6, [W15++]
-195:                   frame_line_cntr++;
-000712  805554     MOV frame_line_cntr, W4
-000714  E80204     INC W4, W4
-000716  885554     MOV W4, frame_line_cntr
-196:                   switch (frame_line_cntr){
-000718  200375     MOV #0x37, W5
-00071A  520F85     SUB W4, W5, [W15]
-00071C  32002D     BRA Z, 0x778
-00071E  3E0007     BRA GTU, 0x72E
-000720  520FE4     SUB W4, #0x4, [W15]
-000722  320018     BRA Z, 0x754
-000724  520FFE     SUB W4, #0x1E, [W15]
-000726  32001B     BRA Z, 0x75E
-000728  520FE1     SUB W4, #0x1, [W15]
-00072A  3A0049     BRA NZ, 0x7BE
-00072C  37000F     BRA 0x74C
-00072E  201075     MOV #0x107, W5
-000730  520F85     SUB W4, W5, [W15]
-000732  32002F     BRA Z, 0x792
-000734  3E0004     BRA GTU, 0x73E
-000736  5282F1     SUB W5, #0x11, W5
-000738  520F85     SUB W4, W5, [W15]
-00073A  3A0041     BRA NZ, 0x7BE
-00073C  370017     BRA 0x76C
-00073E  2010F5     MOV #0x10F, W5
-000740  520F85     SUB W4, W5, [W15]
-000742  320021     BRA Z, 0x786
-000744  201395     MOV #0x139, W5
-000746  520F85     SUB W4, W5, [W15]
-000748  3A003A     BRA NZ, 0x7BE
-00074A  37002E     BRA 0x7A8
-197:                       case 1:
-198:                           OC1R=vsync;
-00074C  F80AA4     PUSH vsync
-00074E  F90182     POP OC1R
-199:                           OC3CON=0;
-000750  EF2190     CLR OC3CON
-200:                           break;
-000752  370070     BRA 0x834
-201:                       case 4:
-202:                           OC3CON=5;
-000754  200054     MOV #0x5, W4
-000756  880C84     MOV W4, OC3CON
-203:                           OC1R=hsync;
-000758  F80AA6     PUSH hsync
-00075A  F90182     POP OC1R
-204:                           break;
-00075C  37006B     BRA 0x834
-205:                       case NTSC_FIRST_VISIBLE:
-206:                           if (video_mode==NTSC_MODE){
-00075E  805544     MOV video_mode, W4
-000760  520FE0     SUB W4, #0x0, [W15]
-000762  3A0068     BRA NZ, 0x834
-207:                               IFS1bits.CNIF=0;
-000764  A96086     BCLR IFS1, #3
-208:                               IEC1bits.CNIE=1;
-000766  A86096     BSET IEC1, #3
-209:                               flags &= ~F_RETRACE;
-000768  A96AAC     BCLR flags, #3
-00076A  370064     BRA 0x834
-210:                           }
-211:                           break;
-212:                       case NTSC_LAST_VISIBLE:
-213:                           if (video_mode==NTSC_MODE){
-00076C  805544     MOV video_mode, W4
-00076E  520FE0     SUB W4, #0x0, [W15]
-000770  3A0061     BRA NZ, 0x834
-214:                               IEC1bits.CNIE=0;
-000772  A96096     BCLR IEC1, #3
-215:                               flags |= F_RETRACE;
-000774  A86AAC     BSET flags, #3
-000776  37005E     BRA 0x834
-216:                           }
-217:                           break;
-218:                       case PAL_FIRST_VISIBLE:
-219:                           if (video_mode==PAL_MODE){
-000778  805544     MOV video_mode, W4
-00077A  520FE1     SUB W4, #0x1, [W15]
-00077C  3A005B     BRA NZ, 0x834
-220:                               IFS1bits.CNIF=0;
-00077E  A96086     BCLR IFS1, #3
-221:                               IEC1bits.CNIE=1;
-000780  A86096     BSET IEC1, #3
-222:                               flags &= ~F_RETRACE;
-000782  A96AAC     BCLR flags, #3
-000784  370057     BRA 0x834
-223:                           }
-224:                           break;
-225:                       case PAL_LAST_VISIBLE:
-226:                           if (video_mode==PAL_MODE){
-000786  805544     MOV video_mode, W4
-000788  520FE1     SUB W4, #0x1, [W15]
-00078A  3A0054     BRA NZ, 0x834
-227:                               IEC1bits.CNIE=0;
-00078C  A96096     BCLR IEC1, #3
-228:                               flags |= F_RETRACE;
-00078E  A86AAC     BSET flags, #3
-000790  370051     BRA 0x834
-229:                           }
-230:                           break;
-231:                       case NTSC_LINES_PER_FRAME+1:
-232:                           if (video_mode==NTSC_MODE){
-000792  805544     MOV video_mode, W4
-000794  520FE0     SUB W4, #0x0, [W15]
-000796  3A004E     BRA NZ, 0x834
-233:                               frame_line_cntr=0;
-000798  EF2AAA     CLR frame_line_cntr
-234:                               frame_cntr++;
-00079A  805574     MOV frame_cntr, W4
-00079C  805585     MOV 0xAB0, W5
-00079E  420261     ADD W4, #0x1, W4
-0007A0  4A82E0     ADDC W5, #0x0, W5
-0007A2  885574     MOV W4, frame_cntr
-0007A4  885585     MOV W5, 0xAB0
-0007A6  370046     BRA 0x834
-235:                           }
-236:                           break;
-237:                       case PAL_LINES_PER_FRAME+1:
-238:                           if (video_mode==PAL_MODE){
-0007A8  805544     MOV video_mode, W4
-0007AA  520FE1     SUB W4, #0x1, [W15]
-0007AC  3A0043     BRA NZ, 0x834
-239:                               frame_line_cntr=0;
-0007AE  EF2AAA     CLR frame_line_cntr
-240:                               frame_cntr++;
-0007B0  805574     MOV frame_cntr, W4
-0007B2  805585     MOV 0xAB0, W5
-0007B4  420261     ADD W4, #0x1, W4
-0007B6  4A82E0     ADDC W5, #0x0, W5
-0007B8  885574     MOV W4, frame_cntr
-0007BA  885585     MOV W5, 0xAB0
-0007BC  37003B     BRA 0x834
-241:                           }
-242:                           break;
-243:                       default:
-244:                           if (flags & F_RETRACE){
-0007BE  AB6AAC     BTST flags, #3
-0007C0  320039     BRA Z, 0x834
-245:                               if (flags & F_CLEAR){
-0007C2  AB2AAC     BTST flags, #1
-0007C4  32000A     BRA Z, 0x7DA
-246:                                   memset((char*)video_buffer,0,sizeof(char)*LINES*COLUMNS);
-0007C6  208005     MOV #0x800, W5
-0007C8  0902A2     REPEAT #0x2A2
-0007CA  EB5A80     CLR.B [W5++]
-247:                                   flags &= ~F_CLEAR;
-0007CC  A92AAC     BCLR flags, #1
-248:                                   cursor_pos.y=0;
-0007CE  EB4200     CLR.B W4
-0007D0  FD0200     EXCH W0, W4
-0007D2  B7EAB2     MOV.B WREG, cursor_pos
-0007D4  B7EAB3     MOV.B WREG, 0xAB3
-0007D6  FD0200     EXCH W0, W4
-0007D8  37002D     BRA 0x834
-249:                                   cursor_pos.x=0;
-250:                               } else if (flags & F_CLREOL){
-0007DA  AB4AAC     BTST flags, #2
-0007DC  320012     BRA Z, 0x802
-251:                                   memset((char*)video_buffer[cursor_pos.y]+cursor_pos.x,
-0007E2  BFCAB2     MOV.B cursor_pos, WREG
-0007E4  20AB35     MOV #0xAB3, W5
-0007E6  784295     MOV.B [W5], W5
-0007EC  B3C192     MOV #0x19, W2
-0007EE  BC4004     MUL.B WREG2
-0007F0  FB8285     ZE W5, W5
-0007F2  410005     ADD W2, W5, W0
-0007F4  208005     MOV #0x800, W5
-0007F6  400005     ADD W0, W5, W0
-0007F8  780104     MOV W4, W2
-0007FA  EB0080     CLR W1
-0007FC  07FD5E     RCALL 0x2BA
-252:                                           0,sizeof(char)*(COLUMNS-cursor_pos.x));
-0007DE  20AB34     MOV #0xAB3, W4
-0007E0  784214     MOV.B [W4], W4
-0007E8  FB8204     ZE W4, W4
-0007EA  120279     SUBR W4, #0x19, W4
-253:                                   flags &= ~F_CLREOL;
-0007FE  A94AAC     BCLR flags, #2
-000800  370019     BRA 0x834
-254:                               }else if (flags & F_PCHAR){
-000802  AB0AAC     BTST flags, #0
-000804  320017     BRA Z, 0x834
-255:                                   video_buffer[cursor_pos.y][cursor_pos.x]=pchar_queue[head]-32;
-000806  BFCAB2     MOV.B cursor_pos, WREG
-000808  20AB35     MOV #0xAB3, W5
-00080A  784295     MOV.B [W5], W5
-00080C  8055A4     MOV head, W4
-00080E  20AB66     MOV #0xAB6, W6
-000810  7A4266     MOV.B [W6+W4], W4
-000812  FB8285     ZE W5, W5
-000814  B3C192     MOV #0x19, W2
-000816  BC4004     MUL.B WREG2
-000818  410285     ADD W2, W5, W5
-00081A  208006     MOV #0x800, W6
-00081C  430285     ADD W6, W5, W5
-00081E  B3CE06     MOV #0xE0, W6
-000820  424A86     ADD.B W4, W6, [W5]
-256:                                   cursor_forward();
-000822  07FF65     RCALL cursor_forward
-257:                                   head++;
-000824  EC2AB4     INC head
-258:                                   head %= QUEUE_SIZE;
-000826  2001F0     MOV #0x1F, W0
-000828  B62AB4     AND head
-259:                                   if (head==tail){
-00082A  8055A5     MOV head, W5
-00082C  8056B4     MOV tail, W4
-00082E  528F84     SUB W5, W4, [W15]
-000830  3A0001     BRA NZ, 0x834
-260:                                       flags &= ~F_PCHAR;
-000832  A90AAC     BCLR flags, #0
-261:                                   }
-262:                               }//if
-263:                           }//if
-264:                           break;
-265:                   }//switch
-266:                   IFS0bits.T2IF=0;
-000834  A9E084     BCLR IFS0, #7
-267:               }// _T2Interrupt()
-000836  BE034F     MOV.D [--W15], W6
-000838  BE024F     MOV.D [--W15], W4
-00083A  F90036     POP RCOUNT
-00083C  FE8000     POP.S
-00083E  064000     RETFIE
-268:               
-269:               void __attribute__((interrupt,no_auto_psv,shadow)) _CNInterrupt(void){
-000840  FEA000     PUSH.S
-000842  BE9F84     MOV.D W4, [W15++]
-000844  BE9F86     MOV.D W6, [W15++]
-00086C  4283F9     ADD W5, #0x19, W7
-270:                   int y,x,l;
-271:                   char *b;
-272:                   if (PORTBbits.RB11){
-000846  801655     MOV PORTB, W5
-000848  208004     MOV #0x800, W4
-00084A  628204     AND W5, W4, W4
-00084C  32001E     BRA Z, 0x88A
-273:                       if (video_mode==NTSC_MODE){
-00084E  805544     MOV video_mode, W4
-000850  520FE0     SUB W4, #0x0, [W15]
-000852  3A0005     BRA NZ, 0x85E
-274:                           y=(frame_line_cntr-NTSC_FIRST_VISIBLE)>>3;
-000854  805550     MOV frame_line_cntr, W0
-000856  50007E     SUB W0, #0x1E, W0
-000858  DE0243     LSR W0, #3, W4
-275:                           l=(frame_line_cntr-NTSC_FIRST_VISIBLE)&7;
-00085A  600067     AND W0, #0x7, W0
-00085C  370004     BRA 0x866
-276:                       }else{
-277:                           y=(frame_line_cntr-PAL_FIRST_VISIBLE)>>3;
-00085E  805550     MOV frame_line_cntr, W0
-000860  B10370     SUB #0x37, W0
-000862  DE0243     LSR W0, #3, W4
-278:                           l=(frame_line_cntr-PAL_FIRST_VISIBLE)&7;
-000864  600067     AND W0, #0x7, W0
-279:                       }
-280:                       b=(char*)&video_buffer[y];
-000866  B92279     MUL.SU W4, #25, W4
-000868  208006     MOV #0x800, W6
-00086A  430284     ADD W6, W4, W5
-281:                       for (x=0;x<COLUMNS;x++){
-000880  528F87     SUB W5, W7, [W15]
-000882  3AFFF6     BRA NZ, 0x870
-282:                           while (SPI1STATbits.SPITBF);
-000870  AB2240     BTST SPI1STAT, #1
-000872  3AFFFE     BRA NZ, 0x870
-283:                           SPI1BUF=font6x8[(int)*b++][l];
-00086E  282C86     MOV #0x82C8, W6
-000874  FB0235     SE [W5++], W4
-000876  DD2243     SL W4, #3, W4
-000878  420200     ADD W4, W0, W4
-00087A  7A4266     MOV.B [W6+W4], W4
-00087C  FB8204     ZE W4, W4
-00087E  881244     MOV W4, SPI1BUF
-284:                       }//for
-285:                       while (SPI1STATbits.SPITBF);
-000884  AB2240     BTST SPI1STAT, #1
-000886  3AFFFE     BRA NZ, 0x884
-286:                       SPI1BUF=0;
-000888  EF2248     CLR SPI1BUF
-287:                   }
-288:                   IFS1bits.CNIF=0;
-00088A  A96086     BCLR IFS1, #3
-289:               }// _CNInterrupt
-00088C  BE034F     MOV.D [--W15], W6
-00088E  BE024F     MOV.D [--W15], W4
-000890  FE8000     POP.S
-000892  064000     RETFIE
-290:               
+181:               //        default:
+182:               //            if (flags & F_RETRACE){
+183:               //                if (flags & F_CLEAR){
+184:               //                    memset((char*)video_buffer,0,sizeof(char)*VPIXELS*BYTES_PER_LINE);
+185:               //                    flags &= ~F_CLEAR;
+186:               //                    cursor_pos.y=0;
+187:               //                    cursor_pos.x=0;
+188:               //                } else if (flags & F_CLREOL){
+189:               //                    memset((char*)video_buffer[cursor_pos.y]+cursor_pos.x,
+190:               //                            0,sizeof(char)*(COLUMNS-cursor_pos.x));
+191:               //                    flags &= ~F_CLREOL;
+192:               //                }else if (flags & F_PCHAR){
+193:               //                    video_buffer[cursor_pos.y][cursor_pos.x]=pchar_queue[head]-32;
+194:               //                    cursor_forward();
+195:               //                    head++;
+196:               //                    head %= QUEUE_SIZE;
+197:               //                    if (head==tail){
+198:               //                        flags &= ~F_PCHAR;
+199:               //                    }
+200:               //                }//if
+201:               //            }//if
+202:               //            break;
+203:                   }//switch
+204:                   IFS0bits.T2IF=0;
+001244  A9E084     BCLR IFS0, #7
+205:               }// _T2Interrupt()
+001246  BE024F     MOV.D [--W15], W4
+001248  FE8000     POP.S
+00124A  064000     RETFIE
+206:               
+207:               void __attribute__((interrupt,no_auto_psv,shadow)) _CNInterrupt(void){
+00124C  FEA000     PUSH.S
+00124E  BE9F84     MOV.D W4, [W15++]
+001250  BE9F86     MOV.D W6, [W15++]
+001266  B9337B     MUL.SU W6, #27, W6
+001268  207FF4     MOV #0x7FF, W4
+00126A  430304     ADD W6, W4, W6
+208:                   int y,x;
+209:                   if (PORTBbits.RB9){
+001252  AB22CB     BTST 0x2CB, #1
+001254  320016     BRA Z, 0x1282
+210:                       if (video_mode==NTSC_MODE){
+001256  80F664     MOV video_mode, W4
+001258  520FE0     SUB W4, #0x0, [W15]
+00125A  3A0003     BRA NZ, 0x1262
+211:                           y=(frame_line_cntr-NTSC_FIRST_VISIBLE);
+00125C  80F676     MOV frame_line_cntr, W6
+00125E  53037E     SUB W6, #0x1E, W6
+001260  370002     BRA 0x1266
+212:                       }else{
+213:                           y=(frame_line_cntr-PAL_FIRST_VISIBLE);
+001262  80F676     MOV frame_line_cntr, W6
+001264  B10376     SUB #0x37, W6
+214:                       }
+215:                       for (x=0;x<BYTES_PER_LINE;x++){
+00126C  EB0280     CLR W5
+001276  E80285     INC W5, W5
+001278  528FFB     SUB W5, #0x1B, [W15]
+00127A  3AFFF9     BRA NZ, 0x126E
+216:                           while (SPI1STATbits.SPITBF);
+00126E  AB2240     BTST SPI1STAT, #1
+001270  3AFFFE     BRA NZ, 0x126E
+217:                           SPI1BUF=video_buffer[y][x];
+001272  FB0256     SE [++W6], W4
+001274  881244     MOV W4, SPI1BUF
+218:                       }//for
+219:                       while (SPI1STATbits.SPITBF);
+00127C  AB2240     BTST SPI1STAT, #1
+00127E  3AFFFE     BRA NZ, 0x127C
+220:                       SPI1BUF=0;
+001280  EF2248     CLR SPI1BUF
+221:                   }
+222:                   IFS1bits.CNIF=0;
+001282  A96086     BCLR IFS1, #3
+223:               }// _CNInterrupt
+001284  BE034F     MOV.D [--W15], W6
+001286  BE024F     MOV.D [--W15], W4
+001288  FE8000     POP.S
+00128A  064000     RETFIE
+224:               
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/PICvision.c  ------------------------------------
 1:                 /*
 2:                 * Copyright 2014, Jacques Deschênes
@@ -651,7 +1983,7 @@ Generated From:
 23:                 *               inspiration come from HACKvision console.
 24:                 *               REF: https://nootropicdesign.com/hackvision/
 25:                 *     - display  NTSC/PAL  monochrome
-26:                 *     - resolution  200x216 pixels  (HxV)
+26:                 *     - resolution  216x216 pixels
 27:                 *     - controls: 2 SNES paddle  (cheap and easy to find.)
 28:                 *     - audio out:  monophonic  PWM DAC  or square wave tones
 29:                 *
@@ -660,135 +1992,213 @@ Generated From:
 32:                
 33:                #include <stdio.h>
 34:                #include <stdlib.h>
-35:                #include <PPS.h>
-36:                
-37:                #include "hardwareProfile.h"
-38:                #include "TVout.h"
-39:                
-40:                // PIC24FJ64GA002 Configuration Bit Settings
-41:                // CONFIG2
-42:                #pragma config POSCMOD = HS             // Primary Oscillator Select (HS Oscillator mode selected)
-43:                #pragma config I2C1SEL = PRI            // I2C1 Pin Location Select (Use default SCL1/SDA1 pins)
-44:                #pragma config IOL1WAY = ON             // IOLOCK Protection (Once IOLOCK is set, cannot be changed)
-45:                #pragma config OSCIOFNC = OFF           // Primary Oscillator Output Function (OSC2/CLKO/RC15 functions as CLKO (FOSC/2))
-46:                #pragma config FCKSM = CSDCMD           // Clock Switching and Monitor (Clock switching and Fail-Safe Clock Monitor are disabled)
-47:                #pragma config FNOSC = PRIPLL           // Oscillator Select (Primary Oscillator with PLL module (HSPLL, ECPLL))
-48:                #pragma config SOSCSEL = LPSOSC         // Sec Oscillator Select (Low Power Secondary Oscillator (LPSOSC))
-49:                #pragma config WUTSEL = FST             // Wake-up timer Select (Fast Wake-up Timer)
-50:                #pragma config IESO = OFF               // Internal External Switch Over Mode (IESO mode (Two-Speed Start-up) disabled)
-51:                
-52:                // CONFIG1
-53:                #pragma config WDTPS = PS32768          // Watchdog Timer Postscaler (1:32,768)
-54:                #pragma config FWPSA = PR128            // WDT Prescaler (Prescaler ratio of 1:128)
-55:                #pragma config WINDIS = ON              // Watchdog Timer Window (Standard Watchdog Timer enabled,(Windowed-mode is disabled))
-56:                #pragma config FWDTEN = OFF             // Watchdog Timer Enable (Watchdog Timer is disabled)
-57:                #pragma config ICS = PGx1               // Comm Channel Select (Emulator EMUC1/EMUD1 pins are shared with PGC1/PGD1)
-58:                #pragma config GWRP = OFF               // General Code Segment Write Protect (Writes to program memory are allowed)
-59:                #pragma config GCP = OFF                // General Code Segment Code Protect (Code protection is disabled)
-60:                #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG port is disabled)
-61:                
-62:                void HardwareConfig(){
-63:                    PPSUnLock;
-000894  803A16     MOV OSCCON, W6
-000896  B20BF6     AND #0xBF, W6
-000898  200464     MOV #0x46, W4
-00089A  200575     MOV #0x57, W5
-00089C  207427     MOV #0x742, W7
-00089E  784B84     MOV.B W4, [W7]
-0008A0  784B85     MOV.B W5, [W7]
-0008A2  784B86     MOV.B W6, [W7]
-64:                    PPSOutput(PPS_RP5,PPS_OC2);   // audio output
-0008A4  803626     MOV RPOR2, W6
-0008A6  2E0FF7     MOV #0xE0FF, W7
-0008A8  630307     AND W6, W7, W6
-0008AA  213000     MOV #0x1300, W0
-0008AC  730300     IOR W6, W0, W6
-0008AE  883626     MOV W6, RPOR2
-65:                    PPSOutput(PPS_RP6,PPS_OC1);   // video sync signal
-0008B0  803630     MOV RPOR3, W0
-0008B2  2FFE06     MOV #0xFFE0, W6
-0008B4  600006     AND W0, W6, W0
-0008B6  B30120     IOR #0x12, W0
-0008B8  883630     MOV W0, RPOR3
-66:                    PPSOutput(PPS_RP7,PPS_SDO1);  // video pixels
-0008BA  803630     MOV RPOR3, W0
-0008BC  600387     AND W0, W7, W7
-0008BE  207000     MOV #0x700, W0
-0008C0  738380     IOR W7, W0, W7
-0008C2  883637     MOV W7, RPOR3
-67:                    PPSOutput(PPS_RP10,PPS_OC3);  // video delay output
-0008C4  803657     MOV RPOR5, W7
-0008C6  638306     AND W7, W6, W6
-0008C8  B30146     IOR #0x14, W6
-0008CA  883656     MOV W6, RPOR5
-68:                    TRISBbits.TRISB5=0;     //output
-0008CC  A9A2C8     BCLR TRISB, #5
-69:                    TRISBbits.TRISB6=0;     //output
-0008CE  A9C2C8     BCLR TRISB, #6
-70:                    TRISBbits.TRISB7=0;     //output
-0008D0  A9E2C8     BCLR TRISB, #7
-71:                    TRISBbits.TRISB10=0;    //output
-0008D2  A942C9     BCLR 0x2C9, #2
-72:                    TRISBbits.TRISB11=1;    //input   video delay synchronisation
-0008D4  A862C9     BSET 0x2C9, #3
-73:                    AD1PCFGbits.PCFG12=1;   //disable analog input
-0008D6  A8832D     BSET 0x32D, #4
-74:                    TRISBbits.TRISB12=1;    //input   NTSC/PAL select input
-0008D8  A882C9     BSET 0x2C9, #4
-75:                    PPSLock;
-0008DA  803A16     MOV OSCCON, W6
-0008DC  A06006     BSET W6, #6
-0008DE  207427     MOV #0x742, W7
-0008E0  784B84     MOV.B W4, [W7]
-0008E2  784B85     MOV.B W5, [W7]
-0008E4  784B86     MOV.B W6, [W7]
-76:                }//f()
-0008E6  060000     RETURN
-77:                
-78:                const char msg[]="hello world!";
-79:                const char numbers[]=" 234567890123456789012|";
+35:                #include <time.h>
+36:                #include <PPS.h>
+37:                
+38:                #include "hardwareProfile.h"
+39:                #include "TVout.h"
+40:                #include "text_console.h"
+41:                #include "graphics.h"
+42:                
+43:                // PIC24FJ64GA002 Configuration Bit Settings
+44:                // CONFIG2
+45:                #pragma config POSCMOD = HS             // Primary Oscillator Select (HS Oscillator mode selected)
+46:                #pragma config I2C1SEL = PRI            // I2C1 Pin Location Select (Use default SCL1/SDA1 pins)
+47:                #pragma config IOL1WAY = ON             // IOLOCK Protection (Once IOLOCK is set, cannot be changed)
+48:                #pragma config OSCIOFNC = OFF           // Primary Oscillator Output Function (OSC2/CLKO/RC15 functions as CLKO (FOSC/2))
+49:                #pragma config FCKSM = CSDCMD           // Clock Switching and Monitor (Clock switching and Fail-Safe Clock Monitor are disabled)
+50:                #pragma config FNOSC = PRIPLL           // Oscillator Select (Primary Oscillator with PLL module (HSPLL, ECPLL))
+51:                #pragma config SOSCSEL = LPSOSC         // Sec Oscillator Select (Low Power Secondary Oscillator (LPSOSC))
+52:                #pragma config WUTSEL = FST             // Wake-up timer Select (Fast Wake-up Timer)
+53:                #pragma config IESO = OFF               // Internal External Switch Over Mode (IESO mode (Two-Speed Start-up) disabled)
+54:                
+55:                // CONFIG1
+56:                #pragma config WDTPS = PS32768          // Watchdog Timer Postscaler (1:32,768)
+57:                #pragma config FWPSA = PR128            // WDT Prescaler (Prescaler ratio of 1:128)
+58:                #pragma config WINDIS = ON              // Watchdog Timer Window (Standard Watchdog Timer enabled,(Windowed-mode is disabled))
+59:                #pragma config FWDTEN = OFF             // Watchdog Timer Enable (Watchdog Timer is disabled)
+60:                #pragma config ICS = PGx1               // Comm Channel Select (Emulator EMUC1/EMUD1 pins are shared with PGC1/PGD1)
+61:                #pragma config GWRP = OFF               // General Code Segment Write Protect (Writes to program memory are allowed)
+62:                #pragma config GCP = OFF                // General Code Segment Code Protect (Code protection is disabled)
+63:                #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG port is disabled)
+64:                
+65:                void HardwareConfig(){
+66:                    PPSUnLock;
+00128C  803A16     MOV OSCCON, W6
+00128E  B20BF6     AND #0xBF, W6
+001290  200464     MOV #0x46, W4
+001292  200575     MOV #0x57, W5
+001294  207427     MOV #0x742, W7
+001296  784B84     MOV.B W4, [W7]
+001298  784B85     MOV.B W5, [W7]
+00129A  784B86     MOV.B W6, [W7]
+67:                    PPSOutput(PPS_RP5,PPS_SDO1);   // video pixels output
+00129C  803626     MOV RPOR2, W6
+00129E  2E0FF7     MOV #0xE0FF, W7
+0012A0  630307     AND W6, W7, W6
+0012A2  207000     MOV #0x700, W0
+0012A4  730300     IOR W6, W0, W6
+0012A6  883626     MOV W6, RPOR2
+68:                    PPSOutput(PPS_RP6,PPS_OC4);  // video delay output
+0012A8  803630     MOV RPOR3, W0
+0012AA  2FFE06     MOV #0xFFE0, W6
+0012AC  600006     AND W0, W6, W0
+0012AE  B30150     IOR #0x15, W0
+0012B0  883630     MOV W0, RPOR3
+69:                    PPSOutput(PPS_RP7,PPS_OC1);  // video sync output
+0012B2  803630     MOV RPOR3, W0
+0012B4  600387     AND W0, W7, W7
+0012B6  212000     MOV #0x1200, W0
+0012B8  738380     IOR W7, W0, W7
+0012BA  883637     MOV W7, RPOR3
+70:                    PPSOutput(PPS_RP8,PPS_OC2);  // audio output
+0012BC  803647     MOV RPOR4, W7
+0012BE  638306     AND W7, W6, W6
+0012C0  B30136     IOR #0x13, W6
+0012C2  883646     MOV W6, RPOR4
+71:                    TRISBbits.TRISB5=0;     // video pixels output
+0012C4  A9A2C8     BCLR TRISB, #5
+72:                    TRISBbits.TRISB6=0;     // video delay output
+0012C6  A9C2C8     BCLR TRISB, #6
+73:                    TRISBbits.TRISB7=0;     // video sync output
+0012C8  A9E2C8     BCLR TRISB, #7
+74:                    TRISBbits.TRISB8=0;     // audio output
+0012CA  A902C9     BCLR 0x2C9, #0
+75:                    TRISBbits.TRISB9=1;    //input video delay synchronisation
+0012CC  A822C9     BSET 0x2C9, #1
+76:                    TRISBbits.TRISB12=1;    //input NTSC/PAL select input
+0012CE  A882C9     BSET 0x2C9, #4
+77:                    AD1PCFGbits.PCFG12=1;   // disable ADC
+0012D0  A8832D     BSET 0x32D, #4
+78:                    PPSLock;
+0012D2  803A16     MOV OSCCON, W6
+0012D4  A06006     BSET W6, #6
+0012D6  207427     MOV #0x742, W7
+0012D8  784B84     MOV.B W4, [W7]
+0012DA  784B85     MOV.B W5, [W7]
+0012DC  784B86     MOV.B W6, [W7]
+79:                }//f()
+0012DE  060000     RETURN
 80:                
-81:                int main(void) {
-0008E8  BE9F88     MOV.D W8, [W15++]
-0008EA  781F8A     MOV W10, [W15++]
-82:                    int y;
-83:                    HardwareConfig();
-0008EC  07FFD3     RCALL HardwareConfig
-84:                    video_init();
-0008EE  07FEA4     RCALL video_init
-85:                    for (y=0;y<LINES;y++){
-0008F0  EB0400     CLR W8
-000912  E80408     INC W8, W8
-000914  540FFB     SUB W8, #0x1B, [W15]
-000916  3AFFEF     BRA NZ, 0x8F6
-000918  37FFFF     BRA 0x918
-86:                        move_cursor(y,0);
-0008F6  EB0080     CLR W1
-0008F8  780008     MOV W8, W0
-0008FA  07FED4     RCALL move_cursor
-87:                        put_char(96+' ');
-0008F2  B3C809     MOV #0x80, W9
-0008FC  784009     MOV.B W9, W0
-0008FE  07FED8     RCALL put_char
-88:                        wait_n_frame(1);
-000900  200010     MOV #0x1, W0
-000902  07FEC0     RCALL wait_n_frame
-89:                        move_cursor(y,COLUMNS-1);
-000904  200181     MOV #0x18, W1
-000906  780008     MOV W8, W0
-000908  07FECD     RCALL move_cursor
-90:                        put_char(97+' ');
-0008F4  B3C81A     MOV #0x81, W10
-00090A  78400A     MOV.B W10, W0
-00090C  07FED1     RCALL put_char
-91:                        wait_n_frame(1);
-00090E  200010     MOV #0x1, W0
-000910  07FEB9     RCALL wait_n_frame
-92:                    }
-93:                    while (1){
-94:                        
-95:                    }//while
-96:                    return (EXIT_SUCCESS);
-97:                }//main()
-98:                
-99:                
+81:                const char msg[]="bouncing ring demo.";
+82:                
+83:                int main(void) {
+0012E0  BE9F88     MOV.D W8, [W15++]
+0012E2  BE9F8A     MOV.D W10, [W15++]
+0012E4  BE9F8C     MOV.D W12, [W15++]
+84:                    int y,x,dx,dy;
+85:                    HardwareConfig();
+0012E6  07FFD2     RCALL HardwareConfig
+86:                    video_init();
+0012E8  07FF2D     RCALL video_init
+87:                    print(msg);
+0012EA  288B60     MOV #0x88B6, W0
+0012EC  07FE38     RCALL print
+88:                    rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
+0012EE  200014     MOV #0x1, W4
+0012F0  200D73     MOV #0xD7, W3
+0012F2  780103     MOV W3, W2
+0012F4  200081     MOV #0x8, W1
+0012F6  EB0000     CLR W0
+0012F8  07FB75     RCALL rectangle
+89:                    y=108;
+90:                    x=100;
+91:                    ellipse(x,y,10,10,WHITE);
+0012FA  200016     MOV #0x1, W6
+0012FC  2000A4     MOV #0xA, W4
+0012FE  200005     MOV #0x0, W5
+001300  BE0104     MOV.D W4, W2
+001302  2006C1     MOV #0x6C, W1
+001304  200640     MOV #0x64, W0
+001306  07FB90     RCALL ellipse
+92:                    dx=0;
+93:                    dy=0;
+94:                    srand(time(0));
+001308  EB0000     CLR W0
+00130A  07F7C6     RCALL 0x298
+00130C  07F92B     RCALL 0x564
+95:                    while (!(dx&&dy)){
+001328  558FE0     SUB W11, #0x0, [W15]
+00132A  32FFF2     BRA Z, 0x1310
+00132C  550FE0     SUB W10, #0x0, [W15]
+00132E  32FFF0     BRA Z, 0x1310
+001330  200648     MOV #0x64, W8
+001332  2006C9     MOV #0x6C, W9
+96:                        dx=rand()%4-1;
+00130E  200048     MOV #0x4, W8
+001310  07F930     RCALL 0x572
+001312  780581     MOV W1, W11
+001314  090011     REPEAT #0x11
+001316  D80008     DIV.SW W0, W8
+001318  FD0581     EXCH W1, W11
+00131A  E9058B     DEC W11, W11
+97:                        dy=rand()%4-1;
+00131C  07F92A     RCALL 0x572
+00131E  780501     MOV W1, W10
+001320  090011     REPEAT #0x11
+001322  D80008     DIV.SW W0, W8
+001324  FD0501     EXCH W1, W10
+001326  E9050A     DEC W10, W10
+98:                    }
+99:                    while (1){
+100:                       wait_n_frame(1);
+001338  200010     MOV #0x1, W0
+00133A  07FF23     RCALL wait_n_frame
+101:                       ellipse(x,y,10,10,BLACK);
+00133C  EB0300     CLR W6
+00133E  2000A4     MOV #0xA, W4
+001340  200005     MOV #0x0, W5
+001342  BE0104     MOV.D W4, W2
+001344  BE0008     MOV.D W8, W0
+001346  07FB70     RCALL ellipse
+102:                       x +=dx;
+001348  44040B     ADD W8, W11, W8
+103:                       if (x<=10){
+00134A  540FEA     SUB W8, #0xA, [W15]
+00134C  3C0003     BRA GT, 0x1354
+104:                           x=11;
+001350  2000B8     MOV #0xB, W8
+001352  370004     BRA 0x135C
+105:                           dx=-dx;
+00134E  EA058B     NEG W11, W11
+106:                       }else if (x>=HPIXELS-12){
+001334  200CBC     MOV #0xCB, W12
+001354  540F8C     SUB W8, W12, [W15]
+001356  340002     BRA LE, 0x135C
+107:                           x=HPIXELS-12;
+001336  200CCD     MOV #0xCC, W13
+00135A  78040D     MOV W13, W8
+108:                           dx=-dx;
+001358  EA058B     NEG W11, W11
+109:                       }
+110:                       y +=dy;
+00135C  44848A     ADD W9, W10, W9
+111:                       if (y<=CHAR_HEIGHT+10){
+00135E  548FF2     SUB W9, #0x12, [W15]
+001360  3C0003     BRA GT, 0x1368
+112:                           y=CHAR_HEIGHT+11;
+001364  200139     MOV #0x13, W9
+001366  370004     BRA 0x1370
+113:                           dy = -dy;
+001362  EA050A     NEG W10, W10
+114:                       }else if (y>=VPIXELS-12){
+001368  548F8C     SUB W9, W12, [W15]
+00136A  340002     BRA LE, 0x1370
+115:                           y=VPIXELS-12;
+00136E  78048D     MOV W13, W9
+116:                           dy=-dy;
+00136C  EA050A     NEG W10, W10
+117:                       }
+118:                       ellipse(x,y,10,10,WHITE);
+001370  200016     MOV #0x1, W6
+001372  2000A4     MOV #0xA, W4
+001374  200005     MOV #0x0, W5
+001376  BE0104     MOV.D W4, W2
+001378  BE0008     MOV.D W8, W0
+00137A  07FB56     RCALL ellipse
+119:                   }//while
+00137C  37FFDD     BRA 0x1338
+120:                   return (EXIT_SUCCESS);
+121:               }//main()
+122:               
+123:               

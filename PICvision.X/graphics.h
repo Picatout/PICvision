@@ -17,48 +17,33 @@
 */
 
 /* 
- * File:   TVout.h
+ * File:   graphics.h
  * Author: jacques Deschênes
- * Description:  NTSC/PAL signal generator
- *
- * Created on 25 février 2014, 16:28
+ * Description: Draw geometrics figures.
+ * Created on 28 février 2014, 13:07
  */
 
-#ifndef TVOUT_H
-#define	TVOUT_H
+#ifndef GRAPHICS_H
+#define	GRAPHICS_H
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
+#include "TVout.h"
 
-#include <PPS.h>
-#include "hardwareProfile.h"
+#define BLACK 0
+#define WHITE 1
 
-
-
-
-#define VPIXELS 216
-#define HPIXELS 216
-#define BYTES_PER_LINE (HPIXELS/8)
-typedef union coord_type{
-    unsigned int yx;
-    struct{
-        unsigned char y;
-        unsigned char x;
-    };
-}coord_t;
-
-
-extern char video_buffer[VPIXELS][BYTES_PER_LINE];
-
-void  video_init();
-void  wait_n_frame(unsigned n);
-
+void plot(int x, int y, int color);
+void line(int x1, int y1, int x2, int y2, int color);
+void rectangle(int x1, int y1, int x2, int y2, int color);
+void ellipse (int xc, int yc, long rx, long ry, int color);
+void polygon(int points[],int vertices, int color);
 
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* TVOUT_H */
+#endif	/* GRAPHICS_H */
 

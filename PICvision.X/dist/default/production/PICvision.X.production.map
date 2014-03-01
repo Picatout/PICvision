@@ -26,6 +26,8 @@ Command:
   build/default/production/snes_pad.o \
   build/default/production/sound.o \
   build/default/production/font.o \
+  build/default/production/text_console.o \
+  build/default/production/graphics.o \
   --defsym=__MPLAB_BUILD=1 \
   -Tp24FJ64GA002.gld.00 \
   --stack=16 \
@@ -54,31 +56,57 @@ Membre de l'archive est inclu en raison du fichier (symbole)
                               (__resetPRI)
 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
                               /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o) (__data_init_standard)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(time.eo)
+                              build/default/production/PICvision.o (_time)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+                              build/default/production/graphics.o (___subsf3)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+                              build/default/production/graphics.o (_(float, int, long long, short, float, short, int))
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+                              build/default/production/graphics.o (___floatsisf)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
+                              /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo) (__fpack)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
+                              /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo) (__funpack)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
+                              /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo) (__funpack2)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                              /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo) (__fPropagateNaN)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+                              build/default/production/graphics.o (___mulsf3)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
+                              /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo) (___floatdisf)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
+                              /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo) (___floatundisf)
 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
-                              build/default/production/TVout.o (_memmove)
-/opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memset.eo)
-                              build/default/production/TVout.o (_memset)
+                              build/default/production/text_console.o (_memmove)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+                              build/default/production/PICvision.o (_srand)
+/opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
+                              /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo) (___mulsi3)
 
 
 Program Memory  [Origin = 0x200, Length = 0xa9fa]
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200                0xc8           0x12c  (300)
-.const                       0x2c8               0x336           0x4d1  (1233)
-.text                        0x5fe               0x31c           0x4aa  (1194)
-.dinit                       0x91a                 0x8             0xc  (12)
+.text                        0x200               0x3a6           0x579  (1401)
+.const                       0x5a6               0x324           0x4b6  (1206)
+.text                        0x8ca               0xab4          0x100e  (4110)
+.dinit                      0x137e                0x1c            0x2a  (42)
 
-                     Total program memory used (bytes):          0xab3  (2739) 4%
+                     Total program memory used (bytes):         0x1a67  (6759) 10%
 
 
 Data Memory  [Origin = 0x800, Length = 0x2000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-.nbss                        0x800                   0           0x2d8  (728)
+.nbss                        0x800                   0          0x16de  (5854)
+.ndata                      0x1ede                   0             0x2  (2)
+.bss                        0x1ee0                   0             0x6  (6)
 
-                        Total data memory used (bytes):          0x2d8  (728) 8%
+                        Total data memory used (bytes):         0x16e6  (5862) 71%
 
 
 Dynamic Memory Usage
@@ -86,24 +114,24 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                        0xad8                              0x1d28  (7464)
+stack                       0x1ee6                               0x91a  (2330)
 
-                        Maximum dynamic memory (bytes):         0x1d28  (7464)
+                        Maximum dynamic memory (bytes):          0x91a  (2330)
 
 
 External Symbols in Data Memory (by address):
 
                     0x0800                  _video_buffer
-                    0x0aa4                  _vsync
-                    0x0aa6                  _hsync
-                    0x0aa8                  _video_mode
+                    0x1ec8                  _vsync
+                    0x1eca                  _hsync
+                    0x1ecc                  _video_mode
 
 External Symbols in Data Memory (by name):
 
-                    0x0aa6                  _hsync
+                    0x1eca                  _hsync
                     0x0800                  _video_buffer
-                    0x0aa8                  _video_mode
-                    0x0aa4                  _vsync
+                    0x1ecc                  _video_mode
+                    0x1ec8                  _vsync
 
 External Symbols in Program Memory (by address):
 
@@ -112,58 +140,124 @@ External Symbols in Program Memory (by address):
                   0x000236                  __data_init
                   0x000236                  __data_init_standard
                   0x000294                  __DefaultInterrupt
-                  0x000298                  _memmove
-                  0x0002ba                  _memset
-                  0x0002c8                  _font6x8
-                  0x0005d8                  _msg
-                  0x0005e5                  _numbers
-                  0x0005fe                  _ntsc_init
-                  0x00061a                  _pal_init
-                  0x000638                  _video_init
-                  0x000684                  _wait_n_frame
-                  0x000698                  _clear_screen
-                  0x0006a0                  _clear_eol
-                  0x0006a4                  _move_cursor
-                  0x0006ac                  _get_cursor
-                  0x0006b0                  _put_char
-                  0x0006c2                  _print
-                  0x0006d8                  _wait_while_printing
-                  0x0006de                  _scroll_up
-                  0x0006ee                  _cursor_forward
-                  0x00070a                  __T2Interrupt
-                  0x000840                  __CNInterrupt
-                  0x000894                  _HardwareConfig
-                  0x0008e8                  _main
+                  0x0002b2                  ___subsf3
+                  0x0002b4                  ___addsf3
+                  0x00036e                  ___fixsfsi
+                  0x0003b0                  ___floatsisf
+                  0x0003b6                  __fpack
+                  0x000402                  __funpack
+                  0x00042c                  __funpack2
+                  0x00043c                  __fPropagateNaN
+                  0x00044e                  __fbopExit
+                  0x000456                  __fbopReturnNaN
+                  0x00045c                  ___mulsf3
+                  0x0004c4                  ___floatdisf
+                  0x0004e4                  ___floatundisf
+                  0x000542                  _memmove
+                  0x000564                  _srand
+                  0x000572                  _rand
+                  0x00059a                  ___mulp32eds3
+                  0x00059a                  ___mulp32peds3
+                  0x00059a                  ___mulsi3
+                  0x0005a6                  _font6x8
+                  0x0008b6                  _msg
+                  0x0008ca                  _plot
+                  0x00090e                  _line
+                  0x0009e4                  _rectangle
+                  0x000a28                  _ellipse
+                  0x000d24                  _polygon
+                  0x000db0                  _scroll_up
+                  0x000dc0                  _scroll_down
+                  0x000dd2                  _cursor_right
+                  0x000df4                  _cursor_left
+                  0x000e14                  _cursor_up
+                  0x000e24                  _cursor_down
+                  0x000e36                  _crlf
+                  0x000e4a                  _put_char
+                  0x000f50                  _clear_screen
+                  0x000f5e                  _print
+                  0x000f74                  _print_hex
+                  0x000fa8                  _print_int
+                  0x001012                  _set_tab_width
+                  0x001016                  _clear_eol
+                  0x001040                  _get_curpos
+                  0x001058                  _set_curpos
+                  0x00106c                  _invert_char
+                  0x0010b0                  _show_cursor
+                  0x0010e8                  _set_cursor
+                  0x001102                  _invert_video
+                  0x001106                  _normal_video
+                  0x00110a                  _ntsc_init
+                  0x001126                  _pal_init
+                  0x001144                  _video_init
+                  0x001182                  _wait_n_frame
+                  0x001196                  __T2Interrupt
+                  0x00124c                  __CNInterrupt
+                  0x00128c                  _HardwareConfig
+                  0x0012e0                  _main
 
 External Symbols in Program Memory (by name):
 
-                  0x000894                  _HardwareConfig
-                  0x000840                  __CNInterrupt
+                  0x00128c                  _HardwareConfig
+                  0x00124c                  __CNInterrupt
                   0x000294                  __DefaultInterrupt
-                  0x00070a                  __T2Interrupt
+                  0x001196                  __T2Interrupt
+                  0x0002b4                  ___addsf3
+                  0x00036e                  ___fixsfsi
+                  0x0004c4                  ___floatdisf
+                  0x0003b0                  ___floatsisf
+                  0x0004e4                  ___floatundisf
+                  0x00059a                  ___mulp32eds3
+                  0x00059a                  ___mulp32peds3
+                  0x00045c                  ___mulsf3
+                  0x00059a                  ___mulsi3
+                  0x0002b2                  ___subsf3
                   0x000236                  __data_init
                   0x000236                  __data_init_standard
+                  0x00043c                  __fPropagateNaN
+                  0x00044e                  __fbopExit
+                  0x000456                  __fbopReturnNaN
+                  0x0003b6                  __fpack
+                  0x000402                  __funpack
+                  0x00042c                  __funpack2
                   0x000226                  __psv_init
                   0x000200                  __resetPRI
-                  0x0006a0                  _clear_eol
-                  0x000698                  _clear_screen
-                  0x0006ee                  _cursor_forward
-                  0x0002c8                  _font6x8
-                  0x0006ac                  _get_cursor
-                  0x0008e8                  _main
-                  0x000298                  _memmove
-                  0x0002ba                  _memset
-                  0x0006a4                  _move_cursor
-                  0x0005d8                  _msg
-                  0x0005fe                  _ntsc_init
-                  0x0005e5                  _numbers
-                  0x00061a                  _pal_init
-                  0x0006c2                  _print
-                  0x0006b0                  _put_char
-                  0x0006de                  _scroll_up
-                  0x000638                  _video_init
-                  0x000684                  _wait_n_frame
-                  0x0006d8                  _wait_while_printing
+                  0x001016                  _clear_eol
+                  0x000f50                  _clear_screen
+                  0x000e36                  _crlf
+                  0x000e24                  _cursor_down
+                  0x000df4                  _cursor_left
+                  0x000dd2                  _cursor_right
+                  0x000e14                  _cursor_up
+                  0x000a28                  _ellipse
+                  0x0005a6                  _font6x8
+                  0x001040                  _get_curpos
+                  0x00106c                  _invert_char
+                  0x001102                  _invert_video
+                  0x00090e                  _line
+                  0x0012e0                  _main
+                  0x000542                  _memmove
+                  0x0008b6                  _msg
+                  0x001106                  _normal_video
+                  0x00110a                  _ntsc_init
+                  0x001126                  _pal_init
+                  0x0008ca                  _plot
+                  0x000d24                  _polygon
+                  0x000f5e                  _print
+                  0x000f74                  _print_hex
+                  0x000fa8                  _print_int
+                  0x000e4a                  _put_char
+                  0x000572                  _rand
+                  0x0009e4                  _rectangle
+                  0x000dc0                  _scroll_down
+                  0x000db0                  _scroll_up
+                  0x001058                  _set_curpos
+                  0x0010e8                  _set_cursor
+                  0x001012                  _set_tab_width
+                  0x0010b0                  _show_cursor
+                  0x000564                  _srand
+                  0x001144                  _video_init
+                  0x001182                  _wait_n_frame
 
 Configuration mémoire
 
@@ -185,6 +279,8 @@ LOAD build/default/production/TVout.o
 LOAD build/default/production/snes_pad.o
 LOAD build/default/production/sound.o
 LOAD build/default/production/font.o
+LOAD build/default/production/text_console.o
+LOAD build/default/production/graphics.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD /opt/microchip/xc16/v1.20/bin/bin/../../lib/PIC24F/libpPIC24Fxxx-elf.a
                     0xabfc                  __CONFIG2 = 0xabfc
@@ -203,7 +299,7 @@ LOAD /opt/microchip/xc16/v1.20/bin/bin/../../lib/PIC24F/libpPIC24Fxxx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200         0xc8
+.text             0x000200        0x3a6
  *(.init)
  .init            0x000200         0x36 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
                   0x000200                  __reset
@@ -221,12 +317,53 @@ LOAD /opt/microchip/xc16/v1.20/bin/bin/../../lib/PIC24F/libpPIC24Fxxx-elf.a
  *(.libm)
  *(.libdsp)
  *(.lib*)
+ .libc.time       0x000298         0x1a /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(time.eo)
+                  0x000298                  _time
+ .libm.subsf3     0x0002b2         0xbc /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+                  0x0002b2                  ___subsf3
+                  0x0002b4                  ___addsf3
+ .libm.fixsfsi    0x00036e         0x42 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+                  0x00036e                  _(float, int, long long, short, float, short, int)
+ .libm.floatsisf
+                  0x0003b0          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+                  0x0003b0                  ___floatsisf
+ .libm.fpack      0x0003b6         0x4c /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
+                  0x0003b6                  __fpack
+ .libm.funpack    0x000402         0x2a /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
+                  0x000402                  __funpack
+ .libm.funpack2
+                  0x00042c         0x10 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
+                  0x00042c                  __funpack2
+ .libm.fPropagateNaN
+                  0x00043c         0x12 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x00043c                  __fPropagateNaN
+ .libm.fbobExit
+                  0x00044e          0x8 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x00044e                  __fbopExit
+ .libm.fbopReturnNaN
+                  0x000456          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x000456                  __fbopReturnNaN
+ .libm.mulsf3     0x00045c         0x68 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+                  0x00045c                  ___mulsf3
+ .libm.floatdisf
+                  0x0004c4         0x20 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
+                  0x0004c4                  ___floatdisf
+ .libm.floatundisf
+                  0x0004e4         0x5e /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
+                  0x0004e4                  ___floatundisf
  .libc.memmove.memmove
-                  0x000298         0x22 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
-                  0x000298                  _memmove
- .libc.memset.memset
-                  0x0002ba          0xe /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memset.eo)
-                  0x0002ba                  _memset
+                  0x000542         0x22 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
+                  0x000542                  _memmove
+ .libc.srand.srand
+                  0x000564          0xe /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+                  0x000564                  _srand
+ .libc.rand.rand
+                  0x000572         0x28 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+                  0x000572                  _rand
+ .libm.mulsi3     0x00059a          0xc /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
+                  0x00059a                  ___mulp32eds3
+                  0x00059a                  ___mulp32peds3
+                  0x00059a                  ___mulsi3
 
 usercode
  *(usercode)
@@ -240,39 +377,49 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x234a
+.debug_info       0x000000       0x29d7
  *(.debug_info)
- .debug_info      0x000000        0x917 build/default/production/PICvision.o
- .debug_info      0x000917       0x18a5 build/default/production/TVout.o
- .debug_info      0x0021bc         0xa8 build/default/production/snes_pad.o
- .debug_info      0x002264         0xe6 build/default/production/font.o
+ .debug_info      0x000000        0x915 build/default/production/PICvision.o
+ .debug_info      0x000915       0x1425 build/default/production/TVout.o
+ .debug_info      0x001d3a         0xa8 build/default/production/snes_pad.o
+ .debug_info      0x001de2         0xe6 build/default/production/font.o
+ .debug_info      0x001ec8        0x75e build/default/production/text_console.o
+ .debug_info      0x002626        0x3b1 build/default/production/graphics.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x388
+.debug_abbrev     0x000000        0x52a
  *(.debug_abbrev)
- .debug_abbrev    0x000000        0x108 build/default/production/PICvision.o
- .debug_abbrev    0x000108        0x217 build/default/production/TVout.o
- .debug_abbrev    0x00031f         0x1f build/default/production/snes_pad.o
- .debug_abbrev    0x00033e          0x1 build/default/production/sound.o
- .debug_abbrev    0x00033f         0x49 build/default/production/font.o
+ .debug_abbrev    0x000000        0x119 build/default/production/PICvision.o
+ .debug_abbrev    0x000119        0x187 build/default/production/TVout.o
+ .debug_abbrev    0x0002a0         0x1f build/default/production/snes_pad.o
+ .debug_abbrev    0x0002bf          0x1 build/default/production/sound.o
+ .debug_abbrev    0x0002c0         0x49 build/default/production/font.o
+ .debug_abbrev    0x000309        0x17c build/default/production/text_console.o
+ .debug_abbrev    0x000485         0xa5 build/default/production/graphics.o
 
-.debug_line       0x000000        0x7cf
+.debug_line       0x000000       0x11fe
  *(.debug_line)
- .debug_line      0x000000        0x172 build/default/production/PICvision.o
- .debug_line      0x000172        0x5e7 build/default/production/TVout.o
- .debug_line      0x000759         0x24 build/default/production/snes_pad.o
- .debug_line      0x00077d         0x24 build/default/production/sound.o
- .debug_line      0x0007a1         0x2e build/default/production/font.o
+ .debug_line      0x000000        0x1fa build/default/production/PICvision.o
+ .debug_line      0x0001fa        0x389 build/default/production/TVout.o
+ .debug_line      0x000583         0x24 build/default/production/snes_pad.o
+ .debug_line      0x0005a7         0x24 build/default/production/sound.o
+ .debug_line      0x0005cb         0x2e build/default/production/font.o
+ .debug_line      0x0005f9        0x87a build/default/production/text_console.o
+ .debug_line      0x000e73        0x38b build/default/production/graphics.o
 
-.debug_frame      0x000000        0x138
+.debug_frame      0x000000        0x280
  *(.debug_frame)
  .debug_frame     0x000000         0x34 build/default/production/PICvision.o
- .debug_frame     0x000034        0x104 build/default/production/TVout.o
+ .debug_frame     0x000034         0x74 build/default/production/TVout.o
+ .debug_frame     0x0000a8        0x174 build/default/production/text_console.o
+ .debug_frame     0x00021c         0x64 build/default/production/graphics.o
 
-.debug_str        0x000000         0xd5
+.debug_str        0x000000         0xec
  *(.debug_str)
  .debug_str       0x000000         0x34 build/default/production/PICvision.o
- .debug_str       0x000034         0xa1 build/default/production/TVout.o
+ .debug_str       0x000034         0x98 build/default/production/TVout.o
+ .debug_str       0x0000cc          0xd build/default/production/text_console.o
+ .debug_str       0x0000d9         0x13 build/default/production/graphics.o
 
 .debug_loc
  *(.debug_loc)
@@ -281,24 +428,32 @@ __CONFIG1
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000        0x191
+                  0x000000        0x28c
  *(.debug_pubnames)
  .debug_pubnames
-                  0x000000         0x42 build/default/production/PICvision.o
+                  0x000000         0x36 build/default/production/PICvision.o
  .debug_pubnames
-                  0x000042        0x131 build/default/production/TVout.o
+                  0x000036         0xa3 build/default/production/TVout.o
  .debug_pubnames
-                  0x000173         0x1e build/default/production/font.o
+                  0x0000d9         0x1e build/default/production/font.o
+ .debug_pubnames
+                  0x0000f7        0x14b build/default/production/text_console.o
+ .debug_pubnames
+                  0x000242         0x4a build/default/production/graphics.o
 
 .debug_ranges
  *(.debug_ranges)
 
-.debug_aranges    0x000000         0x30
+.debug_aranges    0x000000         0x60
  *(.debug_aranges)
  .debug_aranges
                   0x000000         0x18 build/default/production/PICvision.o
  .debug_aranges
                   0x000018         0x18 build/default/production/TVout.o
+ .debug_aranges
+                  0x000030         0x18 build/default/production/text_console.o
+ .debug_aranges
+                  0x000048         0x18 build/default/production/graphics.o
 
 .ivt              0x000004         0xfc
                   0x000004          0x4 LONG 0x294 DEFINED (__ReservedTrap0)?ABSOLUTE (__ReservedTrap0):ABSOLUTE (__DefaultInterrupt)
@@ -316,7 +471,7 @@ __CONFIG1
                   0x00001c          0x4 LONG 0x294 DEFINED (__Interrupt4)?ABSOLUTE (__Interrupt4):ABSOLUTE (__DefaultInterrupt)
                   0x00001e          0x4 LONG 0x294 DEFINED (__IC2Interrupt)?ABSOLUTE (__IC2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000020          0x4 LONG 0x294 DEFINED (__OC2Interrupt)?ABSOLUTE (__OC2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000022          0x4 LONG 0x70a DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000022          0x4 LONG 0x1196 DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000024          0x4 LONG 0x294 DEFINED (__T3Interrupt)?ABSOLUTE (__T3Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000026          0x4 LONG 0x294 DEFINED (__SPI1ErrInterrupt)?ABSOLUTE (__SPI1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000028          0x4 LONG 0x294 DEFINED (__SPI1Interrupt)?ABSOLUTE (__SPI1Interrupt):ABSOLUTE (__DefaultInterrupt)
@@ -328,7 +483,7 @@ __CONFIG1
                   0x000034          0x4 LONG 0x294 DEFINED (__SI2C1Interrupt)?ABSOLUTE (__SI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000036          0x4 LONG 0x294 DEFINED (__MI2C1Interrupt)?ABSOLUTE (__MI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000038          0x4 LONG 0x294 DEFINED (__CompInterrupt)?ABSOLUTE (__CompInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00003a          0x4 LONG 0x840 DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00003a          0x4 LONG 0x124c DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00003c          0x4 LONG 0x294 DEFINED (__INT1Interrupt)?ABSOLUTE (__INT1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00003e          0x4 LONG 0x294 DEFINED (__Interrupt21)?ABSOLUTE (__Interrupt21):ABSOLUTE (__DefaultInterrupt)
                   0x000040          0x4 LONG 0x294 DEFINED (__Interrupt22)?ABSOLUTE (__Interrupt22):ABSOLUTE (__DefaultInterrupt)
@@ -444,7 +599,7 @@ __CONFIG1
                   0x00011c          0x4 LONG 0x294 DEFINED (__AltInterrupt4)?ABSOLUTE (__AltInterrupt4):DEFINED (__Interrupt4)?ABSOLUTE (__Interrupt4):ABSOLUTE (__DefaultInterrupt)
                   0x00011e          0x4 LONG 0x294 DEFINED (__AltIC2Interrupt)?ABSOLUTE (__AltIC2Interrupt):DEFINED (__IC2Interrupt)?ABSOLUTE (__IC2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000120          0x4 LONG 0x294 DEFINED (__AltOC2Interrupt)?ABSOLUTE (__AltOC2Interrupt):DEFINED (__OC2Interrupt)?ABSOLUTE (__OC2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000122          0x4 LONG 0x70a DEFINED (__AltT2Interrupt)?ABSOLUTE (__AltT2Interrupt):DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000122          0x4 LONG 0x1196 DEFINED (__AltT2Interrupt)?ABSOLUTE (__AltT2Interrupt):DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000124          0x4 LONG 0x294 DEFINED (__AltT3Interrupt)?ABSOLUTE (__AltT3Interrupt):DEFINED (__T3Interrupt)?ABSOLUTE (__T3Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000126          0x4 LONG 0x294 DEFINED (__AltSPI1ErrInterrupt)?ABSOLUTE (__AltSPI1ErrInterrupt):DEFINED (__SPI1ErrInterrupt)?ABSOLUTE (__SPI1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000128          0x4 LONG 0x294 DEFINED (__AltSPI1Interrupt)?ABSOLUTE (__AltSPI1Interrupt):DEFINED (__SPI1Interrupt)?ABSOLUTE (__SPI1Interrupt):ABSOLUTE (__DefaultInterrupt)
@@ -456,7 +611,7 @@ __CONFIG1
                   0x000134          0x4 LONG 0x294 DEFINED (__AltSI2C1Interrupt)?ABSOLUTE (__AltSI2C1Interrupt):DEFINED (__SI2C1Interrupt)?ABSOLUTE (__SI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000136          0x4 LONG 0x294 DEFINED (__AltMI2C1Interrupt)?ABSOLUTE (__AltMI2C1Interrupt):DEFINED (__MI2C1Interrupt)?ABSOLUTE (__MI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000138          0x4 LONG 0x294 DEFINED (__AltCompInterrupt)?ABSOLUTE (__AltCompInterrupt):DEFINED (__CompInterrupt)?ABSOLUTE (__CompInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00013a          0x4 LONG 0x840 DEFINED (__AltCNInterrupt)?ABSOLUTE (__AltCNInterrupt):DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00013a          0x4 LONG 0x124c DEFINED (__AltCNInterrupt)?ABSOLUTE (__AltCNInterrupt):DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00013c          0x4 LONG 0x294 DEFINED (__AltINT1Interrupt)?ABSOLUTE (__AltINT1Interrupt):DEFINED (__INT1Interrupt)?ABSOLUTE (__INT1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00013e          0x4 LONG 0x294 DEFINED (__AltInterrupt21)?ABSOLUTE (__AltInterrupt21):DEFINED (__Interrupt21)?ABSOLUTE (__Interrupt21):ABSOLUTE (__DefaultInterrupt)
                   0x000140          0x4 LONG 0x294 DEFINED (__AltInterrupt22)?ABSOLUTE (__AltInterrupt22):DEFINED (__Interrupt22)?ABSOLUTE (__Interrupt22):ABSOLUTE (__DefaultInterrupt)
@@ -1142,41 +1297,80 @@ LOAD default_isr
 LOAD data_init
 
 .debug_pubtypes
-                  0x000030        0x262
+                  0x000060        0x291
  .debug_pubtypes
-                  0x000030         0xb1 build/default/production/PICvision.o
+                  0x000060         0xb1 build/default/production/PICvision.o
  .debug_pubtypes
-                  0x0000e1        0x19f build/default/production/TVout.o
+                  0x000111        0x167 build/default/production/TVout.o
  .debug_pubtypes
-                  0x000280         0x12 build/default/production/snes_pad.o
+                  0x000278         0x12 build/default/production/snes_pad.o
+ .debug_pubtypes
+                  0x00028a         0x55 build/default/production/text_console.o
+ .debug_pubtypes
+                  0x0002df         0x12 build/default/production/graphics.o
 
 __c30_signature
-                  0x000292         0x36
+                  0x0002f2         0x8a
  __c30_signature
-                  0x000292          0x6 build/default/production/PICvision.o
+                  0x0002f2          0x6 build/default/production/PICvision.o
  __c30_signature
-                  0x000298          0x6 build/default/production/TVout.o
+                  0x0002f8          0x6 build/default/production/TVout.o
  __c30_signature
-                  0x00029e          0x6 build/default/production/snes_pad.o
+                  0x0002fe          0x6 build/default/production/snes_pad.o
  __c30_signature
-                  0x0002a4          0x6 build/default/production/sound.o
+                  0x000304          0x6 build/default/production/sound.o
  __c30_signature
-                  0x0002aa          0x6 build/default/production/font.o
+                  0x00030a          0x6 build/default/production/font.o
  __c30_signature
-                  0x0002b0          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
+                  0x000310          0x6 build/default/production/text_console.o
  __c30_signature
-                  0x0002b6          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
+                  0x000316          0x6 build/default/production/graphics.o
  __c30_signature
-                  0x0002bc          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
+                  0x00031c          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
  __c30_signature
-                  0x0002c2          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memset.eo)
+                  0x000322          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
+ __c30_signature
+                  0x000328          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(time.eo)
+ __c30_signature
+                  0x00032e          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+ __c30_signature
+                  0x000334          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+ __c30_signature
+                  0x00033a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+ __c30_signature
+                  0x000340          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
+ __c30_signature
+                  0x000346          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
+ __c30_signature
+                  0x00034c          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
+ __c30_signature
+                  0x000352          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+ __c30_signature
+                  0x000358          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+ __c30_signature
+                  0x00035e          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
+ __c30_signature
+                  0x000364          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
+ __c30_signature
+                  0x00036a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
+ __c30_signature
+                  0x000370          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+ __c30_signature
+                  0x000376          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
 
-.nbss               0x0800        0x2d8
- .nbss              0x0800        0x2d8 build/default/production/TVout.o
+.nbss               0x0800       0x16de
+ .nbss              0x0800       0x16d6 build/default/production/TVout.o
                     0x0800                  _video_buffer
-                    0x0aa4                  _vsync
-                    0x0aa6                  _hsync
-                    0x0aa8                  _video_mode
+                    0x1ec8                  _vsync
+                    0x1eca                  _hsync
+                    0x1ecc                  _video_mode
+ .nbss              0x1ed6          0x8 build/default/production/text_console.o
+
+.ndata              0x1ede          0x2
+ .ndata             0x1ede          0x2 build/default/production/text_console.o
+
+.bss                0x1ee0          0x6
+ .bss               0x1ee0          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
 
 .config_JTAGEN    0x00abfe          0x2
  .config_JTAGEN
@@ -1185,33 +1379,51 @@ __c30_signature
 .config_IESO      0x00abfc          0x2
  .config_IESO     0x00abfc          0x2 build/default/production/PICvision.o
 
-.const              0x82c8        0x336 address de chargement 0x0002c8  
- .const             0x82c8        0x310 build/default/production/font.o
-                    0x82c8                  _font6x8
- .const             0x85d8         0x26 build/default/production/PICvision.o
-                    0x85d8                  _msg
-                    0x85e5                  _numbers
+.const              0x85a6        0x324 address de chargement 0x0005a6  
+ .const             0x85a6        0x310 build/default/production/font.o
+                    0x85a6                  _font6x8
+ .const             0x88b6         0x14 build/default/production/PICvision.o
+                    0x88b6                  _msg
 
-.text             0x0005fe        0x31c
- .text            0x0005fe        0x296 build/default/production/TVout.o
-                  0x0005fe                  _ntsc_init
-                  0x00061a                  _pal_init
-                  0x000638                  _video_init
-                  0x000684                  _wait_n_frame
-                  0x000698                  _clear_screen
-                  0x0006a0                  _clear_eol
-                  0x0006a4                  _move_cursor
-                  0x0006ac                  _get_cursor
-                  0x0006b0                  _put_char
-                  0x0006c2                  _print
-                  0x0006d8                  _wait_while_printing
-                  0x0006de                  _scroll_up
-                  0x0006ee                  _cursor_forward
-                  0x00070a                  __T2Interrupt
-                  0x000840                  __CNInterrupt
- .text            0x000894         0x86 build/default/production/PICvision.o
-                  0x000894                  _HardwareConfig
-                  0x0008e8                  _main
+.text             0x0008ca        0xab4
+ .text            0x0008ca        0x49e build/default/production/graphics.o
+                  0x0008ca                  _plot
+                  0x00090e                  _line
+                  0x0009e4                  _rectangle
+                  0x000a28                  _ellipse
+                  0x000d24                  _polygon
+ .text            0x000d68        0x3a2 build/default/production/text_console.o
+                  0x000db0                  _scroll_up
+                  0x000dc0                  _scroll_down
+                  0x000dd2                  _cursor_right
+                  0x000df4                  _cursor_left
+                  0x000e14                  _cursor_up
+                  0x000e24                  _cursor_down
+                  0x000e36                  _crlf
+                  0x000e4a                  _put_char
+                  0x000f50                  _clear_screen
+                  0x000f5e                  _print
+                  0x000f74                  _print_hex
+                  0x000fa8                  _print_int
+                  0x001012                  _set_tab_width
+                  0x001016                  _clear_eol
+                  0x001040                  _get_curpos
+                  0x001058                  _set_curpos
+                  0x00106c                  _invert_char
+                  0x0010b0                  _show_cursor
+                  0x0010e8                  _set_cursor
+                  0x001102                  _invert_video
+                  0x001106                  _normal_video
+ .text            0x00110a        0x182 build/default/production/TVout.o
+                  0x00110a                  _ntsc_init
+                  0x001126                  _pal_init
+                  0x001144                  _video_init
+                  0x001182                  _wait_n_frame
+                  0x001196                  __T2Interrupt
+                  0x00124c                  __CNInterrupt
+ .text            0x00128c         0xf2 build/default/production/PICvision.o
+                  0x00128c                  _HardwareConfig
+                  0x0012e0                  _main
 
-.dinit            0x00091a          0x8
- .dinit           0x00091a          0x8 data_init
+.dinit            0x00137e         0x1c
+ .dinit           0x00137e         0x1c data_init

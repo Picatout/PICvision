@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=PICvision.c TVout.c snes_pad.c sound.c font.c
+SOURCEFILES_QUOTED_IF_SPACED=PICvision.c TVout.c snes_pad.c sound.c font.c text_console.c graphics.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/snes_pad.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/TVout.o.d ${OBJECTDIR}/snes_pad.o.d ${OBJECTDIR}/sound.o.d ${OBJECTDIR}/font.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/snes_pad.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/TVout.o.d ${OBJECTDIR}/snes_pad.o.d ${OBJECTDIR}/sound.o.d ${OBJECTDIR}/font.o.d ${OBJECTDIR}/text_console.o.d ${OBJECTDIR}/graphics.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/snes_pad.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o
+OBJECTFILES=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/snes_pad.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o
 
 # Source Files
-SOURCEFILES=PICvision.c TVout.c snes_pad.c sound.c font.c
+SOURCEFILES=PICvision.c TVout.c snes_pad.c sound.c font.c text_console.c graphics.c
 
 
 CFLAGS=
@@ -114,6 +114,20 @@ ${OBJECTDIR}/font.o: font.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  font.c  -o ${OBJECTDIR}/font.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/font.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/font.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/text_console.o: text_console.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/text_console.o.d 
+	@${RM} ${OBJECTDIR}/text_console.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  text_console.c  -o ${OBJECTDIR}/text_console.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/text_console.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/text_console.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/graphics.o: graphics.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/graphics.o.d 
+	@${RM} ${OBJECTDIR}/graphics.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  graphics.c  -o ${OBJECTDIR}/graphics.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/graphics.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/graphics.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/PICvision.o: PICvision.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -149,6 +163,20 @@ ${OBJECTDIR}/font.o: font.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/font.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  font.c  -o ${OBJECTDIR}/font.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/font.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/font.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/text_console.o: text_console.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/text_console.o.d 
+	@${RM} ${OBJECTDIR}/text_console.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  text_console.c  -o ${OBJECTDIR}/text_console.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/text_console.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/text_console.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/graphics.o: graphics.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/graphics.o.d 
+	@${RM} ${OBJECTDIR}/graphics.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  graphics.c  -o ${OBJECTDIR}/graphics.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/graphics.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/graphics.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
