@@ -6,11 +6,13 @@
                    projectFiles="true">
       <itemPath>hardwareProfile.h</itemPath>
       <itemPath>TVout.h</itemPath>
-      <itemPath>snes_pad.h</itemPath>
       <itemPath>sound.h</itemPath>
       <itemPath>font.h</itemPath>
       <itemPath>text_console.h</itemPath>
       <itemPath>graphics.h</itemPath>
+      <itemPath>timers.h</itemPath>
+      <itemPath>snes-paddle.h</itemPath>
+      <itemPath>snes_paddle.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -21,11 +23,14 @@
                    projectFiles="true">
       <itemPath>PICvision.c</itemPath>
       <itemPath>TVout.c</itemPath>
-      <itemPath>snes_pad.c</itemPath>
       <itemPath>sound.c</itemPath>
       <itemPath>font.c</itemPath>
       <itemPath>text_console.c</itemPath>
       <itemPath>graphics.c</itemPath>
+      <itemPath>timers.c</itemPath>
+      <itemPath>snes-paddle.c</itemPath>
+      <itemPath>snes_paddle.c</itemPath>
+      <itemPath>hardwareProfile.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

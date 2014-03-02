@@ -4,4 +4,6 @@ hardwareProfile.h  \
  TVout.h  \
 text_console.h  \
 font.h  \
-graphics.h 
+graphics.h  \
+sound.h  \
+timers.h 

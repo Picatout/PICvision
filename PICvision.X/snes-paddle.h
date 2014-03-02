@@ -16,12 +16,27 @@
 *     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
- * File:   snes_pad.h
+/* 
+ * File:   snes-paddle.h
  * Author: jacques Deschênes
- * Description:  SNES gemepad interface
- * Created on 25 février 2014, 16:41
+ * Description: interface to Nintendo SNES gamepad paddle.
+ * Created on 1 mars 2014, 15:56
  */
 
-#include "snes_pad.h"
+#ifndef SNES_PADDLE_H
+#define	SNES_PADDLE_H
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+#include "hardwareProfile.h"
+
+
+
+#ifdef	__cplusplus
+}
+#endif
+
+#endif	/* SNES_PADDLE_H */
 

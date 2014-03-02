@@ -68,54 +68,49 @@ char video_buffer[VPIXELS][BYTES_PER_LINE];
 int vsync, hsync, video_mode;
 
 void ntsc_init(){
-    PR2 = NTSC_LINE_PERIOD;
-    OC1R= NTSC_HPULSE;
-    OC1RS=NTSC_LINE_PERIOD;
-    OC4R=NTSC_VIDEO_DELAY;
-    OC4RS=NTSC_LINE_PERIOD-NTSC_FRONT_PORCH;
+    VIDPR = NTSC_LINE_PERIOD;  // video timer PRx SFR
+    VSYNCR= NTSC_HPULSE;       // video OCxR  SFR
+    VSYNCRS=NTSC_LINE_PERIOD;  // video OCxRS SFR
+    VDLYR=NTSC_VIDEO_DELAY;     // video delay OCxR SFR
+    VDLYRS=NTSC_LINE_PERIOD-NTSC_FRONT_PORCH;  // video delay OCxRS SFR
     hsync=NTSC_HPULSE;
     vsync=NTSC_LINE_PERIOD-NTSC_HPULSE;
     video_mode=NTSC_MODE;
 }//f()
 
 void pal_init(){
-    PR2 = PAL_LINE_PERIOD;
-    OC1R= PAL_HPULSE;
-    OC1RS=PAL_LINE_PERIOD;
-    OC4R=PAL_VIDEO_DELAY;
-    OC4RS=PAL_LINE_PERIOD-PAL_FRONT_PORCH;
+    VIDPR = PAL_LINE_PERIOD;
+    VSYNCR= PAL_HPULSE;
+    VSYNCRS=PAL_LINE_PERIOD;
+    VDLYR=PAL_VIDEO_DELAY;
+    VDLYRS=PAL_LINE_PERIOD-PAL_FRONT_PORCH;
     hsync=PAL_HPULSE;
     vsync=PAL_LINE_PERIOD-PAL_HPULSE;
     video_mode=PAL_MODE;
 }//f()
 
 void  video_init(){ // initialisation sorties NTSC
-    T2CON=0; // désactivation TIMER2
+    VIDTMR.TON=0; // désactivation TIMER2
     if (P_VIDEO_MODE){
         ntsc_init();
     }else{
         pal_init();
     }
-    // OC1 video sync
-    OC1CON=5; // mode 5, timer 2
-    //video sync interrupt setting.
-    //IFS0bits.OC1IF=0;
-    //IPC0bits.OC1IP=7;
-    IPC4bits.CNIP=7;
-    CNEN2bits.CN21IE=1;
-    // timer 2 interrupt enabling
-    IFS0bits.T2IF=0;
-    IPC1bits.T2IP=7; // plus haute priorité
-    IEC0bits.T2IE=1;
-    // SPI1 configuration (pixel output)
-    SPI1CON1=0;
-    SPI1CON1bits.DISSCK=1;
-    SPI1CON1bits.MSTEN=1;
-    SPI1CON1bits.SPRE=5;
-    SPI1CON1bits.PPRE=3;
-    SPI1CON2=1;
-    SPI1STATbits.SPIEN=1;
-    T2CONbits.TON=1;
+    //  video sync OC mode
+    VSYNCCON.OCM=5; // mode 5, timer 2
+    //video delay change notification interrupt enable on that pin.
+    PIXIE=1;
+    // video sync interrupt enabling
+    VSYNCIF=0;
+    VSYNCIE=1;
+    // SPIx configuration (pixels output)
+    PIXCON1.DISSCK=1;
+    PIXCON1.MSTEN=1;
+    PIXCON1.SPRE=5;
+    PIXCON1.PPRE=3;
+    PIXCON2.SPIBEN=1;  // enhanced buffer mode
+    PIXSTAT.SPIEN=1;
+    VIDTMR.TON=1;
 }//horz_sync_init()
 
 void  wait_n_frame(unsigned n){
@@ -128,40 +123,40 @@ unsigned long f0;
 
 
 // video sync signal generation
-void __attribute__((interrupt,no_auto_psv,shadow)) _T2Interrupt(void){
+void __attribute__((interrupt,no_auto_psv,shadow)) _VSYNC_ISR(void){
     frame_line_cntr++;
     switch (frame_line_cntr){
         case 1:
-            OC1R=vsync;
-            OC4CON=0;
+            VSYNCR=vsync;
+            VDLYCON.OCM=0;
             break;
         case 4:
-            OC4CON=5;
-            OC1R=hsync;
+            VDLYCON.OCM=5;
+            VSYNCR=hsync;
             break;
         case NTSC_FIRST_VISIBLE:
             if (video_mode==NTSC_MODE){
-                IFS1bits.CNIF=0;
-                IEC1bits.CNIE=1;
+                VDLYIF=0;
+                VDLYIE=1;
                 flags &= ~F_RETRACE;
             }
             break;
         case NTSC_LAST_VISIBLE:
             if (video_mode==NTSC_MODE){
-                IEC1bits.CNIE=0;
+                VDLYIE=0;
                 flags |= F_RETRACE;
             }
             break;
         case PAL_FIRST_VISIBLE:
             if (video_mode==PAL_MODE){
-                IFS1bits.CNIF=0;
-                IEC1bits.CNIE=1;
+                VDLYIF=0;
+                VDLYIE=1;
                 flags &= ~F_RETRACE;
             }
             break;
         case PAL_LAST_VISIBLE:
             if (video_mode==PAL_MODE){
-                IEC1bits.CNIE=0;
+                VDLYIE=0;
                 flags |= F_RETRACE;
             }
             break;
@@ -177,48 +172,25 @@ void __attribute__((interrupt,no_auto_psv,shadow)) _T2Interrupt(void){
                 frame_cntr++;
             }
             break;
-
-//        default:
-//            if (flags & F_RETRACE){
-//                if (flags & F_CLEAR){
-//                    memset((char*)video_buffer,0,sizeof(char)*VPIXELS*BYTES_PER_LINE);
-//                    flags &= ~F_CLEAR;
-//                    cursor_pos.y=0;
-//                    cursor_pos.x=0;
-//                } else if (flags & F_CLREOL){
-//                    memset((char*)video_buffer[cursor_pos.y]+cursor_pos.x,
-//                            0,sizeof(char)*(COLUMNS-cursor_pos.x));
-//                    flags &= ~F_CLREOL;
-//                }else if (flags & F_PCHAR){
-//                    video_buffer[cursor_pos.y][cursor_pos.x]=pchar_queue[head]-32;
-//                    cursor_forward();
-//                    head++;
-//                    head %= QUEUE_SIZE;
-//                    if (head==tail){
-//                        flags &= ~F_PCHAR;
-//                    }
-//                }//if
-//            }//if
-//            break;
     }//switch
-    IFS0bits.T2IF=0;
-}// _T2Interrupt()
+    VSYNCIF=0;
+}// _VSYNC_ISR()
 
-void __attribute__((interrupt,no_auto_psv,shadow)) _CNInterrupt(void){
+void __attribute__((interrupt,no_auto_psv,shadow)) _VIDEO_OUT_ISR(void){
     int y,x;
-    if (PORTBbits.RB9){
+    if (PIXDLY_INP){
         if (video_mode==NTSC_MODE){
             y=(frame_line_cntr-NTSC_FIRST_VISIBLE);
         }else{
             y=(frame_line_cntr-PAL_FIRST_VISIBLE);
         }
         for (x=0;x<BYTES_PER_LINE;x++){
-            while (SPI1STATbits.SPITBF);
-            SPI1BUF=video_buffer[y][x];
+            while (PIXSTAT.SPITBF);
+            PIXBUF=video_buffer[y][x];
         }//for
-        while (SPI1STATbits.SPITBF);
-        SPI1BUF=0;
+        while (PIXSTAT.SPITBF);
+        PIXBUF=0;
     }
-    IFS1bits.CNIF=0;
-}// _CNInterrupt
+    VDLYIF=0;
+}// _VIDEO_OUT_ISR
 

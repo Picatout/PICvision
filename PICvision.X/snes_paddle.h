@@ -17,14 +17,14 @@
 */
 
 /* 
- * File:   snes_pad.h
+ * File:   snes_paddle.h
  * Author: jacques Deschênes
  * Description:  SNES gemepad interface
  * Created on 25 février 2014, 16:41
  */
 
-#ifndef SNES_PAD_H
-#define	SNES_PAD_H
+#ifndef SNES_PADDLE_H
+#define	SNES_PADDLE_H
 
 #ifdef	__cplusplus
 extern "C" {
@@ -38,5 +38,5 @@ extern "C" {
 }
 #endif
 
-#endif	/* SNES_PAD_H */
+#endif	/* SNES_PADDLE_H */
 

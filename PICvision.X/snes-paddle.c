@@ -16,43 +16,12 @@
 *     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* 
- * File:   sound.h
+/*
+ * File:   snes-paddle.h
  * Author: jacques Deschênes
- * Description:  sound generation using PWM D.A.C.
- * Created on 25 février 2014, 16:43
+ * Description: interface to Nintendo SNES gamepad paddle.
+ * Created on 1 mars 2014, 15:56
  */
 
-#ifndef SOUND_H
-#define	SOUND_H
-
-#ifdef	__cplusplus
-extern "C" {
-#endif
-
-#include "hardwareProfile.h"
-#include "timers.h"
-
-
-#define TONE_ON  1
-#define PLAY_TUNE 2
-
-#define mTone_off() (AUDIOCON.OCM=0)
-#define mTone_on()  (AUDIOCON.OCM=5)
-
-extern volatile unsigned char fSound; // boolean flags
-extern volatile unsigned int duration;
-
-void sound_init();
-void tone(unsigned freq, unsigned duration);
-void tune(const unsigned  *buffer);
-
-
-
-
-#ifdef	__cplusplus
-}
-#endif
-
-#endif	/* SOUND_H */
+#include "snes-paddle.h"
 

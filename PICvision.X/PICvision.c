@@ -33,12 +33,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <PPS.h>
+
 
 #include "hardwareProfile.h"
 #include "TVout.h"
 #include "text_console.h"
 #include "graphics.h"
+#include "sound.h"
 
 // PIC24FJ64GA002 Configuration Bit Settings
 // CONFIG2
@@ -62,28 +63,16 @@
 #pragma config GCP = OFF                // General Code Segment Code Protect (Code protection is disabled)
 #pragma config JTAGEN = OFF             // JTAG Port Enable (JTAG port is disabled)
 
-void HardwareConfig(){
-    PPSUnLock;
-    PPSOutput(PPS_RP5,PPS_SDO1);   // video pixels output
-    PPSOutput(PPS_RP6,PPS_OC4);  // video delay output
-    PPSOutput(PPS_RP7,PPS_OC1);  // video sync output
-    PPSOutput(PPS_RP8,PPS_OC2);  // audio output
-    TRISBbits.TRISB5=0;     // video pixels output
-    TRISBbits.TRISB6=0;     // video delay output
-    TRISBbits.TRISB7=0;     // video sync output
-    TRISBbits.TRISB8=0;     // audio output
-    TRISBbits.TRISB9=1;    //input video delay synchronisation
-    TRISBbits.TRISB12=1;    //input NTSC/PAL select input
-    AD1PCFGbits.PCFG12=1;   // disable ADC
-    PPSLock;
-}//f()
 
 const char msg[]="bouncing ring demo.";
-
+const unsigned music[]={440,1000,880,1000};
 int main(void) {
     int y,x,dx,dy;
     HardwareConfig();
+    timers_init(TICK_FREQ);
     video_init();
+    sound_init(TICK_FREQ);
+    //tune(music);
     print(msg);
     rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
     y=108;

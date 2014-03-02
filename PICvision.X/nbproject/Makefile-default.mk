@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=PICvision.c TVout.c snes_pad.c sound.c font.c text_console.c graphics.c
+SOURCEFILES_QUOTED_IF_SPACED=PICvision.c TVout.c sound.c font.c text_console.c graphics.c timers.c snes-paddle.c snes_paddle.c hardwareProfile.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/snes_pad.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/TVout.o.d ${OBJECTDIR}/snes_pad.o.d ${OBJECTDIR}/sound.o.d ${OBJECTDIR}/font.o.d ${OBJECTDIR}/text_console.o.d ${OBJECTDIR}/graphics.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o ${OBJECTDIR}/timers.o ${OBJECTDIR}/snes-paddle.o ${OBJECTDIR}/snes_paddle.o ${OBJECTDIR}/hardwareProfile.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/TVout.o.d ${OBJECTDIR}/sound.o.d ${OBJECTDIR}/font.o.d ${OBJECTDIR}/text_console.o.d ${OBJECTDIR}/graphics.o.d ${OBJECTDIR}/timers.o.d ${OBJECTDIR}/snes-paddle.o.d ${OBJECTDIR}/snes_paddle.o.d ${OBJECTDIR}/hardwareProfile.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/snes_pad.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o
+OBJECTFILES=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o ${OBJECTDIR}/timers.o ${OBJECTDIR}/snes-paddle.o ${OBJECTDIR}/snes_paddle.o ${OBJECTDIR}/hardwareProfile.o
 
 # Source Files
-SOURCEFILES=PICvision.c TVout.c snes_pad.c sound.c font.c text_console.c graphics.c
+SOURCEFILES=PICvision.c TVout.c sound.c font.c text_console.c graphics.c timers.c snes-paddle.c snes_paddle.c hardwareProfile.c
 
 
 CFLAGS=
@@ -93,13 +93,6 @@ ${OBJECTDIR}/TVout.o: TVout.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  TVout.c  -o ${OBJECTDIR}/TVout.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/TVout.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/TVout.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/snes_pad.o: snes_pad.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/snes_pad.o.d 
-	@${RM} ${OBJECTDIR}/snes_pad.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  snes_pad.c  -o ${OBJECTDIR}/snes_pad.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes_pad.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/snes_pad.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 ${OBJECTDIR}/sound.o: sound.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/sound.o.d 
@@ -128,6 +121,34 @@ ${OBJECTDIR}/graphics.o: graphics.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  graphics.c  -o ${OBJECTDIR}/graphics.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/graphics.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/graphics.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/timers.o: timers.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/timers.o.d 
+	@${RM} ${OBJECTDIR}/timers.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  timers.c  -o ${OBJECTDIR}/timers.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/timers.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/timers.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/snes-paddle.o: snes-paddle.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/snes-paddle.o.d 
+	@${RM} ${OBJECTDIR}/snes-paddle.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  snes-paddle.c  -o ${OBJECTDIR}/snes-paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes-paddle.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/snes-paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/snes_paddle.o: snes_paddle.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/snes_paddle.o.d 
+	@${RM} ${OBJECTDIR}/snes_paddle.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  snes_paddle.c  -o ${OBJECTDIR}/snes_paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes_paddle.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/snes_paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/hardwareProfile.o: hardwareProfile.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/hardwareProfile.o.d 
+	@${RM} ${OBJECTDIR}/hardwareProfile.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  hardwareProfile.c  -o ${OBJECTDIR}/hardwareProfile.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/hardwareProfile.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/hardwareProfile.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/PICvision.o: PICvision.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -142,13 +163,6 @@ ${OBJECTDIR}/TVout.o: TVout.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/TVout.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  TVout.c  -o ${OBJECTDIR}/TVout.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/TVout.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/TVout.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/snes_pad.o: snes_pad.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/snes_pad.o.d 
-	@${RM} ${OBJECTDIR}/snes_pad.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  snes_pad.c  -o ${OBJECTDIR}/snes_pad.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes_pad.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/snes_pad.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/sound.o: sound.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -177,6 +191,34 @@ ${OBJECTDIR}/graphics.o: graphics.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/graphics.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  graphics.c  -o ${OBJECTDIR}/graphics.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/graphics.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/graphics.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/timers.o: timers.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/timers.o.d 
+	@${RM} ${OBJECTDIR}/timers.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  timers.c  -o ${OBJECTDIR}/timers.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/timers.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/timers.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/snes-paddle.o: snes-paddle.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/snes-paddle.o.d 
+	@${RM} ${OBJECTDIR}/snes-paddle.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  snes-paddle.c  -o ${OBJECTDIR}/snes-paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes-paddle.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/snes-paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/snes_paddle.o: snes_paddle.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/snes_paddle.o.d 
+	@${RM} ${OBJECTDIR}/snes_paddle.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  snes_paddle.c  -o ${OBJECTDIR}/snes_paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes_paddle.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/snes_paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/hardwareProfile.o: hardwareProfile.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/hardwareProfile.o.d 
+	@${RM} ${OBJECTDIR}/hardwareProfile.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  hardwareProfile.c  -o ${OBJECTDIR}/hardwareProfile.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/hardwareProfile.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/hardwareProfile.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
