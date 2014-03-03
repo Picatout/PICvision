@@ -54,6 +54,7 @@ void timers_init(unsigned ticks_per_second){
     ticks=0;
 
     SYSTICKTMR.TON=0;  // disable systick timer
+    SYSTICKTMR.TCS=0;  // use internal Tcy
     quotient = FCY/ticks_per_second;
     prescale=1;
     while (quotient>65535){
@@ -65,13 +66,13 @@ void timers_init(unsigned ticks_per_second){
         SYSTICKPR=quotient;
     }else if (prescale<=8){
         SYSTICKTMR.TCKPS=1;
-        SYSTICKPR= FCY/ticks_per_second/8;
+        SYSTICKPR= FCY/8/ticks_per_second;
     }else if (prescale<=64){
         SYSTICKTMR.TCKPS=2;
-        SYSTICKPR= FCY/ticks_per_second/64;
+        SYSTICKPR= FCY/64/ticks_per_second;
     }else{
         SYSTICKTMR.TCKPS=3;
-        SYSTICKPR = FCY/ticks_per_second/256;
+        SYSTICKPR = FCY/256/ticks_per_second;
     }//if
     SYSTICKIF=0; // reset interrupt flag
     SYSTICKIE=1; // enable interrupt on systick timer

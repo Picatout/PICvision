@@ -34,7 +34,9 @@ void plot(int x, int y, int color){
     if ((y>=VPIXELS)||(x>=HPIXELS)) return; // bound check
     h= x/8;
     ofs = 7 - x%8;
-    if (color==WHITE)
+    if (color==INVERT)
+        video_buffer[y][h] ^= (1<<ofs);
+    else if (color==WHITE)
         video_buffer[y][h]|= (1<<ofs);
     else
         video_buffer[y][h]&= ~(1<<ofs);

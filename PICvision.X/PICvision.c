@@ -65,14 +65,14 @@
 
 
 const char msg[]="bouncing ring demo.";
-const unsigned music[]={440,1000,880,1000};
+const unsigned scale[]={523,500,587,500,659,500,698,500,784,500,880,500,988,500,1046,500,0,0};
 int main(void) {
-    int y,x,dx,dy;
+    int y,x,dx,dy, rebound=0;
     HardwareConfig();
     timers_init(TICK_FREQ);
     video_init();
-    sound_init(TICK_FREQ);
-    //tune(music);
+    sound_init(10);
+    tune(scale);
     print(msg);
     rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
     y=108;
@@ -92,19 +92,28 @@ int main(void) {
         if (x<=10){
             x=11;
             dx=-dx;
+            rebound=1;
         }else if (x>=HPIXELS-12){
             x=HPIXELS-12;
             dx=-dx;
+            rebound=1;
         }
         y +=dy;
         if (y<=CHAR_HEIGHT+10){
             y=CHAR_HEIGHT+11;
             dy = -dy;
+            rebound=1;
         }else if (y>=VPIXELS-12){
             y=VPIXELS-12;
             dy=-dy;
+            rebound=1;
+        }
+        if (rebound){
+            white_noise(20);
+            rebound=0;
         }
         ellipse(x,y,10,10,WHITE);
+
     }//while
     return (EXIT_SUCCESS);
 }//main()

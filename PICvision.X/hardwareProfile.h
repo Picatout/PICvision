@@ -48,6 +48,8 @@ extern "C" {
 #define AUDIORS     OC2RS       //  audio OCxRS SFR
 #define AUDIOTMR    T3CONbits   // audio TxCON SFR  bits
 #define AUDIOPR     PR3         // audio PRx  SFR
+#define P_NOISE_OUT LATBbits.LATB10 // white noise output pin
+#define P_NOISE_OUT_TRIS TRISBbits.TRISB10  /// noise output TRIS SFR bit
 #define P_AUDIO_OUT_TRIS TRISBbits.TRISB8 // audio output TRIS SFR bit
 #define AUDIOIP     IPC2bits.T3IP // audio output timer interrupt priority
 #define AUDIOIF     IFS0bits.T3IF // audio timer interrupt flag bit

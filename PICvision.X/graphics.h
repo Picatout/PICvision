@@ -33,6 +33,8 @@ extern "C" {
 
 #define BLACK 0
 #define WHITE 1
+#define INVERT 2
+
 
 void plot(int x, int y, int color);
 void line(int x1, int y1, int x2, int y2, int color);

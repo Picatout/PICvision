@@ -23,47 +23,56 @@
  * Created on 25 février 2014, 16:43
  */
 
-
+#include <stdlib.h>
 #include "sound.h"
 
+#define F_TONE  1  // tone playing flag
+#define F_TUNE  2  // flag tune playing
+#define F_WHITE 4  // white noise generation
+
+#define mTone_off() (AUDIOCON.OCM=0)
+#define mTone_on()  (AUDIOCON.OCM=5)
 
 
-volatile unsigned char fSound=0; // indicateurs booléins
-volatile int tmrId;
-volatile unsigned int *tones_list;
-int tick_msec;
-void cbSoundOff(void){ // timer call back function
+volatile unsigned char fSound=0; // boolean flags
+volatile int tmrId;  // duratio timer identifier
+volatile unsigned int *tones_list;  // list of tones and interval for playing tune
+int tick_msec=10; // tick interval in milliseconds, default 10msec.
+
+void cb_tone(void){ // timer call back function
     mTone_off();
-    fSound &= ~TONE_ON;
+    fSound &= ~(F_TONE|F_WHITE);
 }// f()
 
 void sound_init(int tick_time){
-    tick_msec=tick_time;
-    tmrId=create_timer(1,TIMER_SINGLE,(timer_handler_t *)cbSoundOff);
+    if (tick_time) tick_msec=tick_time;
+    tmrId=create_timer(1,TIMER_SINGLE,(timer_handler_t *)cb_tone);
+    AUDIOCON.OCTSEL=1; // select OCx timer
+    AUDIOR=0;
+    AUDIOTMR.TON=0;
+    AUDIOTMR.TCKPS=1; // 1:8  // timer clock prescale divisor
 }//f()
 
-void tone(unsigned freq, // fréquency in hertz
+// play tone in background
+void tone(unsigned freq, // frequency in hertz
           unsigned msec){ // duration in  milliseconds
     //
-    mTone_off(); // pwm continuous mode
-    AUDIOCON.OCTSEL=1; // select OCx timer
-    AUDIORS=0;
-    AUDIOR=FCY/16/freq;
+    mTone_off(); 
+    AUDIORS=FCY/16/freq; // determine tone duty cycle
     AUDIOTMR.TON=0;
-    AUDIOTMR.TCKPS=1; // 1:8
-    AUDIOPR=(FCY/8/freq)-1; // pwm ratio 50%
-    fSound |=TONE_ON;
-    mTone_on();
+    AUDIOPR=(FCY/8/freq)-1; // pwm period
+    fSound |=F_TONE;
+    mTone_on(); 
     AUDIOTMR.TON=1;
     update_timer(tmrId,msec/tick_msec);
     start_timer(tmrId);
 } //tone();
 
-// joue une mélodie en arrière plan
+// play tune in background
 void tune(const unsigned *buffer){
     tones_list=(unsigned *)buffer;
     if (*tones_list && *(tones_list+1)){
-        fSound |= PLAY_TUNE;
+        fSound |= F_TUNE;
         AUDIOIF=0;
         AUDIOIE=1;
         tone(*tones_list++,*tones_list++);
@@ -71,26 +80,52 @@ void tune(const unsigned *buffer){
 }//tune()
 
 
+void white_noise(unsigned msec){
+    if (!fSound){
+        AUDIOTMR.TON=0;
+        AUDIOPR=(FCY/8/10000)-1; // pwm period
+        AUDIOTMR.TON=0;
+        AUDIOIF=0;
+        AUDIOIE=1;
+        AUDIOTMR.TON=1;
+        update_timer(tmrId,msec/tick_msec);
+        start_timer(tmrId);
+    }
+    fSound |= F_WHITE;
+}// f()
 
+void while_sound(){
+    while (fSound);
+}// f()
+
+// interrupt at end of tone cycle
 void __attribute__((interrupt, no_auto_psv))  _AUDIO_ISR(void){
-    unsigned int f,d;
-       if (fSound==PLAY_TUNE){
-           f=*tones_list++;
-           d=*tones_list++;
-           if (d){
-                if (f){
-                    tone(f,d);
-                }else{
-                    update_timer(tmrId,*tones_list/tick_msec);
-                    start_timer(tmrId);
-                    fSound |= TONE_ON;
-                }
-           }else{
-               fSound=0;
-               AUDIOIE=0;
-               AUDIOTMR.TON=0;
-           } // if
-       }//if
+   unsigned int f,d;
+   if (fSound&F_WHITE){
+       P_NOISE_OUT=rand()&1;
+   }
+   if (!fSound) {
+       AUDIOIE=0;
+       AUDIOTMR.TON=0;
+   }else if (fSound==(fSound & F_TUNE)){
+       f=*tones_list++;
+       d=*tones_list++;
+       if (d){
+            if (f){
+                tone(f,d);
+            }else{
+                update_timer(tmrId,d/tick_msec);
+                start_timer(tmrId);
+                fSound |= F_TONE;
+                mTone_on();
+            }
+       }else{
+           fSound=0;
+           AUDIOIE=0;
+           AUDIOTMR.TON=0;
+       } // if
+   }
+   AUDIOIF=0;
 }// _AUDIO_ISR
 
 

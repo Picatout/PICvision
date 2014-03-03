@@ -34,19 +34,13 @@ extern "C" {
 #include "timers.h"
 
 
-#define TONE_ON  1
-#define PLAY_TUNE 2
 
-#define mTone_off() (AUDIOCON.OCM=0)
-#define mTone_on()  (AUDIOCON.OCM=5)
-
-extern volatile unsigned char fSound; // boolean flags
-extern volatile unsigned int duration;
 
 void sound_init();
 void tone(unsigned freq, unsigned duration);
 void tune(const unsigned  *buffer);
-
+void white_noise(unsigned msec);
+void while_sound();
 
 
 

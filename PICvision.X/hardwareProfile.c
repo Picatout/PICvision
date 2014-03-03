@@ -38,6 +38,7 @@ void HardwareConfig(){
     P_VDLY_OUT_TRIS=0;     // video delay output
     P_VSYNC_OUT_TRIS=0;     // video sync output
     P_AUDIO_OUT_TRIS=0;     // audio output
+    P_NOISE_OUT_TRIS=0;     /// white noise output
     P_PIXDLY_IN_TRIS=1;     //input video pixels delay
     P_VIDEO_MODE_TRIS=1;    //input NTSC/PAL select input
     VIDMODE_ANDIS=1;   // disable ADC  on NTSC/PAL select input.
