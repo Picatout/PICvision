@@ -97,23 +97,23 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0x3ca           0x5af  (1455)
 .const                       0x5ca               0x348           0x4ec  (1260)
-.text                        0x912               0xe52          0x157b  (5499)
-.dinit                      0x1764                0x32            0x4b  (75)
+.text                        0x912               0xee8          0x165c  (5724)
+.dinit                      0x17fa                0x38            0x54  (84)
 
-                     Total program memory used (bytes):         0x2061  (8289) 12%
+                     Total program memory used (bytes):         0x214b  (8523) 13%
 
 
 Data Memory  [Origin = 0x800, Length = 0x2000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-.nbss                        0x800                   0          0x1722  (5922)
-.ndata                      0x1f22                   0             0x4  (4)
-.nbss                       0x1f26                   0             0x4  (4)
-.ndata                      0x1f2a                   0             0x2  (2)
-.bss                        0x1f2c                   0             0x6  (6)
+.nbss                        0x800                   0          0x172a  (5930)
+.ndata                      0x1f2a                   0             0x4  (4)
+.nbss                       0x1f2e                   0             0x4  (4)
+.ndata                      0x1f32                   0             0x2  (2)
+.bss                        0x1f34                   0             0x6  (6)
 
-                        Total data memory used (bytes):         0x1732  (5938) 72%
+                        Total data memory used (bytes):         0x173a  (5946) 72%
 
 
 Dynamic Memory Usage
@@ -121,9 +121,9 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                       0x1f32                               0x8ce  (2254)
+stack                       0x1f3a                               0x8c6  (2246)
 
-                        Maximum dynamic memory (bytes):          0x8ce  (2254)
+                        Maximum dynamic memory (bytes):          0x8c6  (2246)
 
 
 External Symbols in Data Memory (by address):
@@ -132,18 +132,18 @@ External Symbols in Data Memory (by address):
                     0x1ec8                  _vsync
                     0x1eca                  _hsync
                     0x1ecc                  _video_mode
-                    0x1f22                  _fSound
-                    0x1f24                  _tick_msec
-                    0x1f26                  _tmrId
-                    0x1f28                  _tones_list
+                    0x1f2a                  _fSound
+                    0x1f2c                  _tick_msec
+                    0x1f2e                  _tmrId
+                    0x1f30                  _tones_list
 
 External Symbols in Data Memory (by name):
 
-                    0x1f22                  _fSound
+                    0x1f2a                  _fSound
                     0x1eca                  _hsync
-                    0x1f24                  _tick_msec
-                    0x1f26                  _tmrId
-                    0x1f28                  _tones_list
+                    0x1f2c                  _tick_msec
+                    0x1f2e                  _tmrId
+                    0x1f30                  _tones_list
                     0x0800                  _video_buffer
                     0x1ecc                  _video_mode
                     0x1ec8                  _vsync
@@ -226,11 +226,14 @@ External Symbols in Program Memory (by address):
                   0x0015a4                  _while_sound
                   0x0015ae                  __T3Interrupt
                   0x001638                  _main
-                  0x0016f6                  _HardwareConfig
+                  0x0016f6                  _read_paddles
+                  0x00172c                  _paddle_init
+                  0x001738                  _read_paddle
+                  0x001780                  _HardwareConfig
 
 External Symbols in Program Memory (by name):
 
-                  0x0016f6                  _HardwareConfig
+                  0x001780                  _HardwareConfig
                   0x00148c                  __CNInterrupt
                   0x000298                  __DefaultInterrupt
                   0x0012c6                  __T1Interrupt
@@ -278,6 +281,7 @@ External Symbols in Program Memory (by name):
                   0x0008da                  _msg
                   0x001162                  _normal_video
                   0x001340                  _ntsc_init
+                  0x00172c                  _paddle_init
                   0x00135c                  _pal_init
                   0x000912                  _plot
                   0x000d80                  _polygon
@@ -286,6 +290,8 @@ External Symbols in Program Memory (by name):
                   0x001004                  _print_int
                   0x000ea6                  _put_char
                   0x000596                  _rand
+                  0x001738                  _read_paddle
+                  0x0016f6                  _read_paddles
                   0x000a40                  _rectangle
                   0x0008ee                  _scale
                   0x000e1c                  _scroll_down
@@ -431,7 +437,7 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x4473
+.debug_info       0x000000       0x47b2
  *(.debug_info)
  .debug_info      0x000000        0x219 build/default/production/PICvision.o
  .debug_info      0x000219       0x1246 build/default/production/TVout.o
@@ -441,11 +447,11 @@ __CONFIG1
  .debug_info      0x00264d        0x3b1 build/default/production/graphics.o
  .debug_info      0x0029fe        0x7b7 build/default/production/timers.o
  .debug_info      0x0031b5        0x149 build/default/production/snes-paddle.o
- .debug_info      0x0032fe        0x149 build/default/production/snes_paddle.o
- .debug_info      0x003447       0x102c build/default/production/hardwareProfile.o
+ .debug_info      0x0032fe        0x3d5 build/default/production/snes_paddle.o
+ .debug_info      0x0036d3       0x10df build/default/production/hardwareProfile.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x88d
+.debug_abbrev     0x000000        0x965
  *(.debug_abbrev)
  .debug_abbrev    0x000000         0x82 build/default/production/PICvision.o
  .debug_abbrev    0x000082        0x187 build/default/production/TVout.o
@@ -455,10 +461,10 @@ __CONFIG1
  .debug_abbrev    0x000563         0xa5 build/default/production/graphics.o
  .debug_abbrev    0x000608        0x191 build/default/production/timers.o
  .debug_abbrev    0x000799         0x1f build/default/production/snes-paddle.o
- .debug_abbrev    0x0007b8         0x1f build/default/production/snes_paddle.o
- .debug_abbrev    0x0007d7         0xb6 build/default/production/hardwareProfile.o
+ .debug_abbrev    0x0007b8         0xf7 build/default/production/snes_paddle.o
+ .debug_abbrev    0x0008af         0xb6 build/default/production/hardwareProfile.o
 
-.debug_line       0x000000       0x18f2
+.debug_line       0x000000       0x1a74
  *(.debug_line)
  .debug_line      0x000000        0x16d build/default/production/PICvision.o
  .debug_line      0x00016d        0x371 build/default/production/TVout.o
@@ -468,10 +474,10 @@ __CONFIG1
  .debug_line      0x00106a        0x39b build/default/production/graphics.o
  .debug_line      0x001405        0x377 build/default/production/timers.o
  .debug_line      0x00177c         0x24 build/default/production/snes-paddle.o
- .debug_line      0x0017a0         0x24 build/default/production/snes_paddle.o
- .debug_line      0x0017c4        0x12e build/default/production/hardwareProfile.o
+ .debug_line      0x0017a0        0x176 build/default/production/snes_paddle.o
+ .debug_line      0x001916        0x15e build/default/production/hardwareProfile.o
 
-.debug_frame      0x000000        0x3ac
+.debug_frame      0x000000        0x3f0
  *(.debug_frame)
  .debug_frame     0x000000         0x24 build/default/production/PICvision.o
  .debug_frame     0x000024         0x74 build/default/production/TVout.o
@@ -479,16 +485,18 @@ __CONFIG1
  .debug_frame     0x00011c        0x174 build/default/production/text_console.o
  .debug_frame     0x000290         0x64 build/default/production/graphics.o
  .debug_frame     0x0002f4         0x94 build/default/production/timers.o
- .debug_frame     0x000388         0x24 build/default/production/hardwareProfile.o
+ .debug_frame     0x000388         0x44 build/default/production/snes_paddle.o
+ .debug_frame     0x0003cc         0x24 build/default/production/hardwareProfile.o
 
-.debug_str        0x000000        0x179
+.debug_str        0x000000        0x18c
  *(.debug_str)
  .debug_str       0x000000         0x97 build/default/production/TVout.o
  .debug_str       0x000097         0x45 build/default/production/sound.o
  .debug_str       0x0000dc          0xd build/default/production/text_console.o
  .debug_str       0x0000e9         0x13 build/default/production/graphics.o
  .debug_str       0x0000fc         0x25 build/default/production/timers.o
- .debug_str       0x000121         0x58 build/default/production/hardwareProfile.o
+ .debug_str       0x000121          0x9 build/default/production/snes_paddle.o
+ .debug_str       0x00012a         0x62 build/default/production/hardwareProfile.o
 
 .debug_loc
  *(.debug_loc)
@@ -497,7 +505,7 @@ __CONFIG1
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000        0x3de
+                  0x000000        0x421
  *(.debug_pubnames)
  .debug_pubnames
                   0x000000         0x2d build/default/production/PICvision.o
@@ -514,12 +522,14 @@ __CONFIG1
  .debug_pubnames
                   0x000325         0x94 build/default/production/timers.o
  .debug_pubnames
-                  0x0003b9         0x25 build/default/production/hardwareProfile.o
+                  0x0003b9         0x43 build/default/production/snes_paddle.o
+ .debug_pubnames
+                  0x0003fc         0x25 build/default/production/hardwareProfile.o
 
 .debug_ranges
  *(.debug_ranges)
 
-.debug_aranges    0x000000         0xa8
+.debug_aranges    0x000000         0xc0
  *(.debug_aranges)
  .debug_aranges
                   0x000000         0x18 build/default/production/PICvision.o
@@ -534,7 +544,9 @@ __CONFIG1
  .debug_aranges
                   0x000078         0x18 build/default/production/timers.o
  .debug_aranges
-                  0x000090         0x18 build/default/production/hardwareProfile.o
+                  0x000090         0x18 build/default/production/snes_paddle.o
+ .debug_aranges
+                  0x0000a8         0x18 build/default/production/hardwareProfile.o
 
 .ivt              0x000004         0xfc
                   0x000004          0x4 LONG 0x298 DEFINED (__ReservedTrap0)?ABSOLUTE (__ReservedTrap0):ABSOLUTE (__DefaultInterrupt)
@@ -1379,84 +1391,84 @@ LOAD default_isr
 LOAD data_init
 
 .debug_pubtypes
-                  0x0000a8        0x4ad
+                  0x0000c0        0x4e9
  .debug_pubtypes
-                  0x0000a8         0x12 build/default/production/PICvision.o
+                  0x0000c0         0x12 build/default/production/PICvision.o
  .debug_pubtypes
-                  0x0000ba        0x194 build/default/production/TVout.o
+                  0x0000d2        0x194 build/default/production/TVout.o
  .debug_pubtypes
-                  0x00024e         0xbd build/default/production/sound.o
+                  0x000266         0xbd build/default/production/sound.o
  .debug_pubtypes
-                  0x00030b         0x55 build/default/production/text_console.o
+                  0x000323         0x55 build/default/production/text_console.o
  .debug_pubtypes
-                  0x000360         0x12 build/default/production/graphics.o
+                  0x000378         0x12 build/default/production/graphics.o
  .debug_pubtypes
-                  0x000372         0x9a build/default/production/timers.o
+                  0x00038a         0x9a build/default/production/timers.o
  .debug_pubtypes
-                  0x00040c         0x12 build/default/production/snes-paddle.o
+                  0x000424         0x12 build/default/production/snes-paddle.o
  .debug_pubtypes
-                  0x00041e         0x12 build/default/production/snes_paddle.o
+                  0x000436         0x2f build/default/production/snes_paddle.o
  .debug_pubtypes
-                  0x000430        0x125 build/default/production/hardwareProfile.o
+                  0x000465        0x144 build/default/production/hardwareProfile.o
 
 __c30_signature
-                  0x000556         0xa2
+                  0x0005aa         0xa2
  __c30_signature
-                  0x000556          0x6 build/default/production/PICvision.o
+                  0x0005aa          0x6 build/default/production/PICvision.o
  __c30_signature
-                  0x00055c          0x6 build/default/production/TVout.o
+                  0x0005b0          0x6 build/default/production/TVout.o
  __c30_signature
-                  0x000562          0x6 build/default/production/sound.o
+                  0x0005b6          0x6 build/default/production/sound.o
  __c30_signature
-                  0x000568          0x6 build/default/production/font.o
+                  0x0005bc          0x6 build/default/production/font.o
  __c30_signature
-                  0x00056e          0x6 build/default/production/text_console.o
+                  0x0005c2          0x6 build/default/production/text_console.o
  __c30_signature
-                  0x000574          0x6 build/default/production/graphics.o
+                  0x0005c8          0x6 build/default/production/graphics.o
  __c30_signature
-                  0x00057a          0x6 build/default/production/timers.o
+                  0x0005ce          0x6 build/default/production/timers.o
  __c30_signature
-                  0x000580          0x6 build/default/production/snes-paddle.o
+                  0x0005d4          0x6 build/default/production/snes-paddle.o
  __c30_signature
-                  0x000586          0x6 build/default/production/snes_paddle.o
+                  0x0005da          0x6 build/default/production/snes_paddle.o
  __c30_signature
-                  0x00058c          0x6 build/default/production/hardwareProfile.o
+                  0x0005e0          0x6 build/default/production/hardwareProfile.o
  __c30_signature
-                  0x000592          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
+                  0x0005e6          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
  __c30_signature
-                  0x000598          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
+                  0x0005ec          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
  __c30_signature
-                  0x00059e          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(time.eo)
+                  0x0005f2          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(time.eo)
  __c30_signature
-                  0x0005a4          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+                  0x0005f8          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
  __c30_signature
-                  0x0005aa          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+                  0x0005fe          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
  __c30_signature
-                  0x0005b0          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+                  0x000604          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
  __c30_signature
-                  0x0005b6          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
+                  0x00060a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
  __c30_signature
-                  0x0005bc          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
+                  0x000610          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
  __c30_signature
-                  0x0005c2          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
+                  0x000616          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
  __c30_signature
-                  0x0005c8          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x00061c          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
  __c30_signature
-                  0x0005ce          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+                  0x000622          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
  __c30_signature
-                  0x0005d4          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(udivsi3.eo)
+                  0x000628          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(udivsi3.eo)
  __c30_signature
-                  0x0005da          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
+                  0x00062e          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
  __c30_signature
-                  0x0005e0          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
+                  0x000634          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
  __c30_signature
-                  0x0005e6          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
+                  0x00063a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
  __c30_signature
-                  0x0005ec          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+                  0x000640          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
  __c30_signature
-                  0x0005f2          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
+                  0x000646          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
 
-.nbss               0x0800       0x1722
+.nbss               0x0800       0x172a
  .nbss              0x0800       0x16d6 build/default/production/TVout.o
                     0x0800                  _video_buffer
                     0x1ec8                  _vsync
@@ -1464,22 +1476,23 @@ __c30_signature
                     0x1ecc                  _video_mode
  .nbss              0x1ed6         0x44 build/default/production/timers.o
  .nbss              0x1f1a          0x8 build/default/production/text_console.o
+ .nbss              0x1f22          0x8 build/default/production/snes_paddle.o
 
-.ndata              0x1f22          0x4
- .ndata             0x1f22          0x4 build/default/production/sound.o
-                    0x1f22                  _fSound
-                    0x1f24                  _tick_msec
+.ndata              0x1f2a          0x4
+ .ndata             0x1f2a          0x4 build/default/production/sound.o
+                    0x1f2a                  _fSound
+                    0x1f2c                  _tick_msec
 
-.nbss               0x1f26          0x4
- .nbss              0x1f26          0x4 build/default/production/sound.o
-                    0x1f26                  _tmrId
-                    0x1f28                  _tones_list
+.nbss               0x1f2e          0x4
+ .nbss              0x1f2e          0x4 build/default/production/sound.o
+                    0x1f2e                  _tmrId
+                    0x1f30                  _tones_list
 
-.ndata              0x1f2a          0x2
- .ndata             0x1f2a          0x2 build/default/production/text_console.o
+.ndata              0x1f32          0x2
+ .ndata             0x1f32          0x2 build/default/production/text_console.o
 
-.bss                0x1f2c          0x6
- .bss               0x1f2c          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+.bss                0x1f34          0x6
+ .bss               0x1f34          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
 
 .config_JTAGEN    0x00abfe          0x2
  .config_JTAGEN
@@ -1495,7 +1508,7 @@ __c30_signature
                     0x88da                  _msg
                     0x88ee                  _scale
 
-.text             0x000912        0xe52
+.text             0x000912        0xee8
  .text            0x000912        0x4b2 build/default/production/graphics.o
                   0x000912                  _plot
                   0x00096a                  _line
@@ -1550,8 +1563,12 @@ __c30_signature
                   0x0015ae                  __T3Interrupt
  .text            0x001638         0xbe build/default/production/PICvision.o
                   0x001638                  _main
- .text            0x0016f6         0x6e build/default/production/hardwareProfile.o
-                  0x0016f6                  _HardwareConfig
+ .text            0x0016f6         0x8a build/default/production/snes_paddle.o
+                  0x0016f6                  _read_paddles
+                  0x00172c                  _paddle_init
+                  0x001738                  _read_paddle
+ .text            0x001780         0x7a build/default/production/hardwareProfile.o
+                  0x001780                  _HardwareConfig
 
-.dinit            0x001764         0x32
- .dinit           0x001764         0x32 data_init
+.dinit            0x0017fa         0x38
+ .dinit           0x0017fa         0x38 data_init

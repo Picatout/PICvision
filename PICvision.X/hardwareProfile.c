@@ -42,6 +42,13 @@ void HardwareConfig(){
     P_PIXDLY_IN_TRIS=1;     //input video pixels delay
     P_VIDEO_MODE_TRIS=1;    //input NTSC/PAL select input
     VIDMODE_ANDIS=1;   // disable ADC  on NTSC/PAL select input.
+    // paddles interface I/O setting
+    P_PDL1_DAT_TRIS=1;      // paddle 1 data as input
+    P_PDL2_DAT_TRIS=1;      // paddle 2 data as input
+    P_PDL_CLK_TRIS=0;       // paddles clock signal as output
+    P_PDL_LATCH_TRIS=0;     // paddles latch signal as output
+    P_PDL1_ANDIS=1;         // disable analog input
+    P_PDL2_ANDIS=1;         // disable analog input
     // interrupts priorities
     VSYNCIP=7;  // timer interrupt used for video output must have highest priority
     PIXIP=7;  // change notification interrupt used for video pixels must have highest priority

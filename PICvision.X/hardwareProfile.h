@@ -93,6 +93,18 @@ extern "C" {
 #define SYSTICKIF   IFS0bits.T1IF // system tick timer interrupt flag bit
 #define SYSTICKIE   IEC0bits.T1IE // system tick timer interrupt enable bit
 #define _SYSTICK_ISR _T1Interrupt // system tick timer interrupt
+// SNES paddles i/o
+#define PADDLES_DATA_PORT PORTA
+#define P_PDL1_DAT     LATAbits.LATA0  // paddle 1  data input
+#define P_PDL1_DAT_TRIS TRISAbits.TRISA0  // paddle 1  TRIS bit
+#define P_PDL1_ANDIS  AD1PCFGbits.PCFG0   // disable ANx disable bit
+#define P_PDL2_DAT     LATAbits.LATA1  // paddle 2 data input
+#define P_PDL2_ANDIS   AD1PCFGbits.PCFG1 // paddle 2 ANx disable bit
+#define P_PDL2_DAT_TRIS TRISAbits.TRISA1 // paddle 2 TRIS bit
+#define P_PDL_CLK     LATBbits.LATB0    // paddles clock output signal
+#define P_PDL_CLK_TRIS TRISBbits.TRISB0 // paddles clock TRIS bit
+#define P_PDL_LATCH   LATBbits.LATB1    // paddles data latch output signal
+#define P_PDL_LATCH_TRIS TRISBbits.TRISB1 // paddles latch TRIS bit
 
 // interface functons
 void HardwareConfig();

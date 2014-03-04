@@ -1,7 +1,7 @@
 Disassembly Listing for PICvision
 Generated From:
 /home/jacques/MPLABXProjects/PICvision/PICvision.X/dist/default/production/PICvision.X.production.elf
-2014-03-03 16:54:51
+2014-03-03 23:23:27
 
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/timers.c  ---------------------------------------
 1:                 /*
@@ -622,7 +622,7 @@ Generated From:
 000EC4  37006D     BRA 0xFA0
 125:                       case TAB:
 126:                           cx += (cx%tab_width);
-000EC6  21F2A4     MOV #0x1F2A, W4
+000EC6  21F324     MOV #0x1F32, W4
 000EC8  784214     MOV.B [W4], W4
 000ECA  FB8204     ZE W4, W4
 000ECC  BE9F80     MOV.D W0, [W15++]
@@ -930,7 +930,7 @@ Generated From:
 233:               
 234:               void set_tab_width(unsigned char width){
 235:                   tab_width=width;
-00106E  B7FF2A     MOV.B WREG, tab_width
+00106E  B7FF32     MOV.B WREG, tab_width
 236:               }// set_tab_width()
 001070  060000     RETURN
 237:               
@@ -1247,12 +1247,12 @@ Generated From:
 0014D2  A12004     BCLR W4, #2
 0014D4  880C54     MOV W4, OC2CON
 44:                    fSound &= ~(F_TONE|F_WHITE);
-0014D6  21F225     MOV #0x1F22, W5
+0014D6  21F2A5     MOV #0x1F2A, W5
 0014D8  784295     MOV.B [W5], W5
 0014DA  B3CFA4     MOV #0xFA, W4
 0014DC  62C204     AND.B W5, W4, W4
 0014DE  780004     MOV W4, W0
-0014E0  B7FF22     MOV.B WREG, fSound
+0014E0  B7FF2A     MOV.B WREG, fSound
 45:                }// f()
 0014E2  060000     RETURN
 46:                
@@ -1260,13 +1260,13 @@ Generated From:
 48:                    if (tick_time) tick_msec=tick_time;
 0014E4  500FE0     SUB W0, #0x0, [W15]
 0014E6  320001     BRA Z, 0x14EA
-0014E8  88F920     MOV W0, tick_msec
+0014E8  88F960     MOV W0, tick_msec
 49:                    tmrId=create_timer(1,TIMER_SINGLE,(timer_handler_t *)cb_tone);
 0014EA  214CC2     MOV #0x14CC, W2
 0014EC  EB0080     CLR W1
 0014EE  200010     MOV #0x1, W0
 0014F0  07FE8C     RCALL create_timer
-0014F2  88F930     MOV W0, tmrId
+0014F2  88F970     MOV W0, tmrId
 50:                    AUDIOCON.OCTSEL=1; // select OCx timer
 0014F4  A8618A     BSET OC2CON, #3
 51:                    AUDIOR=0;
@@ -1311,7 +1311,7 @@ Generated From:
 00152A  E90200     DEC W0, W4
 00152C  880874     MOV W4, PR3
 64:                    fSound |=F_TONE;
-00152E  A81F22     BSET fSound, #0
+00152E  A81F2A     BSET fSound, #0
 65:                    mTone_on(); 
 001530  800C54     MOV OC2CON, W4
 001532  A00004     BSET W4, #0
@@ -1321,8 +1321,8 @@ Generated From:
 66:                    AUDIOTMR.TON=1;
 00153A  A8E113     BSET 0x113, #7
 67:                    update_timer(tmrId,msec/tick_msec);
-00153C  80F930     MOV tmrId, W0
-00153E  80F924     MOV tick_msec, W4
+00153C  80F970     MOV tmrId, W0
+00153E  80F964     MOV tick_msec, W4
 001540  781F80     MOV W0, [W15++]
 001542  090011     REPEAT #0x11
 001544  D88504     DIV.UW W10, W4
@@ -1330,7 +1330,7 @@ Generated From:
 001548  78004F     MOV [--W15], W0
 00154A  07FEA4     RCALL update_timer
 68:                    start_timer(tmrId);
-00154C  80F930     MOV tmrId, W0
+00154C  80F970     MOV tmrId, W0
 00154E  07FE90     RCALL start_timer
 69:                } //tone();
 001550  78054F     MOV [--W15], W10
@@ -1340,7 +1340,7 @@ Generated From:
 71:                // play tune in background
 72:                void tune(const unsigned *buffer){
 73:                    tones_list=(unsigned *)buffer;
-001556  88F940     MOV W0, tones_list
+001556  88F980     MOV W0, tones_list
 74:                    if (*tones_list && *(tones_list+1)){
 001558  EB0200     CLR W4
 00155A  120F90     SUBR W4, [W0], [W15]
@@ -1350,16 +1350,16 @@ Generated From:
 001562  128FD4     SUBR W5, [++W4], [W15]
 001564  320008     BRA Z, 0x1576
 75:                        fSound |= F_TUNE;
-001566  A83F22     BSET fSound, #1
+001566  A83F2A     BSET fSound, #1
 76:                        AUDIOIF=0;
 001568  A90085     BCLR 0x85, #0
 77:                        AUDIOIE=1;
 00156A  A80095     BSET 0x95, #0
 78:                        tone(*tones_list++,*tones_list++);
 00156C  780090     MOV [W0], W1
-00156E  88F944     MOV W4, tones_list
+00156E  88F984     MOV W4, tones_list
 001570  780034     MOV [W4++], W0
-001572  88F944     MOV W4, tones_list
+001572  88F984     MOV W4, tones_list
 001574  07FFC7     RCALL tone
 79:                    }
 80:                }//tune()
@@ -1368,7 +1368,7 @@ Generated From:
 82:                
 83:                void white_noise(unsigned msec){
 84:                    if (!fSound){
-001578  21F224     MOV #0x1F22, W4
+001578  21F2A4     MOV #0x1F2A, W4
 00157A  784214     MOV.B [W4], W4
 00157C  524FE0     SUB.B W4, #0x0, [W15]
 00157E  3A0010     BRA NZ, 0x15A0
@@ -1386,25 +1386,25 @@ Generated From:
 90:                        AUDIOTMR.TON=1;
 00158C  A8E113     BSET 0x113, #7
 91:                        update_timer(tmrId,msec/tick_msec);
-00158E  80F934     MOV tmrId, W4
-001590  80F925     MOV tick_msec, W5
+00158E  80F974     MOV tmrId, W4
+001590  80F965     MOV tick_msec, W5
 001592  090011     REPEAT #0x11
 001594  D88005     DIV.UW W0, W5
 001596  FD0080     EXCH W0, W1
 001598  780004     MOV W4, W0
 00159A  07FE7C     RCALL update_timer
 92:                        start_timer(tmrId);
-00159C  80F930     MOV tmrId, W0
+00159C  80F970     MOV tmrId, W0
 00159E  07FE68     RCALL start_timer
 93:                    }
 94:                    fSound |= F_WHITE;
-0015A0  A85F22     BSET fSound, #2
+0015A0  A85F2A     BSET fSound, #2
 95:                }// f()
 0015A2  060000     RETURN
 96:                
 97:                void while_sound(){
 98:                    while (fSound);
-0015A4  21F224     MOV #0x1F22, W4
+0015A4  21F2A4     MOV #0x1F2A, W4
 0015A6  784214     MOV.B [W4], W4
 0015A8  524FE0     SUB.B W4, #0x0, [W15]
 0015AA  3AFFFC     BRA NZ, while_sound
@@ -1420,7 +1420,7 @@ Generated From:
 0015B6  BE9F86     MOV.D W6, [W15++]
 103:                  unsigned int f,d;
 104:                  if (fSound&F_WHITE){
-0015B8  21F224     MOV #0x1F22, W4
+0015B8  21F2A4     MOV #0x1F2A, W4
 0015BA  784214     MOV.B [W4], W4
 0015BC  620264     AND W4, #0x4, W4
 0015BE  320007     BRA Z, 0x15CE
@@ -1434,7 +1434,7 @@ Generated From:
 0015CC  881664     MOV W4, LATB
 106:                  }
 107:                  if (!fSound) {
-0015CE  21F224     MOV #0x1F22, W4
+0015CE  21F2A4     MOV #0x1F2A, W4
 0015D0  784214     MOV.B [W4], W4
 0015D2  524FE0     SUB.B W4, #0x0, [W15]
 0015D4  3A0003     BRA NZ, 0x15DC
@@ -1444,21 +1444,21 @@ Generated From:
 0015D8  A9E113     BCLR 0x113, #7
 0015DA  370027     BRA 0x162A
 110:                  }else if (fSound==(fSound & F_TUNE)){
-0015DC  21F225     MOV #0x1F22, W5
+0015DC  21F2A5     MOV #0x1F2A, W5
 0015DE  784295     MOV.B [W5], W5
-0015E0  21F224     MOV #0x1F22, W4
+0015E0  21F2A4     MOV #0x1F2A, W4
 0015E2  784214     MOV.B [W4], W4
 0015E4  FB8285     ZE W5, W5
 0015E6  620262     AND W4, #0x2, W4
 0015E8  528F84     SUB W5, W4, [W15]
 0015EA  3A001F     BRA NZ, 0x162A
 111:                      f=*tones_list++;
-0015EC  80F944     MOV tones_list, W4
+0015EC  80F984     MOV tones_list, W4
 0015EE  780034     MOV [W4++], W0
-0015F0  88F944     MOV W4, tones_list
+0015F0  88F984     MOV W4, tones_list
 112:                      d=*tones_list++;
 0015F2  7800B4     MOV [W4++], W1
-0015F4  88F944     MOV W4, tones_list
+0015F4  88F984     MOV W4, tones_list
 113:                      if (d){
 0015F6  508FE0     SUB W1, #0x0, [W15]
 0015F8  320015     BRA Z, 0x1624
@@ -1470,8 +1470,8 @@ Generated From:
 001600  370014     BRA 0x162A
 116:                           }else{
 117:                               update_timer(tmrId,d/tick_msec);
-001602  80F930     MOV tmrId, W0
-001604  80F924     MOV tick_msec, W4
+001602  80F970     MOV tmrId, W0
+001604  80F964     MOV tick_msec, W4
 001606  781F80     MOV W0, [W15++]
 001608  090011     REPEAT #0x11
 00160A  D88084     DIV.UW W1, W4
@@ -1479,10 +1479,10 @@ Generated From:
 00160E  78004F     MOV [--W15], W0
 001610  07FE41     RCALL update_timer
 118:                               start_timer(tmrId);
-001612  80F930     MOV tmrId, W0
+001612  80F970     MOV tmrId, W0
 001614  07FE2D     RCALL start_timer
 119:                               fSound |= F_TONE;
-001616  A81F22     BSET fSound, #0
+001616  A81F2A     BSET fSound, #0
 120:                               mTone_on();
 001618  800C54     MOV OC2CON, W4
 00161A  A00004     BSET W4, #0
@@ -1493,7 +1493,7 @@ Generated From:
 121:                           }
 122:                      }else{
 123:                          fSound=0;
-001624  EF7F22     CLR.B fSound
+001624  EF7F2A     CLR.B fSound
 124:                          AUDIOIE=0;
 001626  A90095     BCLR 0x95, #0
 125:                          AUDIOTMR.TON=0;
@@ -1511,6 +1511,148 @@ Generated From:
 001636  064000     RETFIE
 130:               
 131:               
+---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/snes_paddle.c  ----------------------------------
+1:                 /*
+2:                 * Copyright 2014, Jacques Deschênes
+3:                 * This file is part of PICvision.
+4:                 *
+5:                 *     PICvision is free software: you can redistribute it and/or modify
+6:                 *     it under the terms of the GNU General Public License as published by
+7:                 *     the Free Software Foundation, either version 3 of the License, or
+8:                 *     (at your option) any later version.
+9:                 *
+10:                *     PICvision is distributed in the hope that it will be useful,
+11:                *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+12:                *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+13:                *     GNU General Public License for more details.
+14:                *
+15:                *     You should have received a copy of the GNU General Public License
+16:                *     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
+17:                */
+18:                
+19:                /*
+20:                 * File:   snes_paddle.c
+21:                 * Author: jacques Deschênes
+22:                 * Description:  SNES gemepad interface
+23:                 * Created on 25 février 2014, 16:41
+24:                 */
+25:                
+26:                #include <stdlib.h>
+27:                #include "snes_paddle.h"
+28:                #include "TVout.h"
+29:                
+30:                #define mNOP()  asm("nop")
+31:                #define mLATCH() {P_PDL_LATCH=1;mNOP();mNOP();P_PDL_LATCH=0;}
+32:                #define mCLK_HIGH() (P_PDL_CLK=1)
+33:                #define mCLK_LOW()  (P_PDL_CLK=0)
+34:                #define mSHIFT() {mCLK_HIGH();mNOP();mNOP();mCLK_LOW();mNOP();mNOP();}
+35:                
+36:                volatile static unsigned pdl_last_read[2], pdl_last_state[2];
+37:                
+38:                
+39:                void read_paddles() {
+40:                    int i,pdata;
+41:                    pdl_last_state[PADDLE1]=0;
+0016F6  EB0200     CLR W4
+0016F8  88F914     MOV W4, pdl_last_state
+42:                    pdl_last_state[PADDLE2]=0;
+0016FA  88F924     MOV W4, 0x1F24
+43:                    mLATCH(); // latch data in paddles shift register
+0016FC  A822CC     BSET LATB, #1
+0016FE  000000     NOP
+001700  000000     NOP
+001702  A922CC     BCLR LATB, #1
+44:                    // shift out is least significant bit first.
+45:                    for (i=0;i<16;i++){ // SNES paddle have 16 bits shift register
+001724  E80204     INC W4, W4
+001726  520FF0     SUB W4, #0x10, [W15]
+001728  3AFFEF     BRA NZ, 0x1708
+46:                        mSHIFT();
+001708  A802CC     BSET LATB, #0
+00170A  000000     NOP
+00170C  000000     NOP
+00170E  A902CC     BCLR LATB, #0
+001710  000000     NOP
+001712  000000     NOP
+47:                        pdata=PADDLES_DATA_PORT;
+001714  801617     MOV PORTA, W7
+48:                        pdl_last_state[PADDLE1] |= (pdata&PADDLE1)<<i;
+49:                        pdl_last_state[PADDLE2] |= (pdata&PADDLE2)?1<<i:0;
+001704  EB0000     CLR W0
+001706  200011     MOV #0x1, W1
+001716  80F926     MOV 0x1F24, W6
+001718  6383E1     AND W7, #0x1, W7
+00171A  780280     MOV W0, W5
+00171C  320001     BRA Z, 0x1720
+00171E  DD0A84     SL W1, W4, W5
+001720  728286     IOR W5, W6, W5
+001722  88F925     MOV W5, 0x1F24
+50:                    }
+51:                }//f()
+00172A  060000     RETURN
+52:                
+53:                void paddle_init(){
+54:                    read_paddles();
+00172C  07FFE4     RCALL read_paddles
+55:                    pdl_last_read[PADDLE1]=pdl_last_state[PADDLE1];
+00172E  F81F22     PUSH pdl_last_state
+001730  F91F26     POP pdl_last_read
+56:                    pdl_last_read[PADDLE2]=pdl_last_state[PADDLE2];
+001732  F81F24     PUSH 0x1F24
+001734  F91F28     POP 0x1F28
+57:                }// f()
+001736  060000     RETURN
+58:                
+59:                
+60:                unsigned read_paddle(int paddleId){
+001738  BE9F88     MOV.D W8, [W15++]
+00173A  781F8A     MOV W10, [W15++]
+00173C  780500     MOV W0, W10
+61:                    read_paddles();
+00173E  07FFDB     RCALL read_paddles
+62:                    // wait a stable state (debounce)
+63:                    while (pdl_last_read[paddleId]!=pdl_last_state[paddleId]){
+001740  45020A     ADD W10, W10, W4
+001742  21F265     MOV #0x1F26, W5
+001744  7A02E5     MOV [W5+W4], W5
+001746  21F226     MOV #0x1F22, W6
+001748  7A0266     MOV [W6+W4], W4
+00174A  528F84     SUB W5, W4, [W15]
+00174C  32000F     BRA Z, 0x176C
+00174E  45020A     ADD W10, W10, W4
+001750  21F269     MOV #0x1F26, W9
+001752  448484     ADD W9, W4, W9
+001754  780406     MOV W6, W8
+001756  440404     ADD W8, W4, W8
+001766  780219     MOV [W9], W4
+001768  520F98     SUB W4, [W8], [W15]
+00176A  3AFFF6     BRA NZ, 0x1758
+64:                        pdl_last_read[PADDLE1]=pdl_last_state[PADDLE1];
+001758  F81F22     PUSH pdl_last_state
+00175A  F91F26     POP pdl_last_read
+65:                        pdl_last_read[PADDLE2]=pdl_last_state[PADDLE2];
+00175C  F81F24     PUSH 0x1F24
+00175E  F91F28     POP 0x1F28
+66:                        wait_n_frame(1);
+001760  200010     MOV #0x1, W0
+001762  07FE28     RCALL wait_n_frame
+67:                        read_paddles();
+001764  07FFC8     RCALL read_paddles
+68:                    }// while
+69:                    pdl_last_read[PADDLE1]=pdl_last_state[PADDLE1];
+00176C  F81F22     PUSH pdl_last_state
+00176E  F91F26     POP pdl_last_read
+70:                    pdl_last_read[PADDLE2]=pdl_last_state[PADDLE2];
+001770  F81F24     PUSH 0x1F24
+001772  F91F28     POP 0x1F28
+71:                    return pdl_last_read[paddleId];
+001774  45050A     ADD W10, W10, W10
+001776  21F264     MOV #0x1F26, W4
+001778  7D0064     MOV [W4+W10], W0
+72:                }//f()
+00177A  78054F     MOV [--W15], W10
+00177C  BE044F     MOV.D [--W15], W8
+00177E  060000     RETURN
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/hardwareProfile.c  ------------------------------
 1:                 /*
 2:                 * Copyright 2014, Jacques Deschênes
@@ -1542,83 +1684,96 @@ Generated From:
 28:                void HardwareConfig(){
 29:                    // peripheral to pin association.
 30:                    PPSUnLock;
-0016F6  803A16     MOV OSCCON, W6
-0016F8  B20BF6     AND #0xBF, W6
-0016FA  200464     MOV #0x46, W4
-0016FC  200575     MOV #0x57, W5
-0016FE  207427     MOV #0x742, W7
-001700  784B84     MOV.B W4, [W7]
-001702  784B85     MOV.B W5, [W7]
-001704  784B86     MOV.B W6, [W7]
+001780  803A16     MOV OSCCON, W6
+001782  B20BF6     AND #0xBF, W6
+001784  200464     MOV #0x46, W4
+001786  200575     MOV #0x57, W5
+001788  207427     MOV #0x742, W7
+00178A  784B84     MOV.B W4, [W7]
+00178C  784B85     MOV.B W5, [W7]
+00178E  784B86     MOV.B W6, [W7]
 31:                    PPSOutput(PPS_RP5,PPS_SDO1);   // video pixels output
-001706  803626     MOV RPOR2, W6
-001708  2E0FF7     MOV #0xE0FF, W7
-00170A  630307     AND W6, W7, W6
-00170C  207000     MOV #0x700, W0
-00170E  730300     IOR W6, W0, W6
-001710  883626     MOV W6, RPOR2
+001790  803626     MOV RPOR2, W6
+001792  2E0FF7     MOV #0xE0FF, W7
+001794  630307     AND W6, W7, W6
+001796  207000     MOV #0x700, W0
+001798  730300     IOR W6, W0, W6
+00179A  883626     MOV W6, RPOR2
 32:                    PPSOutput(PPS_RP6,PPS_OC4);  // video delay output
-001712  803630     MOV RPOR3, W0
-001714  2FFE06     MOV #0xFFE0, W6
-001716  600006     AND W0, W6, W0
-001718  B30150     IOR #0x15, W0
-00171A  883630     MOV W0, RPOR3
+00179C  803630     MOV RPOR3, W0
+00179E  2FFE06     MOV #0xFFE0, W6
+0017A0  600006     AND W0, W6, W0
+0017A2  B30150     IOR #0x15, W0
+0017A4  883630     MOV W0, RPOR3
 33:                    PPSOutput(PPS_RP7,PPS_OC1);  // video sync output
-00171C  803630     MOV RPOR3, W0
-00171E  600387     AND W0, W7, W7
-001720  212000     MOV #0x1200, W0
-001722  738380     IOR W7, W0, W7
-001724  883637     MOV W7, RPOR3
+0017A6  803630     MOV RPOR3, W0
+0017A8  600387     AND W0, W7, W7
+0017AA  212000     MOV #0x1200, W0
+0017AC  738380     IOR W7, W0, W7
+0017AE  883637     MOV W7, RPOR3
 34:                    PPSOutput(PPS_RP8,PPS_OC2);  // audio output
-001726  803647     MOV RPOR4, W7
-001728  638306     AND W7, W6, W6
-00172A  B30136     IOR #0x13, W6
-00172C  883646     MOV W6, RPOR4
+0017B0  803647     MOV RPOR4, W7
+0017B2  638306     AND W7, W6, W6
+0017B4  B30136     IOR #0x13, W6
+0017B6  883646     MOV W6, RPOR4
 35:                    PPSLock;
-00172E  803A16     MOV OSCCON, W6
-001730  A06006     BSET W6, #6
-001732  207427     MOV #0x742, W7
-001734  784B84     MOV.B W4, [W7]
-001736  784B85     MOV.B W5, [W7]
-001738  784B86     MOV.B W6, [W7]
+0017B8  803A16     MOV OSCCON, W6
+0017BA  A06006     BSET W6, #6
+0017BC  207427     MOV #0x742, W7
+0017BE  784B84     MOV.B W4, [W7]
+0017C0  784B85     MOV.B W5, [W7]
+0017C2  784B86     MOV.B W6, [W7]
 36:                    // pins data direction
 37:                    P_PIXEL_OUT_TRIS=0;     // video pixels output
-00173A  A9A2C8     BCLR TRISB, #5
+0017C4  A9A2C8     BCLR TRISB, #5
 38:                    P_VDLY_OUT_TRIS=0;     // video delay output
-00173C  A9C2C8     BCLR TRISB, #6
+0017C6  A9C2C8     BCLR TRISB, #6
 39:                    P_VSYNC_OUT_TRIS=0;     // video sync output
-00173E  A9E2C8     BCLR TRISB, #7
+0017C8  A9E2C8     BCLR TRISB, #7
 40:                    P_AUDIO_OUT_TRIS=0;     // audio output
-001740  A902C9     BCLR 0x2C9, #0
+0017CA  A902C9     BCLR 0x2C9, #0
 41:                    P_NOISE_OUT_TRIS=0;     /// white noise output
-001742  A942C9     BCLR 0x2C9, #2
+0017CC  A942C9     BCLR 0x2C9, #2
 42:                    P_PIXDLY_IN_TRIS=1;     //input video pixels delay
-001744  A822C9     BSET 0x2C9, #1
+0017CE  A822C9     BSET 0x2C9, #1
 43:                    P_VIDEO_MODE_TRIS=1;    //input NTSC/PAL select input
-001746  A882C9     BSET 0x2C9, #4
+0017D0  A882C9     BSET 0x2C9, #4
 44:                    VIDMODE_ANDIS=1;   // disable ADC  on NTSC/PAL select input.
-001748  A8832D     BSET 0x32D, #4
-45:                    // interrupts priorities
-46:                    VSYNCIP=7;  // timer interrupt used for video output must have highest priority
-00174A  270000     MOV #0x7000, W0
-00174C  B720A6     IOR IPC1
-47:                    PIXIP=7;  // change notification interrupt used for video pixels must have highest priority
-00174E  B720AC     IOR IPC4
-48:                    AUDIOIP=3; // audio output timer interrupt priority
-001750  800544     MOV IPC2, W4
-001752  B30034     IOR #0x3, W4
-001754  A12004     BCLR W4, #2
-001756  880544     MOV W4, IPC2
-49:                    SYSTICKIP=2; // system ticks timer interrupt priority
-001758  800524     MOV IPC0, W4
-00175A  A1C004     BCLR W4, #12
-00175C  A0D004     BSET W4, #13
-00175E  A1E004     BCLR W4, #14
-001760  880524     MOV W4, IPC0
-50:                
-51:                }//f()
-001762  060000     RETURN
-52:                
+0017D2  A8832D     BSET 0x32D, #4
+45:                    // paddles interface I/O setting
+46:                    P_PDL1_DAT_TRIS=1;      // paddle 1 data as input
+0017D4  A802C0     BSET TRISA, #0
+47:                    P_PDL2_DAT_TRIS=1;      // paddle 2 data as input
+0017D6  A822C0     BSET TRISA, #1
+48:                    P_PDL_CLK_TRIS=0;       // paddles clock signal as output
+0017D8  A902C8     BCLR TRISB, #0
+49:                    P_PDL_LATCH_TRIS=0;     // paddles latch signal as output
+0017DA  A922C8     BCLR TRISB, #1
+50:                    P_PDL1_ANDIS=1;         // disable analog input
+0017DC  A8032C     BSET AD1PCFG, #0
+51:                    P_PDL2_ANDIS=1;         // disable analog input
+0017DE  A8232C     BSET AD1PCFG, #1
+52:                    // interrupts priorities
+53:                    VSYNCIP=7;  // timer interrupt used for video output must have highest priority
+0017E0  270000     MOV #0x7000, W0
+0017E2  B720A6     IOR IPC1
+54:                    PIXIP=7;  // change notification interrupt used for video pixels must have highest priority
+0017E4  B720AC     IOR IPC4
+55:                    AUDIOIP=3; // audio output timer interrupt priority
+0017E6  800544     MOV IPC2, W4
+0017E8  B30034     IOR #0x3, W4
+0017EA  A12004     BCLR W4, #2
+0017EC  880544     MOV W4, IPC2
+56:                    SYSTICKIP=2; // system ticks timer interrupt priority
+0017EE  800524     MOV IPC0, W4
+0017F0  A1C004     BCLR W4, #12
+0017F2  A0D004     BSET W4, #13
+0017F4  A1E004     BCLR W4, #14
+0017F6  880524     MOV W4, IPC0
+57:                
+58:                }//f()
+0017F8  060000     RETURN
+59:                
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/graphics.c  -------------------------------------
 1:                 /*
 2:                 * Copyright 2014, Jacques Deschênes
@@ -2830,7 +2985,7 @@ Generated From:
 00163E  781F8E     MOV W14, [W15++]
 70:                    int y,x,dx,dy, rebound=0;
 71:                    HardwareConfig();
-001640  07005A     RCALL HardwareConfig
+001640  07009F     RCALL HardwareConfig
 72:                    timers_init(TICK_FREQ);
 001642  200640     MOV #0x64, W0
 001644  07FD90     RCALL timers_init

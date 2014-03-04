@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "1 mar 2014"
+Date "3 mar 2014"
 Rev ""
 Comp ""
 Comment1 ""
@@ -906,7 +906,7 @@ Wire Wire Line
 Wire Wire Line
 	7350 6200 7350 6300
 Wire Wire Line
-	7350 5650 7350 5800
+	7350 5300 7350 5800
 Wire Wire Line
 	7350 5650 7700 5650
 Wire Wire Line
@@ -1083,4 +1083,24 @@ Text Notes 4500 4050 2    39   ~ 0
 I2C2
 Text Notes 6750 3650 2    39   ~ 0
 SPI2
+Text GLabel 6350 3700 2    39   Input ~ 0
+NOISE
+$Comp
+L R R?
+U 1 1 5314EEB5
+P 7050 5300
+F 0 "R?" V 7130 5300 40  0000 C CNN
+F 1 "10K" V 7057 5301 40  0000 C CNN
+F 2 "~" V 6980 5300 30  0000 C CNN
+F 3 "~" H 7050 5300 30  0000 C CNN
+	1    7050 5300
+	0    -1   -1   0   
+$EndComp
+Text GLabel 6700 5300 0    39   Input ~ 0
+NOISE
+Wire Wire Line
+	6700 5300 6800 5300
+Wire Wire Line
+	7300 5300 7350 5300
+Connection ~ 7350 5650
 $EndSCHEMATC

@@ -36,7 +36,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "3 mar 2014"
+Date "4 mar 2014"
 Rev ""
 Comp ""
 Comment1 ""
@@ -283,9 +283,9 @@ F 3 "" H 4900 2650 60  0000 C CNN
 $EndComp
 Text GLabel 4750 3000 0    39   Input ~ 0
 Vpp
-Text GLabel 4800 3300 0    39   Input ~ 0
-PGED/LATCH
 Text GLabel 4800 3400 0    39   Input ~ 0
+PGED/LATCH
+Text GLabel 4800 3300 0    39   Input ~ 0
 PGEC/CLOCK
 $Comp
 L CONN_5 P1
