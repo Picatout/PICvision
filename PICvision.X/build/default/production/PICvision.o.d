@@ -6,4 +6,5 @@ text_console.h  \
 font.h  \
 graphics.h  \
 sound.h  \
-timers.h 
+timers.h  \
+snes_paddle.h 

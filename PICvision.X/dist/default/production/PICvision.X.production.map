@@ -59,8 +59,6 @@ Membre de l'archive est inclu en raison du fichier (symbole)
                               (__resetPRI)
 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
                               /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o) (__data_init_standard)
-/opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(time.eo)
-                              build/default/production/PICvision.o (_time)
 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
                               build/default/production/graphics.o (___subsf3)
 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
@@ -86,7 +84,7 @@ Membre de l'archive est inclu en raison du fichier (symbole)
 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
                               build/default/production/text_console.o (_memmove)
 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
-                              build/default/production/PICvision.o (_srand)
+                              build/default/production/sound.o (_rand)
 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
                               /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo) (___mulsi3)
 
@@ -95,25 +93,26 @@ Program Memory  [Origin = 0x200, Length = 0xa9fa]
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200               0x3ca           0x5af  (1455)
-.const                       0x5ca               0x348           0x4ec  (1260)
-.text                        0x912               0xee8          0x165c  (5724)
-.dinit                      0x17fa                0x38            0x54  (84)
+.text                        0x200               0x3b0           0x588  (1416)
+.const                       0x5b0               0x348           0x4ec  (1260)
+.text                        0x8f8               0xe14          0x151e  (5406)
+.dinit                      0x170c                0x32            0x4b  (75)
+.text                       0x173e                0x26            0x39  (57)
 
-                     Total program memory used (bytes):         0x214b  (8523) 13%
+                     Total program memory used (bytes):         0x2016  (8214) 12%
 
 
 Data Memory  [Origin = 0x800, Length = 0x2000]
 
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
-.nbss                        0x800                   0          0x172a  (5930)
-.ndata                      0x1f2a                   0             0x4  (4)
-.nbss                       0x1f2e                   0             0x4  (4)
-.ndata                      0x1f32                   0             0x2  (2)
-.bss                        0x1f34                   0             0x6  (6)
+.nbss                        0x800                   0          0x1722  (5922)
+.ndata                      0x1f22                   0             0x4  (4)
+.nbss                       0x1f26                   0             0x4  (4)
+.ndata                      0x1f2a                   0             0x2  (2)
+.bss                        0x1f2c                   0             0x6  (6)
 
-                        Total data memory used (bytes):         0x173a  (5946) 72%
+                        Total data memory used (bytes):         0x1732  (5938) 72%
 
 
 Dynamic Memory Usage
@@ -121,9 +120,9 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                       0x1f3a                               0x8c6  (2246)
+stack                       0x1f32                               0x8ce  (2254)
 
-                        Maximum dynamic memory (bytes):          0x8c6  (2246)
+                        Maximum dynamic memory (bytes):          0x8ce  (2254)
 
 
 External Symbols in Data Memory (by address):
@@ -132,18 +131,18 @@ External Symbols in Data Memory (by address):
                     0x1ec8                  _vsync
                     0x1eca                  _hsync
                     0x1ecc                  _video_mode
-                    0x1f2a                  _fSound
-                    0x1f2c                  _tick_msec
-                    0x1f2e                  _tmrId
-                    0x1f30                  _tones_list
+                    0x1f22                  _fSound
+                    0x1f24                  _tick_msec
+                    0x1f26                  _tmrId
+                    0x1f28                  _tones_list
 
 External Symbols in Data Memory (by name):
 
-                    0x1f2a                  _fSound
+                    0x1f22                  _fSound
                     0x1eca                  _hsync
-                    0x1f2c                  _tick_msec
-                    0x1f2e                  _tmrId
-                    0x1f30                  _tones_list
+                    0x1f24                  _tick_msec
+                    0x1f26                  _tmrId
+                    0x1f28                  _tones_list
                     0x0800                  _video_buffer
                     0x1ecc                  _video_mode
                     0x1ec8                  _vsync
@@ -155,164 +154,164 @@ External Symbols in Program Memory (by address):
                   0x000236                  __data_init
                   0x000236                  __data_init_standard
                   0x000298                  __DefaultInterrupt
-                  0x0002b6                  ___subsf3
-                  0x0002b8                  ___addsf3
-                  0x000372                  ___fixsfsi
-                  0x0003b4                  ___floatsisf
-                  0x0003ba                  __fpack
-                  0x000406                  __funpack
-                  0x000430                  __funpack2
-                  0x000440                  __fPropagateNaN
-                  0x000452                  __fbopExit
-                  0x00045a                  __fbopReturnNaN
-                  0x000460                  ___mulsf3
-                  0x0004c8                  ___udivsi3
-                  0x0004e8                  ___floatdisf
-                  0x000508                  ___floatundisf
-                  0x000566                  _memmove
-                  0x000588                  _srand
-                  0x000596                  _rand
-                  0x0005be                  ___mulp32eds3
-                  0x0005be                  ___mulp32peds3
-                  0x0005be                  ___mulsi3
-                  0x0005ca                  _font6x8
-                  0x0008da                  _msg
-                  0x0008ee                  _scale
-                  0x000912                  _plot
-                  0x00096a                  _line
-                  0x000a40                  _rectangle
-                  0x000a84                  _ellipse
-                  0x000d80                  _polygon
-                  0x000e0c                  _scroll_up
-                  0x000e1c                  _scroll_down
-                  0x000e2e                  _cursor_right
-                  0x000e50                  _cursor_left
-                  0x000e70                  _cursor_up
-                  0x000e80                  _cursor_down
-                  0x000e92                  _crlf
-                  0x000ea6                  _put_char
-                  0x000fac                  _clear_screen
-                  0x000fba                  _print
-                  0x000fd0                  _print_hex
-                  0x001004                  _print_int
-                  0x00106e                  _set_tab_width
-                  0x001072                  _clear_eol
-                  0x00109c                  _get_curpos
-                  0x0010b4                  _set_curpos
-                  0x0010c8                  _invert_char
-                  0x00110c                  _show_cursor
-                  0x001144                  _set_cursor
-                  0x00115e                  _invert_video
-                  0x001162                  _normal_video
-                  0x001166                  _timers_init
-                  0x00120a                  _create_timer
-                  0x001254                  _stop_timer
-                  0x001270                  _start_timer
-                  0x001294                  _update_timer
-                  0x0012aa                  _destroy_timer
-                  0x0012c0                  _sys_ticks
-                  0x0012c6                  __T1Interrupt
-                  0x001340                  _ntsc_init
-                  0x00135c                  _pal_init
-                  0x00137a                  _video_init
-                  0x0013b4                  _wait_n_frame
-                  0x0013c8                  __T2Interrupt
-                  0x00148c                  __CNInterrupt
-                  0x0014cc                  _cb_tone
-                  0x0014e4                  _sound_init
-                  0x001504                  _tone
-                  0x001556                  _tune
-                  0x001578                  _white_noise
-                  0x0015a4                  _while_sound
-                  0x0015ae                  __T3Interrupt
-                  0x001638                  _main
-                  0x0016f6                  _read_paddles
-                  0x00172c                  _paddle_init
-                  0x001738                  _read_paddle
-                  0x001780                  _HardwareConfig
+                  0x00029c                  ___subsf3
+                  0x00029e                  ___addsf3
+                  0x000358                  ___fixsfsi
+                  0x00039a                  ___floatsisf
+                  0x0003a0                  __fpack
+                  0x0003ec                  __funpack
+                  0x000416                  __funpack2
+                  0x000426                  __fPropagateNaN
+                  0x000438                  __fbopExit
+                  0x000440                  __fbopReturnNaN
+                  0x000446                  ___mulsf3
+                  0x0004ae                  ___udivsi3
+                  0x0004ce                  ___floatdisf
+                  0x0004ee                  ___floatundisf
+                  0x00054c                  _memmove
+                  0x00056e                  _srand
+                  0x00057c                  _rand
+                  0x0005a4                  ___mulp32eds3
+                  0x0005a4                  ___mulp32peds3
+                  0x0005a4                  ___mulsi3
+                  0x0005b0                  _font6x8
+                  0x0008c0                  _msg
+                  0x0008d4                  _scale
+                  0x0008f8                  _plot
+                  0x000950                  _line
+                  0x000a26                  _rectangle
+                  0x000a6a                  _ellipse
+                  0x000d66                  _polygon
+                  0x000df2                  _scroll_up
+                  0x000e02                  _scroll_down
+                  0x000e14                  _cursor_right
+                  0x000e36                  _cursor_left
+                  0x000e56                  _cursor_up
+                  0x000e66                  _cursor_down
+                  0x000e78                  _crlf
+                  0x000e8c                  _put_char
+                  0x000f92                  _clear_screen
+                  0x000fa0                  _print
+                  0x000fb6                  _print_hex
+                  0x000fea                  _print_int
+                  0x001054                  _set_tab_width
+                  0x001058                  _clear_eol
+                  0x001082                  _get_curpos
+                  0x00109a                  _set_curpos
+                  0x0010ae                  _invert_char
+                  0x0010f2                  _show_cursor
+                  0x00112a                  _set_cursor
+                  0x001144                  _invert_video
+                  0x001148                  _normal_video
+                  0x00114c                  _timers_init
+                  0x0011f0                  _create_timer
+                  0x00123a                  _stop_timer
+                  0x001256                  _start_timer
+                  0x00127a                  _update_timer
+                  0x001290                  _destroy_timer
+                  0x0012a6                  _sys_ticks
+                  0x0012ac                  __T1Interrupt
+                  0x001326                  _ntsc_init
+                  0x001342                  _pal_init
+                  0x001360                  _video_init
+                  0x00139a                  _wait_n_frame
+                  0x0013ae                  __T2Interrupt
+                  0x001472                  __CNInterrupt
+                  0x0014b2                  _cb_tone
+                  0x0014ca                  _sound_init
+                  0x0014ea                  _tone
+                  0x00153c                  _tune
+                  0x00155e                  _white_noise
+                  0x00158a                  _while_sound
+                  0x001594                  __T3Interrupt
+                  0x00161e                  _HardwareConfig
+                  0x001698                  _latch
+                  0x0016ae                  _bit_shift
+                  0x0016c4                  _read_paddle
+                  0x00173e                  _main
 
 External Symbols in Program Memory (by name):
 
-                  0x001780                  _HardwareConfig
-                  0x00148c                  __CNInterrupt
+                  0x00161e                  _HardwareConfig
+                  0x001472                  __CNInterrupt
                   0x000298                  __DefaultInterrupt
-                  0x0012c6                  __T1Interrupt
-                  0x0013c8                  __T2Interrupt
-                  0x0015ae                  __T3Interrupt
-                  0x0002b8                  ___addsf3
-                  0x000372                  ___fixsfsi
-                  0x0004e8                  ___floatdisf
-                  0x0003b4                  ___floatsisf
-                  0x000508                  ___floatundisf
-                  0x0005be                  ___mulp32eds3
-                  0x0005be                  ___mulp32peds3
-                  0x000460                  ___mulsf3
-                  0x0005be                  ___mulsi3
-                  0x0002b6                  ___subsf3
-                  0x0004c8                  ___udivsi3
+                  0x0012ac                  __T1Interrupt
+                  0x0013ae                  __T2Interrupt
+                  0x001594                  __T3Interrupt
+                  0x00029e                  ___addsf3
+                  0x000358                  ___fixsfsi
+                  0x0004ce                  ___floatdisf
+                  0x00039a                  ___floatsisf
+                  0x0004ee                  ___floatundisf
+                  0x0005a4                  ___mulp32eds3
+                  0x0005a4                  ___mulp32peds3
+                  0x000446                  ___mulsf3
+                  0x0005a4                  ___mulsi3
+                  0x00029c                  ___subsf3
+                  0x0004ae                  ___udivsi3
                   0x000236                  __data_init
                   0x000236                  __data_init_standard
-                  0x000440                  __fPropagateNaN
-                  0x000452                  __fbopExit
-                  0x00045a                  __fbopReturnNaN
-                  0x0003ba                  __fpack
-                  0x000406                  __funpack
-                  0x000430                  __funpack2
+                  0x000426                  __fPropagateNaN
+                  0x000438                  __fbopExit
+                  0x000440                  __fbopReturnNaN
+                  0x0003a0                  __fpack
+                  0x0003ec                  __funpack
+                  0x000416                  __funpack2
                   0x000226                  __psv_init
                   0x000200                  __resetPRI
-                  0x0014cc                  _cb_tone
-                  0x001072                  _clear_eol
-                  0x000fac                  _clear_screen
-                  0x00120a                  _create_timer
-                  0x000e92                  _crlf
-                  0x000e80                  _cursor_down
-                  0x000e50                  _cursor_left
-                  0x000e2e                  _cursor_right
-                  0x000e70                  _cursor_up
-                  0x0012aa                  _destroy_timer
-                  0x000a84                  _ellipse
-                  0x0005ca                  _font6x8
-                  0x00109c                  _get_curpos
-                  0x0010c8                  _invert_char
-                  0x00115e                  _invert_video
-                  0x00096a                  _line
-                  0x001638                  _main
-                  0x000566                  _memmove
-                  0x0008da                  _msg
-                  0x001162                  _normal_video
-                  0x001340                  _ntsc_init
-                  0x00172c                  _paddle_init
-                  0x00135c                  _pal_init
-                  0x000912                  _plot
-                  0x000d80                  _polygon
-                  0x000fba                  _print
-                  0x000fd0                  _print_hex
-                  0x001004                  _print_int
-                  0x000ea6                  _put_char
-                  0x000596                  _rand
-                  0x001738                  _read_paddle
-                  0x0016f6                  _read_paddles
-                  0x000a40                  _rectangle
-                  0x0008ee                  _scale
-                  0x000e1c                  _scroll_down
-                  0x000e0c                  _scroll_up
-                  0x0010b4                  _set_curpos
-                  0x001144                  _set_cursor
-                  0x00106e                  _set_tab_width
-                  0x00110c                  _show_cursor
-                  0x0014e4                  _sound_init
-                  0x000588                  _srand
-                  0x001270                  _start_timer
-                  0x001254                  _stop_timer
-                  0x0012c0                  _sys_ticks
-                  0x001166                  _timers_init
-                  0x001504                  _tone
-                  0x001556                  _tune
-                  0x001294                  _update_timer
-                  0x00137a                  _video_init
-                  0x0013b4                  _wait_n_frame
-                  0x0015a4                  _while_sound
-                  0x001578                  _white_noise
+                  0x0016ae                  _bit_shift
+                  0x0014b2                  _cb_tone
+                  0x001058                  _clear_eol
+                  0x000f92                  _clear_screen
+                  0x0011f0                  _create_timer
+                  0x000e78                  _crlf
+                  0x000e66                  _cursor_down
+                  0x000e36                  _cursor_left
+                  0x000e14                  _cursor_right
+                  0x000e56                  _cursor_up
+                  0x001290                  _destroy_timer
+                  0x000a6a                  _ellipse
+                  0x0005b0                  _font6x8
+                  0x001082                  _get_curpos
+                  0x0010ae                  _invert_char
+                  0x001144                  _invert_video
+                  0x001698                  _latch
+                  0x000950                  _line
+                  0x00173e                  _main
+                  0x00054c                  _memmove
+                  0x0008c0                  _msg
+                  0x001148                  _normal_video
+                  0x001326                  _ntsc_init
+                  0x001342                  _pal_init
+                  0x0008f8                  _plot
+                  0x000d66                  _polygon
+                  0x000fa0                  _print
+                  0x000fb6                  _print_hex
+                  0x000fea                  _print_int
+                  0x000e8c                  _put_char
+                  0x00057c                  _rand
+                  0x0016c4                  _read_paddle
+                  0x000a26                  _rectangle
+                  0x0008d4                  _scale
+                  0x000e02                  _scroll_down
+                  0x000df2                  _scroll_up
+                  0x00109a                  _set_curpos
+                  0x00112a                  _set_cursor
+                  0x001054                  _set_tab_width
+                  0x0010f2                  _show_cursor
+                  0x0014ca                  _sound_init
+                  0x00056e                  _srand
+                  0x001256                  _start_timer
+                  0x00123a                  _stop_timer
+                  0x0012a6                  _sys_ticks
+                  0x00114c                  _timers_init
+                  0x0014ea                  _tone
+                  0x00153c                  _tune
+                  0x00127a                  _update_timer
+                  0x001360                  _video_init
+                  0x00139a                  _wait_n_frame
+                  0x00158a                  _while_sound
+                  0x00155e                  _white_noise
 
 Configuration mémoire
 
@@ -357,7 +356,7 @@ LOAD /opt/microchip/xc16/v1.20/bin/bin/../../lib/PIC24F/libpPIC24Fxxx-elf.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200        0x3ca
+.text             0x000200        0x3b0
  *(.init)
  .init            0x000200         0x36 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
                   0x000200                  __reset
@@ -375,55 +374,53 @@ LOAD /opt/microchip/xc16/v1.20/bin/bin/../../lib/PIC24F/libpPIC24Fxxx-elf.a
  *(.libm)
  *(.libdsp)
  *(.lib*)
- .libc.time       0x00029c         0x1a /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(time.eo)
-                  0x00029c                  _time
- .libm.subsf3     0x0002b6         0xbc /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
-                  0x0002b6                  ___subsf3
-                  0x0002b8                  ___addsf3
- .libm.fixsfsi    0x000372         0x42 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
-                  0x000372                  _(float, int, long long, short, float, short, int)
+ .libm.subsf3     0x00029c         0xbc /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+                  0x00029c                  ___subsf3
+                  0x00029e                  ___addsf3
+ .libm.fixsfsi    0x000358         0x42 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+                  0x000358                  _(float, int, long long, short, float, short, int)
  .libm.floatsisf
-                  0x0003b4          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
-                  0x0003b4                  ___floatsisf
- .libm.fpack      0x0003ba         0x4c /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
-                  0x0003ba                  __fpack
- .libm.funpack    0x000406         0x2a /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
-                  0x000406                  __funpack
+                  0x00039a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+                  0x00039a                  ___floatsisf
+ .libm.fpack      0x0003a0         0x4c /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
+                  0x0003a0                  __fpack
+ .libm.funpack    0x0003ec         0x2a /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
+                  0x0003ec                  __funpack
  .libm.funpack2
-                  0x000430         0x10 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
-                  0x000430                  __funpack2
+                  0x000416         0x10 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
+                  0x000416                  __funpack2
  .libm.fPropagateNaN
-                  0x000440         0x12 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
-                  0x000440                  __fPropagateNaN
+                  0x000426         0x12 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x000426                  __fPropagateNaN
  .libm.fbobExit
-                  0x000452          0x8 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
-                  0x000452                  __fbopExit
+                  0x000438          0x8 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x000438                  __fbopExit
  .libm.fbopReturnNaN
-                  0x00045a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
-                  0x00045a                  __fbopReturnNaN
- .libm.mulsf3     0x000460         0x68 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
-                  0x000460                  ___mulsf3
- .libm.udivsi3    0x0004c8         0x20 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(udivsi3.eo)
-                  0x0004c8                  ___udivsi3
+                  0x000440          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x000440                  __fbopReturnNaN
+ .libm.mulsf3     0x000446         0x68 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+                  0x000446                  ___mulsf3
+ .libm.udivsi3    0x0004ae         0x20 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(udivsi3.eo)
+                  0x0004ae                  ___udivsi3
  .libm.floatdisf
-                  0x0004e8         0x20 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
-                  0x0004e8                  ___floatdisf
+                  0x0004ce         0x20 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
+                  0x0004ce                  ___floatdisf
  .libm.floatundisf
-                  0x000508         0x5e /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
-                  0x000508                  ___floatundisf
+                  0x0004ee         0x5e /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
+                  0x0004ee                  ___floatundisf
  .libc.memmove.memmove
-                  0x000566         0x22 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
-                  0x000566                  _memmove
+                  0x00054c         0x22 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
+                  0x00054c                  _memmove
  .libc.srand.srand
-                  0x000588          0xe /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
-                  0x000588                  _srand
+                  0x00056e          0xe /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+                  0x00056e                  _srand
  .libc.rand.rand
-                  0x000596         0x28 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
-                  0x000596                  _rand
- .libm.mulsi3     0x0005be          0xc /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
-                  0x0005be                  ___mulp32eds3
-                  0x0005be                  ___mulp32peds3
-                  0x0005be                  ___mulsi3
+                  0x00057c         0x28 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+                  0x00057c                  _rand
+ .libm.mulsi3     0x0005a4          0xc /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
+                  0x0005a4                  ___mulp32eds3
+                  0x0005a4                  ___mulp32peds3
+                  0x0005a4                  ___mulsi3
 
 usercode
  *(usercode)
@@ -437,45 +434,45 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x47b2
+.debug_info       0x000000       0x476e
  *(.debug_info)
- .debug_info      0x000000        0x219 build/default/production/PICvision.o
- .debug_info      0x000219       0x1246 build/default/production/TVout.o
- .debug_info      0x00145f        0x9aa build/default/production/sound.o
- .debug_info      0x001e09         0xe6 build/default/production/font.o
- .debug_info      0x001eef        0x75e build/default/production/text_console.o
- .debug_info      0x00264d        0x3b1 build/default/production/graphics.o
- .debug_info      0x0029fe        0x7b7 build/default/production/timers.o
- .debug_info      0x0031b5        0x149 build/default/production/snes-paddle.o
- .debug_info      0x0032fe        0x3d5 build/default/production/snes_paddle.o
- .debug_info      0x0036d3       0x10df build/default/production/hardwareProfile.o
+ .debug_info      0x000000        0x21a build/default/production/PICvision.o
+ .debug_info      0x00021a       0x1246 build/default/production/TVout.o
+ .debug_info      0x001460        0x9aa build/default/production/sound.o
+ .debug_info      0x001e0a         0xe6 build/default/production/font.o
+ .debug_info      0x001ef0        0x75e build/default/production/text_console.o
+ .debug_info      0x00264e        0x3b1 build/default/production/graphics.o
+ .debug_info      0x0029ff        0x7b7 build/default/production/timers.o
+ .debug_info      0x0031b6        0x149 build/default/production/snes-paddle.o
+ .debug_info      0x0032ff        0x390 build/default/production/snes_paddle.o
+ .debug_info      0x00368f       0x10df build/default/production/hardwareProfile.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x965
+.debug_abbrev     0x000000        0x93e
  *(.debug_abbrev)
- .debug_abbrev    0x000000         0x82 build/default/production/PICvision.o
- .debug_abbrev    0x000082        0x187 build/default/production/TVout.o
- .debug_abbrev    0x000209        0x195 build/default/production/sound.o
- .debug_abbrev    0x00039e         0x49 build/default/production/font.o
- .debug_abbrev    0x0003e7        0x17c build/default/production/text_console.o
- .debug_abbrev    0x000563         0xa5 build/default/production/graphics.o
- .debug_abbrev    0x000608        0x191 build/default/production/timers.o
- .debug_abbrev    0x000799         0x1f build/default/production/snes-paddle.o
- .debug_abbrev    0x0007b8         0xf7 build/default/production/snes_paddle.o
- .debug_abbrev    0x0008af         0xb6 build/default/production/hardwareProfile.o
+ .debug_abbrev    0x000000         0x8f build/default/production/PICvision.o
+ .debug_abbrev    0x00008f        0x187 build/default/production/TVout.o
+ .debug_abbrev    0x000216        0x195 build/default/production/sound.o
+ .debug_abbrev    0x0003ab         0x49 build/default/production/font.o
+ .debug_abbrev    0x0003f4        0x17c build/default/production/text_console.o
+ .debug_abbrev    0x000570         0xa5 build/default/production/graphics.o
+ .debug_abbrev    0x000615        0x191 build/default/production/timers.o
+ .debug_abbrev    0x0007a6         0x1f build/default/production/snes-paddle.o
+ .debug_abbrev    0x0007c5         0xc3 build/default/production/snes_paddle.o
+ .debug_abbrev    0x000888         0xb6 build/default/production/hardwareProfile.o
 
-.debug_line       0x000000       0x1a74
+.debug_line       0x000000       0x1994
  *(.debug_line)
- .debug_line      0x000000        0x16d build/default/production/PICvision.o
- .debug_line      0x00016d        0x371 build/default/production/TVout.o
- .debug_line      0x0004de        0x2e4 build/default/production/sound.o
- .debug_line      0x0007c2         0x2e build/default/production/font.o
- .debug_line      0x0007f0        0x87a build/default/production/text_console.o
- .debug_line      0x00106a        0x39b build/default/production/graphics.o
- .debug_line      0x001405        0x377 build/default/production/timers.o
- .debug_line      0x00177c         0x24 build/default/production/snes-paddle.o
- .debug_line      0x0017a0        0x176 build/default/production/snes_paddle.o
- .debug_line      0x001916        0x15e build/default/production/hardwareProfile.o
+ .debug_line      0x000000         0x9d build/default/production/PICvision.o
+ .debug_line      0x00009d        0x371 build/default/production/TVout.o
+ .debug_line      0x00040e        0x2e4 build/default/production/sound.o
+ .debug_line      0x0006f2         0x2e build/default/production/font.o
+ .debug_line      0x000720        0x87a build/default/production/text_console.o
+ .debug_line      0x000f9a        0x39b build/default/production/graphics.o
+ .debug_line      0x001335        0x377 build/default/production/timers.o
+ .debug_line      0x0016ac         0x24 build/default/production/snes-paddle.o
+ .debug_line      0x0016d0        0x166 build/default/production/snes_paddle.o
+ .debug_line      0x001836        0x15e build/default/production/hardwareProfile.o
 
 .debug_frame      0x000000        0x3f0
  *(.debug_frame)
@@ -505,7 +502,7 @@ __CONFIG1
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000        0x421
+                  0x000000        0x418
  *(.debug_pubnames)
  .debug_pubnames
                   0x000000         0x2d build/default/production/PICvision.o
@@ -522,9 +519,9 @@ __CONFIG1
  .debug_pubnames
                   0x000325         0x94 build/default/production/timers.o
  .debug_pubnames
-                  0x0003b9         0x43 build/default/production/snes_paddle.o
+                  0x0003b9         0x3a build/default/production/snes_paddle.o
  .debug_pubnames
-                  0x0003fc         0x25 build/default/production/hardwareProfile.o
+                  0x0003f3         0x25 build/default/production/hardwareProfile.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -560,12 +557,12 @@ __CONFIG1
                   0x000014          0x4 LONG 0x298 DEFINED (__INT0Interrupt)?ABSOLUTE (__INT0Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000016          0x4 LONG 0x298 DEFINED (__IC1Interrupt)?ABSOLUTE (__IC1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000018          0x4 LONG 0x298 DEFINED (__OC1Interrupt)?ABSOLUTE (__OC1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00001a          0x4 LONG 0x12c6 DEFINED (__T1Interrupt)?ABSOLUTE (__T1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00001a          0x4 LONG 0x12ac DEFINED (__T1Interrupt)?ABSOLUTE (__T1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00001c          0x4 LONG 0x298 DEFINED (__Interrupt4)?ABSOLUTE (__Interrupt4):ABSOLUTE (__DefaultInterrupt)
                   0x00001e          0x4 LONG 0x298 DEFINED (__IC2Interrupt)?ABSOLUTE (__IC2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000020          0x4 LONG 0x298 DEFINED (__OC2Interrupt)?ABSOLUTE (__OC2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000022          0x4 LONG 0x13c8 DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000024          0x4 LONG 0x15ae DEFINED (__T3Interrupt)?ABSOLUTE (__T3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000022          0x4 LONG 0x13ae DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000024          0x4 LONG 0x1594 DEFINED (__T3Interrupt)?ABSOLUTE (__T3Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000026          0x4 LONG 0x298 DEFINED (__SPI1ErrInterrupt)?ABSOLUTE (__SPI1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000028          0x4 LONG 0x298 DEFINED (__SPI1Interrupt)?ABSOLUTE (__SPI1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00002a          0x4 LONG 0x298 DEFINED (__U1RXInterrupt)?ABSOLUTE (__U1RXInterrupt):ABSOLUTE (__DefaultInterrupt)
@@ -576,7 +573,7 @@ __CONFIG1
                   0x000034          0x4 LONG 0x298 DEFINED (__SI2C1Interrupt)?ABSOLUTE (__SI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000036          0x4 LONG 0x298 DEFINED (__MI2C1Interrupt)?ABSOLUTE (__MI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000038          0x4 LONG 0x298 DEFINED (__CompInterrupt)?ABSOLUTE (__CompInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00003a          0x4 LONG 0x148c DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00003a          0x4 LONG 0x1472 DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00003c          0x4 LONG 0x298 DEFINED (__INT1Interrupt)?ABSOLUTE (__INT1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00003e          0x4 LONG 0x298 DEFINED (__Interrupt21)?ABSOLUTE (__Interrupt21):ABSOLUTE (__DefaultInterrupt)
                   0x000040          0x4 LONG 0x298 DEFINED (__Interrupt22)?ABSOLUTE (__Interrupt22):ABSOLUTE (__DefaultInterrupt)
@@ -688,12 +685,12 @@ __CONFIG1
                   0x000114          0x4 LONG 0x298 DEFINED (__AltINT0Interrupt)?ABSOLUTE (__AltINT0Interrupt):DEFINED (__INT0Interrupt)?ABSOLUTE (__INT0Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000116          0x4 LONG 0x298 DEFINED (__AltIC1Interrupt)?ABSOLUTE (__AltIC1Interrupt):DEFINED (__IC1Interrupt)?ABSOLUTE (__IC1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000118          0x4 LONG 0x298 DEFINED (__AltOC1Interrupt)?ABSOLUTE (__AltOC1Interrupt):DEFINED (__OC1Interrupt)?ABSOLUTE (__OC1Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00011a          0x4 LONG 0x12c6 DEFINED (__AltT1Interrupt)?ABSOLUTE (__AltT1Interrupt):DEFINED (__T1Interrupt)?ABSOLUTE (__T1Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00011a          0x4 LONG 0x12ac DEFINED (__AltT1Interrupt)?ABSOLUTE (__AltT1Interrupt):DEFINED (__T1Interrupt)?ABSOLUTE (__T1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00011c          0x4 LONG 0x298 DEFINED (__AltInterrupt4)?ABSOLUTE (__AltInterrupt4):DEFINED (__Interrupt4)?ABSOLUTE (__Interrupt4):ABSOLUTE (__DefaultInterrupt)
                   0x00011e          0x4 LONG 0x298 DEFINED (__AltIC2Interrupt)?ABSOLUTE (__AltIC2Interrupt):DEFINED (__IC2Interrupt)?ABSOLUTE (__IC2Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000120          0x4 LONG 0x298 DEFINED (__AltOC2Interrupt)?ABSOLUTE (__AltOC2Interrupt):DEFINED (__OC2Interrupt)?ABSOLUTE (__OC2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000122          0x4 LONG 0x13c8 DEFINED (__AltT2Interrupt)?ABSOLUTE (__AltT2Interrupt):DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x000124          0x4 LONG 0x15ae DEFINED (__AltT3Interrupt)?ABSOLUTE (__AltT3Interrupt):DEFINED (__T3Interrupt)?ABSOLUTE (__T3Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000122          0x4 LONG 0x13ae DEFINED (__AltT2Interrupt)?ABSOLUTE (__AltT2Interrupt):DEFINED (__T2Interrupt)?ABSOLUTE (__T2Interrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x000124          0x4 LONG 0x1594 DEFINED (__AltT3Interrupt)?ABSOLUTE (__AltT3Interrupt):DEFINED (__T3Interrupt)?ABSOLUTE (__T3Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000126          0x4 LONG 0x298 DEFINED (__AltSPI1ErrInterrupt)?ABSOLUTE (__AltSPI1ErrInterrupt):DEFINED (__SPI1ErrInterrupt)?ABSOLUTE (__SPI1ErrInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000128          0x4 LONG 0x298 DEFINED (__AltSPI1Interrupt)?ABSOLUTE (__AltSPI1Interrupt):DEFINED (__SPI1Interrupt)?ABSOLUTE (__SPI1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00012a          0x4 LONG 0x298 DEFINED (__AltU1RXInterrupt)?ABSOLUTE (__AltU1RXInterrupt):DEFINED (__U1RXInterrupt)?ABSOLUTE (__U1RXInterrupt):ABSOLUTE (__DefaultInterrupt)
@@ -704,7 +701,7 @@ __CONFIG1
                   0x000134          0x4 LONG 0x298 DEFINED (__AltSI2C1Interrupt)?ABSOLUTE (__AltSI2C1Interrupt):DEFINED (__SI2C1Interrupt)?ABSOLUTE (__SI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000136          0x4 LONG 0x298 DEFINED (__AltMI2C1Interrupt)?ABSOLUTE (__AltMI2C1Interrupt):DEFINED (__MI2C1Interrupt)?ABSOLUTE (__MI2C1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x000138          0x4 LONG 0x298 DEFINED (__AltCompInterrupt)?ABSOLUTE (__AltCompInterrupt):DEFINED (__CompInterrupt)?ABSOLUTE (__CompInterrupt):ABSOLUTE (__DefaultInterrupt)
-                  0x00013a          0x4 LONG 0x148c DEFINED (__AltCNInterrupt)?ABSOLUTE (__AltCNInterrupt):DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
+                  0x00013a          0x4 LONG 0x1472 DEFINED (__AltCNInterrupt)?ABSOLUTE (__AltCNInterrupt):DEFINED (__CNInterrupt)?ABSOLUTE (__CNInterrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00013c          0x4 LONG 0x298 DEFINED (__AltINT1Interrupt)?ABSOLUTE (__AltINT1Interrupt):DEFINED (__INT1Interrupt)?ABSOLUTE (__INT1Interrupt):ABSOLUTE (__DefaultInterrupt)
                   0x00013e          0x4 LONG 0x298 DEFINED (__AltInterrupt21)?ABSOLUTE (__AltInterrupt21):DEFINED (__Interrupt21)?ABSOLUTE (__Interrupt21):ABSOLUTE (__DefaultInterrupt)
                   0x000140          0x4 LONG 0x298 DEFINED (__AltInterrupt22)?ABSOLUTE (__AltInterrupt22):DEFINED (__Interrupt22)?ABSOLUTE (__Interrupt22):ABSOLUTE (__DefaultInterrupt)
@@ -1412,7 +1409,7 @@ LOAD data_init
                   0x000465        0x144 build/default/production/hardwareProfile.o
 
 __c30_signature
-                  0x0005aa         0xa2
+                  0x0005aa         0x9c
  __c30_signature
                   0x0005aa          0x6 build/default/production/PICvision.o
  __c30_signature
@@ -1438,37 +1435,35 @@ __c30_signature
  __c30_signature
                   0x0005ec          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(data_init_standard.o)
  __c30_signature
-                  0x0005f2          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(time.eo)
+                  0x0005f2          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
  __c30_signature
-                  0x0005f8          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(addsf3.eo)
+                  0x0005f8          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
  __c30_signature
-                  0x0005fe          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fixsfsi.eo)
+                  0x0005fe          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
  __c30_signature
-                  0x000604          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatsisf.eo)
+                  0x000604          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
  __c30_signature
-                  0x00060a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(fpack.eo)
+                  0x00060a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
  __c30_signature
-                  0x000610          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack.eo)
+                  0x000610          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
  __c30_signature
-                  0x000616          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(funpack2.eo)
+                  0x000616          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
  __c30_signature
-                  0x00061c          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(futil.eo)
+                  0x00061c          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
  __c30_signature
-                  0x000622          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsf3.eo)
+                  0x000622          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(udivsi3.eo)
  __c30_signature
-                  0x000628          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(udivsi3.eo)
+                  0x000628          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
  __c30_signature
-                  0x00062e          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatdisf.eo)
+                  0x00062e          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
  __c30_signature
-                  0x000634          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(floatundisf.eo)
+                  0x000634          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
  __c30_signature
-                  0x00063a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(memmove.eo)
+                  0x00063a          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
  __c30_signature
-                  0x000640          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
- __c30_signature
-                  0x000646          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
+                  0x000640          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libm-elf.a(mulsi3.eo)
 
-.nbss               0x0800       0x172a
+.nbss               0x0800       0x1722
  .nbss              0x0800       0x16d6 build/default/production/TVout.o
                     0x0800                  _video_buffer
                     0x1ec8                  _vsync
@@ -1476,23 +1471,22 @@ __c30_signature
                     0x1ecc                  _video_mode
  .nbss              0x1ed6         0x44 build/default/production/timers.o
  .nbss              0x1f1a          0x8 build/default/production/text_console.o
- .nbss              0x1f22          0x8 build/default/production/snes_paddle.o
 
-.ndata              0x1f2a          0x4
- .ndata             0x1f2a          0x4 build/default/production/sound.o
-                    0x1f2a                  _fSound
-                    0x1f2c                  _tick_msec
+.ndata              0x1f22          0x4
+ .ndata             0x1f22          0x4 build/default/production/sound.o
+                    0x1f22                  _fSound
+                    0x1f24                  _tick_msec
 
-.nbss               0x1f2e          0x4
- .nbss              0x1f2e          0x4 build/default/production/sound.o
-                    0x1f2e                  _tmrId
-                    0x1f30                  _tones_list
+.nbss               0x1f26          0x4
+ .nbss              0x1f26          0x4 build/default/production/sound.o
+                    0x1f26                  _tmrId
+                    0x1f28                  _tones_list
 
-.ndata              0x1f32          0x2
- .ndata             0x1f32          0x2 build/default/production/text_console.o
+.ndata              0x1f2a          0x2
+ .ndata             0x1f2a          0x2 build/default/production/text_console.o
 
-.bss                0x1f34          0x6
- .bss               0x1f34          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
+.bss                0x1f2c          0x6
+ .bss               0x1f2c          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libc-elf.a(rand.eo)
 
 .config_JTAGEN    0x00abfe          0x2
  .config_JTAGEN
@@ -1501,74 +1495,76 @@ __c30_signature
 .config_IESO      0x00abfc          0x2
  .config_IESO     0x00abfc          0x2 build/default/production/PICvision.o
 
-.const              0x85ca        0x348 address de chargement 0x0005ca  
- .const             0x85ca        0x310 build/default/production/font.o
-                    0x85ca                  _font6x8
- .const             0x88da         0x38 build/default/production/PICvision.o
-                    0x88da                  _msg
-                    0x88ee                  _scale
+.const              0x85b0        0x348 address de chargement 0x0005b0  
+ .const             0x85b0        0x310 build/default/production/font.o
+                    0x85b0                  _font6x8
+ .const             0x88c0         0x38 build/default/production/PICvision.o
+                    0x88c0                  _msg
+                    0x88d4                  _scale
 
-.text             0x000912        0xee8
- .text            0x000912        0x4b2 build/default/production/graphics.o
-                  0x000912                  _plot
-                  0x00096a                  _line
-                  0x000a40                  _rectangle
-                  0x000a84                  _ellipse
-                  0x000d80                  _polygon
- .text            0x000dc4        0x3a2 build/default/production/text_console.o
-                  0x000e0c                  _scroll_up
-                  0x000e1c                  _scroll_down
-                  0x000e2e                  _cursor_right
-                  0x000e50                  _cursor_left
-                  0x000e70                  _cursor_up
-                  0x000e80                  _cursor_down
-                  0x000e92                  _crlf
-                  0x000ea6                  _put_char
-                  0x000fac                  _clear_screen
-                  0x000fba                  _print
-                  0x000fd0                  _print_hex
-                  0x001004                  _print_int
-                  0x00106e                  _set_tab_width
-                  0x001072                  _clear_eol
-                  0x00109c                  _get_curpos
-                  0x0010b4                  _set_curpos
-                  0x0010c8                  _invert_char
-                  0x00110c                  _show_cursor
-                  0x001144                  _set_cursor
-                  0x00115e                  _invert_video
-                  0x001162                  _normal_video
- .text            0x001166        0x1da build/default/production/timers.o
-                  0x001166                  _timers_init
-                  0x00120a                  _create_timer
-                  0x001254                  _stop_timer
-                  0x001270                  _start_timer
-                  0x001294                  _update_timer
-                  0x0012aa                  _destroy_timer
-                  0x0012c0                  _sys_ticks
-                  0x0012c6                  __T1Interrupt
- .text            0x001340        0x18c build/default/production/TVout.o
-                  0x001340                  _ntsc_init
-                  0x00135c                  _pal_init
-                  0x00137a                  _video_init
-                  0x0013b4                  _wait_n_frame
-                  0x0013c8                  __T2Interrupt
-                  0x00148c                  __CNInterrupt
- .text            0x0014cc        0x16c build/default/production/sound.o
-                  0x0014cc                  _cb_tone
-                  0x0014e4                  _sound_init
-                  0x001504                  _tone
-                  0x001556                  _tune
-                  0x001578                  _white_noise
-                  0x0015a4                  _while_sound
-                  0x0015ae                  __T3Interrupt
- .text            0x001638         0xbe build/default/production/PICvision.o
-                  0x001638                  _main
- .text            0x0016f6         0x8a build/default/production/snes_paddle.o
-                  0x0016f6                  _read_paddles
-                  0x00172c                  _paddle_init
-                  0x001738                  _read_paddle
- .text            0x001780         0x7a build/default/production/hardwareProfile.o
-                  0x001780                  _HardwareConfig
+.text             0x0008f8        0xe14
+ .text            0x0008f8        0x4b2 build/default/production/graphics.o
+                  0x0008f8                  _plot
+                  0x000950                  _line
+                  0x000a26                  _rectangle
+                  0x000a6a                  _ellipse
+                  0x000d66                  _polygon
+ .text            0x000daa        0x3a2 build/default/production/text_console.o
+                  0x000df2                  _scroll_up
+                  0x000e02                  _scroll_down
+                  0x000e14                  _cursor_right
+                  0x000e36                  _cursor_left
+                  0x000e56                  _cursor_up
+                  0x000e66                  _cursor_down
+                  0x000e78                  _crlf
+                  0x000e8c                  _put_char
+                  0x000f92                  _clear_screen
+                  0x000fa0                  _print
+                  0x000fb6                  _print_hex
+                  0x000fea                  _print_int
+                  0x001054                  _set_tab_width
+                  0x001058                  _clear_eol
+                  0x001082                  _get_curpos
+                  0x00109a                  _set_curpos
+                  0x0010ae                  _invert_char
+                  0x0010f2                  _show_cursor
+                  0x00112a                  _set_cursor
+                  0x001144                  _invert_video
+                  0x001148                  _normal_video
+ .text            0x00114c        0x1da build/default/production/timers.o
+                  0x00114c                  _timers_init
+                  0x0011f0                  _create_timer
+                  0x00123a                  _stop_timer
+                  0x001256                  _start_timer
+                  0x00127a                  _update_timer
+                  0x001290                  _destroy_timer
+                  0x0012a6                  _sys_ticks
+                  0x0012ac                  __T1Interrupt
+ .text            0x001326        0x18c build/default/production/TVout.o
+                  0x001326                  _ntsc_init
+                  0x001342                  _pal_init
+                  0x001360                  _video_init
+                  0x00139a                  _wait_n_frame
+                  0x0013ae                  __T2Interrupt
+                  0x001472                  __CNInterrupt
+ .text            0x0014b2        0x16c build/default/production/sound.o
+                  0x0014b2                  _cb_tone
+                  0x0014ca                  _sound_init
+                  0x0014ea                  _tone
+                  0x00153c                  _tune
+                  0x00155e                  _white_noise
+                  0x00158a                  _while_sound
+                  0x001594                  __T3Interrupt
+ .text            0x00161e         0x7a build/default/production/hardwareProfile.o
+                  0x00161e                  _HardwareConfig
+ .text            0x001698         0x74 build/default/production/snes_paddle.o
+                  0x001698                  _latch
+                  0x0016ae                  _bit_shift
+                  0x0016c4                  _read_paddle
 
-.dinit            0x0017fa         0x38
- .dinit           0x0017fa         0x38 data_init
+.dinit            0x00170c         0x32
+ .dinit           0x00170c         0x32 data_init
+
+.text             0x00173e         0x26
+ .text            0x00173e         0x26 build/default/production/PICvision.o
+                  0x00173e                  _main

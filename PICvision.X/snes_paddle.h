@@ -31,8 +31,8 @@ extern "C" {
 #endif
 #include "hardwareProfile.h"
 
-#define PADDLE1  0
-#define PADDLE2  1
+#define PADDLE1  1
+#define PADDLE2  2
 
 // paddle buttons
 #define SNES_B       0x01
@@ -49,7 +49,6 @@ extern "C" {
 #define SNES_R       0x800
 
 
-void paddle_init();
 unsigned read_paddle(int paddleId);
 
 

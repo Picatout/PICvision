@@ -54,6 +54,5 @@ void HardwareConfig(){
     PIXIP=7;  // change notification interrupt used for video pixels must have highest priority
     AUDIOIP=3; // audio output timer interrupt priority
     SYSTICKIP=2; // system ticks timer interrupt priority
-
 }//f()
 

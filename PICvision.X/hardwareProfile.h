@@ -37,7 +37,7 @@ extern "C" {
 #define FOSC (32*MHZ)  // 8Mhz crystal x 4 (internal PLL)
 #define FCY  (FOSC/2)    // core cycle frequency
 #define TICK_FREQ 100  // system ticks per second
-
+#define CYCLES_PER_USEC  (FCY/MHZ)
 // video mode input pin configuration bits
 #define P_VIDEO_MODE PORTBbits.RB12 // video mode detect input pin
 #define P_VIDEO_MODE_TRIS TRISBbits.TRISB12 // video mode input TRIS SFR bit

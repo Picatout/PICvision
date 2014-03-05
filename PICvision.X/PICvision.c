@@ -40,6 +40,7 @@
 #include "text_console.h"
 #include "graphics.h"
 #include "sound.h"
+#include "snes_paddle.h"
 
 // PIC24FJ64GA002 Configuration Bit Settings
 // CONFIG2
@@ -68,10 +69,19 @@ const char msg[]="bouncing ring demo.";
 const unsigned scale[]={523,500,587,500,659,500,698,500,784,500,880,500,988,500,1046,500,0,0};
 int main(void) {
     int y,x,dx,dy, rebound=0;
+    unsigned p;
     HardwareConfig();
     timers_init(TICK_FREQ);
     video_init();
     sound_init(10);
+    while (1){
+        wait_n_frame(2);
+        p=read_paddle(PADDLE1);
+        if (p){
+            print_hex(p,3);
+            crlf();
+        }
+    }
     tune(scale);
     print(msg);
     rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
