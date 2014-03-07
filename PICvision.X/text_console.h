@@ -57,7 +57,7 @@ void scroll_up(void); // scroll text 1 line up.
 void scroll_down(void); // scroll text 1 line down.
 text_coord_t get_curpos(); // return text cursor position.
 void set_curpos(unsigned short x, unsigned short y); // set text cursor position
-void put_char(char c); //put character at current cursor position
+void put_char(unsigned char c); //put character at current cursor position
 void print(const char *str); // print string at current cursor position
 void print_hex(unsigned int i, unsigned char width); // print integer in HEX format at current position
 void print_int(int number, unsigned short width); // print integer at current position.

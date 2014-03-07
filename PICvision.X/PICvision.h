@@ -17,7 +17,7 @@
 */
 
 /* 
- * File:   PICvision.c
+ * File:   PICvision.h
  * Author: jacques Deschênes
  * Description:  a simple video game console on PIC24FJ64GA002 MCU
  *               inspiration come from HACKvision console.
@@ -27,17 +27,30 @@
  *     - controls: 2 SNES paddle  (cheap and easy to find.)
  *     - audio out:  monophonic  PWM DAC  or square wave tones
  *
- * Created on 25 février 2014, 16:22
+ * Created on 5 mars 2014, 16:05
  */
 
-#include "PICvision.h"
+#ifndef PICVISION_H
+#define	PICVISION_H
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+#include <stdlib.h>
+#include "hardwareProfile.h"
+#include "TVout.h"
+#include "text_console.h"
+#include "graphics.h"
+#include "sound.h"
+#include "snes_paddle.h"
+
+void PICvision_init(void);
 
 
-void PICvision_init(void) {
-    HardwareConfig();
-    timers_init(TICK_FREQ);
-    video_init();
-    sound_init(1000/TICK_FREQ);
-}//f()
 
+#ifdef	__cplusplus
+}
+#endif
+
+#endif	/* PICVISION_H */
 

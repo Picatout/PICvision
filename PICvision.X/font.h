@@ -32,8 +32,7 @@ extern "C" {
 
 #define CHAR_HEIGHT 8   // include empty line under character
 #define CHAR_WIDTH 6    // include 2 empty dots on left side.
-#define FONT_SIZE 98    // number of characters in table
-    
+#define FONT_SIZE 110    // number of characters in table
 
 extern const unsigned char font6x8[FONT_SIZE][CHAR_HEIGHT];
 

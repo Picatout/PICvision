@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=PICvision.c TVout.c sound.c font.c text_console.c graphics.c timers.c snes-paddle.c snes_paddle.c hardwareProfile.c
+SOURCEFILES_QUOTED_IF_SPACED=PICvision.c TVout.c sound.c font.c text_console.c graphics.c timers.c snes-paddle.c snes_paddle.c hardwareProfile.c snake.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o ${OBJECTDIR}/timers.o ${OBJECTDIR}/snes-paddle.o ${OBJECTDIR}/snes_paddle.o ${OBJECTDIR}/hardwareProfile.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/TVout.o.d ${OBJECTDIR}/sound.o.d ${OBJECTDIR}/font.o.d ${OBJECTDIR}/text_console.o.d ${OBJECTDIR}/graphics.o.d ${OBJECTDIR}/timers.o.d ${OBJECTDIR}/snes-paddle.o.d ${OBJECTDIR}/snes_paddle.o.d ${OBJECTDIR}/hardwareProfile.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o ${OBJECTDIR}/timers.o ${OBJECTDIR}/snes-paddle.o ${OBJECTDIR}/snes_paddle.o ${OBJECTDIR}/hardwareProfile.o ${OBJECTDIR}/snake.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/TVout.o.d ${OBJECTDIR}/sound.o.d ${OBJECTDIR}/font.o.d ${OBJECTDIR}/text_console.o.d ${OBJECTDIR}/graphics.o.d ${OBJECTDIR}/timers.o.d ${OBJECTDIR}/snes-paddle.o.d ${OBJECTDIR}/snes_paddle.o.d ${OBJECTDIR}/hardwareProfile.o.d ${OBJECTDIR}/snake.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o ${OBJECTDIR}/timers.o ${OBJECTDIR}/snes-paddle.o ${OBJECTDIR}/snes_paddle.o ${OBJECTDIR}/hardwareProfile.o
+OBJECTFILES=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o ${OBJECTDIR}/timers.o ${OBJECTDIR}/snes-paddle.o ${OBJECTDIR}/snes_paddle.o ${OBJECTDIR}/hardwareProfile.o ${OBJECTDIR}/snake.o
 
 # Source Files
-SOURCEFILES=PICvision.c TVout.c sound.c font.c text_console.c graphics.c timers.c snes-paddle.c snes_paddle.c hardwareProfile.c
+SOURCEFILES=PICvision.c TVout.c sound.c font.c text_console.c graphics.c timers.c snes-paddle.c snes_paddle.c hardwareProfile.c snake.c
 
 
 CFLAGS=
@@ -149,6 +149,13 @@ ${OBJECTDIR}/hardwareProfile.o: hardwareProfile.c  nbproject/Makefile-${CND_CONF
 	${MP_CC} $(MP_EXTRA_CC_PRE)  hardwareProfile.c  -o ${OBJECTDIR}/hardwareProfile.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/hardwareProfile.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/hardwareProfile.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/snake.o: snake.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/snake.o.d 
+	@${RM} ${OBJECTDIR}/snake.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  snake.c  -o ${OBJECTDIR}/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snake.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/PICvision.o: PICvision.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
@@ -219,6 +226,13 @@ ${OBJECTDIR}/hardwareProfile.o: hardwareProfile.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/hardwareProfile.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  hardwareProfile.c  -o ${OBJECTDIR}/hardwareProfile.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/hardwareProfile.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/hardwareProfile.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/snake.o: snake.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR} 
+	@${RM} ${OBJECTDIR}/snake.o.d 
+	@${RM} ${OBJECTDIR}/snake.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  snake.c  -o ${OBJECTDIR}/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snake.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

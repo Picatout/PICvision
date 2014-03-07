@@ -50,6 +50,8 @@ typedef union coord_type{
 
 
 extern char video_buffer[VPIXELS][BYTES_PER_LINE];
+extern int video_mode;
+extern unsigned frames_per_second;
 
 void  video_init();
 void  wait_n_frame(unsigned n);

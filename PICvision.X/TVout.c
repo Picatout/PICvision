@@ -32,7 +32,7 @@
 
 // NTSC composite signal parameters
 #define NTSC_LINES_PER_FRAME (525/2) // progressive scan
-#define NSTC_FRAME_PER_SECOND 60
+#define NTSC_FRAMES_PER_SECOND 60
 #define NTSC_LINE_PERIOD  (63.5*FCY/MHZ) // horizontal line period 63,5µsec
 #define NTSC_FRONT_PORCH (1.5*FCY/MHZ)
 #define NTSC_HPULSE (4.7*FCY/MHZ)
@@ -42,7 +42,7 @@
 
 // PAL composite signal parameters
 #define PAL_LINES_PER_FRAME (625/2)  // progressive scan
-#define PAL_FRAME_PER_SECOND 50
+#define PAL_FRAMES_PER_SECOND 50
 #define PAL_LINE_PERIOD (64*FCY/MHZ)  // horizontal line period 64µsec
 #define PAL_FRONT_PORCH (1.6*FCY/MHZ)
 #define PAL_HPULSE (4.7*FCY/MHZ)
@@ -58,7 +58,7 @@
 #define F_CLREOL 4   // flag clear to end of line
 #define F_RETRACE 8 // flag screen in retrace phase
 
-
+unsigned frames_per_second;
 static unsigned int frame_line_cntr=0; // count line in video frame
 volatile static unsigned long frame_cntr=0; // number of frame since reset
 volatile static unsigned int flags;
@@ -76,6 +76,7 @@ void ntsc_init(){
     hsync=NTSC_HPULSE;
     vsync=NTSC_LINE_PERIOD-NTSC_HPULSE;
     video_mode=NTSC_MODE;
+    frames_per_second=NTSC_FRAMES_PER_SECOND;
 }//f()
 
 void pal_init(){
@@ -87,6 +88,7 @@ void pal_init(){
     hsync=PAL_HPULSE;
     vsync=PAL_LINE_PERIOD-PAL_HPULSE;
     video_mode=PAL_MODE;
+    frames_per_second=PAL_FRAMES_PER_SECOND;
 }//f()
 
 void  video_init(){ // initialisation sorties NTSC

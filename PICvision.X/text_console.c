@@ -114,7 +114,7 @@ void crlf(void){
     }
 }//crlf()
 
-void put_char(char c){
+void put_char(unsigned char c){
     register int i,l,r,b,x,y;
     x=cx;
     y=cy;
