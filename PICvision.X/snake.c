@@ -81,7 +81,7 @@ typedef struct msg_struct{
 #define HEAD_DOWN 106+32
 #define MOUSE 109+32
 
-#define BASE_METABOLISM 1   // calories lost per seconde
+#define BASE_METABOLISM 2   // calories lost per seconde
 #define MOUSE_CALORIES  20  // calories gain by eating mouse
 
 snake_t snake;
@@ -89,9 +89,12 @@ snake_t snake;
 symbol_t mouse;
 
 const msg_t msgCALORIES={0,0,"calories: "};
-const msg_t msgSECONDS={15,0,"lifespan: "};
-const msg_t msgGAME_OVER={8,13,"game over"};
-const msg_t msgSTART={8,15, "press START to begin"};
+const msg_t msgSECONDS={16,0,"lifespan: "};
+const msg_t msgGAME_OVER={6,13,"game over"};
+const msg_t msgSTART={8,20, "press START to begin"};
+const msg_t msgSTARVATION={6,14,"died of starvation"};
+const msg_t msgWALL_COLLIDE={6,14,"died of wall collision"};
+const msg_t msgTAIL_BITE={6,14,"died of tail bite."};
 
 void print_msg(const msg_t msg){
     set_curpos(msg.x,msg.y);
@@ -102,8 +105,8 @@ void new_mouse(){
     unsigned short i, collide,mouseX,mouseY;
     collide=1;
     while (collide){
-        mouseX=rand()%CHAR_PER_LINE;
-        mouseY=rand()%(LINE_PER_SCREEN-1)+1;
+        mouseX=rand()%(CHAR_PER_LINE-3)+2;
+        mouseY=rand()%(LINE_PER_SCREEN-3)+2;
         for (i=0;i<snake.length;i++){
             if ((mouseX==snake.body[i].x)&&(mouseY==snake.body[i].y)) break;
         }
@@ -142,10 +145,37 @@ void wait_start_signal(){
     }
 }//f()
 
+void animate_death(){
+    int i,freq;
+    show_snake();
+    freq=snake.length*200;
+    for (i=snake.length-1;i>=0;i--){
+        set_curpos(snake.body[i].x,snake.body[i].y);
+        put_char(32);
+        tone(freq,500);
+        wait_n_frame(frames_per_second/2);
+        freq -= 100;
+    }//for
+}//f()
+
+// dead cause
+typedef enum DEATH {STARVATION,WALL_COLLISION,TAIL_BITE} death_t;
 
 unsigned char reset=0;
-void game_over(){
+void game_over(death_t cause){
+    animate_death();
     print_msg(msgGAME_OVER);
+    switch (cause){
+        case STARVATION:
+            print_msg(msgSTARVATION);
+            break;
+        case WALL_COLLISION:
+            print_msg(msgWALL_COLLIDE);
+            break;
+        case TAIL_BITE:
+            print_msg(msgTAIL_BITE);
+            break;
+    }//switch
     reset=1;
     wait_start_signal();
 }//f()
@@ -153,28 +183,28 @@ void game_over(){
 void add_calories(unsigned short gain){
     snake.calories+=gain;
     print_msg(msgCALORIES);
-    print_int(snake.calories,2);
+    print_int(snake.calories,1);
 }//f()
 
 
 void burn_calories(unsigned short lost){
     unsigned newLength;
+    if (lost < BASE_METABOLISM) lost=BASE_METABOLISM;
     snake.calories -= lost;
+    if (snake.calories<0) snake.calories=0;
     print_msg(msgCALORIES);
     clear_eol();
-    print_int(snake.calories,2);
+    print_int(snake.calories,1);
     print_msg(msgSECONDS);
-    print_int(snake.lifespan,2);
-    if (snake.calories%MOUSE_CALORIES==0){
-        hide_snake();
-        newLength=snake.calories/MOUSE_CALORIES+1;
-        if (snake.calories){
-            snake.length=newLength+1;
-            show_snake();
-        } else{
-            game_over();
-            return;
-        }
+    print_int(snake.lifespan,1);
+    hide_snake();
+    newLength=snake.calories/MOUSE_CALORIES+1;
+    if (snake.calories){
+        snake.length=newLength+1;
+        show_snake();
+    } else{
+        game_over(STARVATION);
+        return;
     }
 }//f()
 
@@ -213,6 +243,16 @@ void check_if_got_mouse(){
     }
 }//f()
 
+int bit_himself(){
+    int i;
+    for (i=1;i<snake.length;i++){
+        if ((snake.body[0].x==snake.body[i].x) &&(snake.body[0].y==snake.body[i].y)){
+            return 1;
+        }
+    }
+    return 0;
+}//f()
+
 void move_snake(){
     unsigned i;
     if (!(snake.dx || snake.dy)) return;
@@ -224,8 +264,10 @@ void move_snake(){
     snake.body[0].x += snake.dx;
     snake.body[0].y += snake.dy;
     if ((snake.body[0].x<1)||(snake.body[0].x>=(CHAR_PER_LINE-1)) ||
-        (snake.body[0].y<1) || (snake.body[0].y>=LINE_PER_SCREEN)){
-        game_over();
+        (snake.body[0].y<2) || (snake.body[0].y>=LINE_PER_SCREEN)){
+        game_over(WALL_COLLISION);
+    }else if (bit_himself()){
+        game_over(TAIL_BITE);
     }else{
         check_if_got_mouse();
         show_snake();
@@ -234,24 +276,16 @@ void move_snake(){
 
 void present_game(){
     clear_screen();
-    set_curpos(4,0);
-    print("**************");
-    set_curpos(4,1);
-    print("* SNAKE GAME *");
-    set_curpos(4,2);
-    print("**************");
-    set_curpos(4,3);
-    print("increase snake lifespan");
-    set_curpos(4,4);
-    print("by eating mouses.");
-    set_curpos(4,5);
-    print("snake burn calories,");
-    set_curpos(4,6);
-    print("die when calories down to 0.");
-    set_curpos(4,7);
-    print("die when hit wall.");
-    set_curpos(4,8);
-    print("eating a mouse give 20 calories.");
+    print("**************\r");
+    print("* SNAKE GAME *\r");
+    print("**************\r\r");
+    print("Eating a mouse increase snake length.\r");
+    print("Snake burn 10% of is calaries/sec.\r");
+    print("Die of starvation when calories=0.\r");
+    print("Eating a mouse give 20 calories.\r");
+    print("Die when hitting wall.\r");
+    print("Die when bitting his tail.\r\r");
+    print("Use ARROWS to control snake.\r");
     wait_start_signal();
 }//f()
 
@@ -273,9 +307,9 @@ void game_init(){
     mouse.part=MOUSE;
     clear_screen();
     print_msg(msgCALORIES);
-    print_int(snake.calories,2);
+    print_int(snake.calories,1);
     print_msg(msgSECONDS);
-    print_int(snake.lifespan,2);
+    print_int(snake.lifespan,1);
     //draw  borders
     rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
     new_mouse();
@@ -287,6 +321,8 @@ void game_init(){
 int main(void) {
     unsigned p,frame_count;
     PICvision_init();
+    timers_init(100);
+    sound_init(10);
     present_game();
     game_init();
     frame_count=0;
@@ -295,7 +331,8 @@ int main(void) {
         frame_count += 10;
         if (frame_count%frames_per_second==0){
             snake.lifespan +=1;
-            burn_calories(1);
+            burn_calories(snake.calories / 10);
+            rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
         }
         p=read_paddle(PADDLE1);
         switch (p){

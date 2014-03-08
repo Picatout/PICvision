@@ -36,7 +36,7 @@ extern "C" {
 
 
 
-void sound_init();
+void sound_init(int tick_time);
 void tone(unsigned freq, unsigned duration);
 void tune(const unsigned  *buffer);
 void white_noise(unsigned msec);
