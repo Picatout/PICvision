@@ -29,6 +29,7 @@ LIBS:opto
 LIBS:atmel
 LIBS:contrib
 LIBS:valves
+LIBS:librairie-personnelle
 LIBS:PicVision-cache
 EELAYER 27 0
 EELAYER END
@@ -36,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "3 mar 2014"
+Date "8 mar 2014"
 Rev ""
 Comp ""
 Comment1 ""
@@ -283,9 +284,9 @@ F 3 "" H 4900 2650 60  0000 C CNN
 $EndComp
 Text GLabel 4750 3000 0    39   Input ~ 0
 Vpp
-Text GLabel 4800 3300 0    39   Input ~ 0
-PGED/LATCH
 Text GLabel 4800 3400 0    39   Input ~ 0
+PGED/LATCH
+Text GLabel 4800 3300 0    39   Input ~ 0
 PGEC/CLOCK
 $Comp
 L CONN_5 P1
@@ -370,28 +371,6 @@ F 1 "1N4148" H 6800 4600 40  0000 C CNN
 F 2 "" H 6800 4700 60  0000 C CNN
 F 3 "" H 6800 4700 60  0000 C CNN
 	1    6800 4700
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_7 P5
-U 1 1 530CCABD
-P 8400 1300
-F 0 "P5" V 8370 1300 60  0000 C CNN
-F 1 "gamepad 1" V 8470 1300 60  0000 C CNN
-F 2 "" H 8400 1300 60  0000 C CNN
-F 3 "" H 8400 1300 60  0000 C CNN
-	1    8400 1300
-	1    0    0    -1  
-$EndComp
-$Comp
-L CONN_7 P6
-U 1 1 530CCACA
-P 8400 2200
-F 0 "P6" V 8370 2200 60  0000 C CNN
-F 1 "gamepad 2" V 8470 2200 60  0000 C CNN
-F 2 "" H 8400 2200 60  0000 C CNN
-F 3 "" H 8400 2200 60  0000 C CNN
-	1    8400 2200
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -880,9 +859,9 @@ Wire Wire Line
 Wire Wire Line
 	8200 5050 8200 5250
 Wire Wire Line
-	8050 1600 8050 1700
+	8050 1400 8050 1700
 Wire Wire Line
-	8050 2500 8050 2600
+	8050 2300 8050 2600
 Wire Wire Line
 	7850 1900 8050 1900
 Wire Wire Line
@@ -899,8 +878,6 @@ Wire Wire Line
 	7850 2100 8050 2100
 Wire Wire Line
 	7850 2200 8050 2200
-Wire Wire Line
-	7850 2300 8050 2300
 Wire Wire Line
 	8200 6000 8200 6250
 Wire Wire Line
@@ -1086,10 +1063,10 @@ SPI2
 Text GLabel 6350 3700 2    39   Input ~ 0
 NOISE
 $Comp
-L R R?
+L R R12
 U 1 1 5314EEB5
 P 7050 5300
-F 0 "R?" V 7130 5300 40  0000 C CNN
+F 0 "R12" V 7130 5300 40  0000 C CNN
 F 1 "10K" V 7057 5301 40  0000 C CNN
 F 2 "~" V 6980 5300 30  0000 C CNN
 F 3 "~" H 7050 5300 30  0000 C CNN
@@ -1103,4 +1080,26 @@ Wire Wire Line
 Wire Wire Line
 	7300 5300 7350 5300
 Connection ~ 7350 5650
+$Comp
+L CONN_5 P6
+U 1 1 531B74FB
+P 8450 2100
+F 0 "P6" V 8400 2100 50  0000 C CNN
+F 1 "gamepad 2" V 8500 2100 50  0000 C CNN
+F 2 "" H 8450 2100 60  0000 C CNN
+F 3 "" H 8450 2100 60  0000 C CNN
+	1    8450 2100
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_5 P5
+U 1 1 531B759B
+P 8450 1200
+F 0 "P5" V 8400 1200 50  0000 C CNN
+F 1 "gamepad 2" V 8500 1200 50  0000 C CNN
+F 2 "" H 8450 1200 60  0000 C CNN
+F 3 "" H 8450 1200 60  0000 C CNN
+	1    8450 1200
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
