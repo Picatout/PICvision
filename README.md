@@ -11,3 +11,5 @@ controls: 2 SNES gamepad input
 audio: white noise, square wave tones, PWM DAC
 extra interfaces: 1 x I2C,  1 x SPI
 
+Source code licenced under GNU GPLv3
+Others documents licenced under Creative Commons  CC-BY-SA
