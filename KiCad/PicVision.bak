@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "8 mar 2014"
+Date "10 mar 2014"
 Rev ""
 Comp ""
 Comment1 ""
@@ -598,7 +598,7 @@ L R R4
 U 1 1 530CF92E
 P 4750 6550
 F 0 "R4" V 4830 6550 50  0000 C CNN
-F 1 "R" V 4750 6550 50  0000 C CNN
+F 1 "150R" V 4750 6550 50  0000 C CNN
 F 2 "" H 4750 6550 60  0000 C CNN
 F 3 "" H 4750 6550 60  0000 C CNN
 	1    4750 6550
@@ -1102,4 +1102,17 @@ F 3 "" H 8450 1200 60  0000 C CNN
 $EndComp
 Wire Wire Line
 	3000 6100 3150 6100
+$Comp
+L SNES CON?
+U 1 1 531DB6C0
+P 9700 1800
+F 0 "CON?" H 9700 1400 60  0000 C CNN
+F 1 "SNES" H 9650 2400 60  0000 C CNN
+F 2 "" H 9700 1800 60  0000 C CNN
+F 3 "" H 9700 1800 60  0000 C CNN
+	1    9700 1800
+	1    0    0    -1  
+$EndComp
+Text Notes 9450 1050 0    60   ~ 0
+SNES controler\nconnector
 $EndSCHEMATC
