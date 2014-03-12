@@ -1114,5 +1114,5 @@ F 3 "" H 9700 1800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Text Notes 9450 1050 0    60   ~ 0
-SNES controler\nconnector
+SNES controller\nconnector
 $EndSCHEMATC
