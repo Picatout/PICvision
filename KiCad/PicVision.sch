@@ -37,7 +37,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
 Title ""
-Date "12 mar 2014"
+Date "14 mar 2014"
 Rev ""
 Comp ""
 Comment1 ""
@@ -598,7 +598,7 @@ L R R4
 U 1 1 530CF92E
 P 4750 6550
 F 0 "R4" V 4830 6550 50  0000 C CNN
-F 1 "200R" V 4750 6550 50  0000 C CNN
+F 1 "75R" V 4750 6550 50  0000 C CNN
 F 2 "" H 4750 6550 60  0000 C CNN
 F 3 "" H 4750 6550 60  0000 C CNN
 	1    4750 6550

@@ -1,0 +1,92 @@
+eeschema (2013-07-07 BZR 4022)-stable  >> Creation date: 2014-03-14 07:39:52
+#Cmp ( ordre = Référence )
+| C1         22pF        
+| C2         22pF        
+| C3         100nF       
+| C4         100nF       
+| C5         1µF        
+| C6         100nF       
+| C7         2n2         
+| C8         10µF       
+| C9         1µF        
+| C10        100nF       
+| C11        2n2         
+| C12        2n2         
+| CON1       Power input 
+| CON2       SNES        
+| D1         Power LED   
+| D2         1N4148      
+| F1         500mA       
+| J1         video out   
+| J2         audio_out   
+| P1         ICSP        
+| P2         SPI2        
+| P3         I2C 2       
+| P4         PAL VIDEO   
+| P5         gamepad 2   
+| P6         gamepad 2   
+| R1         10k         
+| R2         10k         
+| R3         10K         
+| R4         75R         
+| R5         470R        
+| R6         4K7         
+| R7         4K7         
+| R8         470R        
+| R9         75R         
+| R10        10K         
+| R11        1K          
+| R12        10K         
+| SW1        SPST        
+| SW2        reset       
+| U1         L78L33      
+| U2         PIC24FJ64GA002
+| X1         8Mhz        
+#End Cmp
+
+#Cmp ( ordre = Valeur )
+| 22pF         C1        
+| 22pF         C2        
+| 2n2          C7        
+| 2n2          C11       
+| 2n2          C12       
+| 100nF        C3        
+| 100nF        C4        
+| 100nF        C6        
+| 100nF        C10       
+| 1µF         C5        
+| 10µF        C8        
+| 1µF         C9        
+| Power input  CON1      
+| SNES         CON2      
+| Power LED    D1        
+| 1N4148       D2        
+| 500mA        F1        
+| video out    J1        
+| audio_out    J2        
+| ICSP         P1        
+| SPI2         P2        
+| I2C 2        P3        
+| PAL VIDEO    P4        
+| gamepad 2    P5        
+| gamepad 2    P6        
+| 75R          R4        
+| 75R          R9        
+| 470R         R5        
+| 470R         R8        
+| 1K           R11       
+| 4K7          R6        
+| 4K7          R7        
+| 10k          R1        
+| 10k          R2        
+| 10K          R3        
+| 10K          R10       
+| 10K          R12       
+| SPST         SW1       
+| reset        SW2       
+| PIC24FJ64GA002 U2        
+| L78L33       U1        
+| 8Mhz         X1        
+#End Cmp
+
+#End List
