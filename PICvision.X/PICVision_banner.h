@@ -1,0 +1,10 @@
+#ifndef _PICVISION_BANNER
+#define _PICVISION_BANNER
+
+#define ARRAY_WIDTH 24
+#define PIX_WIDTH 185
+#define PIX_HEIGHT 80
+
+extern const unsigned char PICVISION_BANNER[PIX_HEIGHT][ARRAY_WIDTH];
+
+#endif // _PICVISION_BANNER
