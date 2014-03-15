@@ -56,7 +56,8 @@
 #define F_PCHAR 1    // flag put_char() pending
 #define F_CLEAR 2    // flag clear_screen() pending
 #define F_CLREOL 4   // flag clear to end of line
-#define F_RETRACE 8 // flag screen in retrace phase
+#define F_RETRACE 8  // flag screen in retrace phase
+#define F_BLANK 16   // flag keep screen blank
 
 unsigned frames_per_second;
 static unsigned int frame_line_cntr=0; // count line in video frame
@@ -121,7 +122,13 @@ unsigned long f0;
     while (frame_cntr<f0);
 }//f()
 
-
+void  blank_out(unsigned state){
+    if (!state){
+        flags &= ~F_BLANK;
+    }else{
+        flags |=F_BLANK;
+    }
+}//f()
 
 
 // video sync signal generation
@@ -137,7 +144,7 @@ void __attribute__((interrupt,no_auto_psv,shadow)) _VSYNC_ISR(void){
             VSYNCR=hsync;
             break;
         case NTSC_FIRST_VISIBLE:
-            if (video_mode==NTSC_MODE){
+            if (video_mode==NTSC_MODE && !(flags&F_BLANK)){
                 VDLYIF=0;
                 VDLYIE=1;
                 flags &= ~F_RETRACE;
@@ -150,7 +157,7 @@ void __attribute__((interrupt,no_auto_psv,shadow)) _VSYNC_ISR(void){
             }
             break;
         case PAL_FIRST_VISIBLE:
-            if (video_mode==PAL_MODE){
+            if (video_mode==PAL_MODE && !(flags&F_BLANK)){
                 VDLYIF=0;
                 VDLYIE=1;
                 flags &= ~F_RETRACE;

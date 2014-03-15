@@ -8,4 +8,5 @@ font.h  \
 graphics.h  \
 sound.h  \
  timers.h  \
-snes_paddle.h 
+snes_paddle.h  \
+PICVision_banner.h 

@@ -31,6 +31,31 @@
  */
 
 #include "PICvision.h"
+#include "PICVision_banner.h"
+
+void splash_screen(){
+    int i,k,first,last,left;
+    left=(HPIXELS-PIX_WIDTH)/16+1;
+    last=0;
+    while (last<(VPIXELS-PIX_HEIGHT)/2+PIX_HEIGHT){
+        first=max(0,PIX_HEIGHT-last-1);
+        for (i=0;i<PIX_HEIGHT-first;i++){
+            for (k=0;k<ARRAY_WIDTH;k++){
+                video_buffer[last-i][left+k]=PICVISION_BANNER[i][k];
+            }//for
+        }//for
+        if (last-i>0){
+            for (k=0;k<ARRAY_WIDTH;k++){
+                video_buffer[last-i-1][left+k]=0;
+            }//for
+        }//if
+        wait_n_frame(1);
+        last++;
+    }//while
+    set_curpos(left,last/8+2);
+    print("Copyright 2014, Jacques Deschenes");
+    wait_n_frame(180);
+}//f()
 
 
 void PICvision_init(void) {
@@ -38,6 +63,7 @@ void PICvision_init(void) {
     timers_init(TICK_FREQ);
     video_init();
     sound_init(1000/TICK_FREQ);
+    splash_screen();
 }//f()
 
 
