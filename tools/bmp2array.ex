@@ -118,17 +118,17 @@ integer fo
        puts(fo,"// monochrome bitmap data\n\n")
        printf(fo,"#include \"%s\"\n\n",{output_file[1..$-1]&'h'})
        printf(fo,"const unsigned char %s[PIX_HEIGHT][ARRAY_WIDTH]={\n",{array_name})
-       for l=1 to length(data) do
+       for l=length(data) to 1 by -1 do
            puts(fo,"{")
            for r=1 to length(data[l]) do
                if r<length(data[l]) then
-                   printf(fo,"0x%2x, ",data[l][r])
+                   printf(fo,"0x%02x, ",data[l][r])
                else
-                   printf(fo,"0x%2x},\n",data[l][r])
+                   printf(fo,"0x%02x},\n",data[l][r])
                end if
            end for
        end for
-       puts(fo,'\n')
+       puts(fo,"};\n")
        close(fo)
    else
        puts(1,"no output file\n")    
