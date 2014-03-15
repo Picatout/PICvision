@@ -32,7 +32,7 @@ Command:
   build/default/production/snes_paddle.o \
   build/default/production/hardwareProfile.o \
   build/default/production/snake.o \
-  build/default/production/PICVision_banner.o \
+  build/default/production/PICvision_banner.o \
   --defsym=__MPLAB_BUILD=1 \
   -Tp24FJ64GA002.gld.00 \
   --stack=16 \
@@ -99,10 +99,10 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200               0x3ca           0x5af  (1455)
 .const                       0x5ca               0xcba          0x1317  (4887)
-.text                       0x1284              0x1352          0x1cfb  (7419)
-.dinit                      0x25d6                0x40            0x60  (96)
+.text                       0x1284              0x1362          0x1d13  (7443)
+.dinit                      0x25e6                0x40            0x60  (96)
 
-                     Total program memory used (bytes):         0x3621  (13857) 21%
+                     Total program memory used (bytes):         0x3639  (13881) 21%
 
 
 Data Memory  [Origin = 0x800, Length = 0x2000]
@@ -258,17 +258,17 @@ External Symbols in Program Memory (by address):
                   0x0023c2                  _while_sound
                   0x0023cc                  __T3Interrupt
                   0x002456                  _splash_screen
-                  0x0024d8                  _PICvision_init
-                  0x0024e8                  _HardwareConfig
-                  0x002562                  _latch
-                  0x002578                  _bit_shift
-                  0x00258e                  _read_paddle
+                  0x0024e8                  _PICvision_init
+                  0x0024f8                  _HardwareConfig
+                  0x002572                  _latch
+                  0x002588                  _bit_shift
+                  0x00259e                  _read_paddle
 
 External Symbols in Program Memory (by name):
 
-                  0x0024e8                  _HardwareConfig
+                  0x0024f8                  _HardwareConfig
                   0x0005ca                  _PICVISION_BANNER
-                  0x0024d8                  _PICvision_init
+                  0x0024e8                  _PICvision_init
                   0x0022aa                  __CNInterrupt
                   0x000298                  __DefaultInterrupt
                   0x0020c8                  __T1Interrupt
@@ -298,7 +298,7 @@ External Symbols in Program Memory (by name):
                   0x001892                  _add_calories
                   0x001810                  _animate_death
                   0x0019c8                  _bit_himself
-                  0x002578                  _bit_shift
+                  0x002588                  _bit_shift
                   0x0021d2                  _blank_out
                   0x0018a2                  _burn_calories
                   0x0022ea                  _cb_tone
@@ -320,7 +320,7 @@ External Symbols in Program Memory (by name):
                   0x0017a4                  _hide_snake
                   0x001eca                  _invert_char
                   0x001f60                  _invert_video
-                  0x002562                  _latch
+                  0x002572                  _latch
                   0x0012dc                  _line
                   0x001b06                  _main
                   0x000566                  _memmove
@@ -345,7 +345,7 @@ External Symbols in Program Memory (by name):
                   0x001736                  _print_msg
                   0x001ca6                  _put_char
                   0x000596                  _rand
-                  0x00258e                  _read_paddle
+                  0x00259e                  _read_paddle
                   0x0013b2                  _rectangle
                   0x001c1c                  _scroll_down
                   0x001c0c                  _scroll_up
@@ -396,7 +396,7 @@ LOAD build/default/production/snes-paddle.o
 LOAD build/default/production/snes_paddle.o
 LOAD build/default/production/hardwareProfile.o
 LOAD build/default/production/snake.o
-LOAD build/default/production/PICVision_banner.o
+LOAD build/default/production/PICvision_banner.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD /opt/microchip/xc16/v1.20/bin/bin/../../lib/PIC24F/libpPIC24Fxxx-elf.a
                     0xabfc                  __CONFIG2 = 0xabfc
@@ -495,20 +495,20 @@ __CONFIG1
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x4fa6
+.debug_info       0x000000       0x4fa8
  *(.debug_info)
- .debug_info      0x000000        0x229 build/default/production/PICvision.o
- .debug_info      0x000229       0x1292 build/default/production/TVout.o
- .debug_info      0x0014bb        0x9aa build/default/production/sound.o
- .debug_info      0x001e65         0xe6 build/default/production/font.o
- .debug_info      0x001f4b        0x75e build/default/production/text_console.o
- .debug_info      0x0026a9        0x3b1 build/default/production/graphics.o
- .debug_info      0x002a5a        0x7b7 build/default/production/timers.o
- .debug_info      0x003211        0x149 build/default/production/snes-paddle.o
- .debug_info      0x00335a        0x390 build/default/production/snes_paddle.o
- .debug_info      0x0036ea       0x10df build/default/production/hardwareProfile.o
- .debug_info      0x0047c9        0x6e2 build/default/production/snake.o
- .debug_info      0x004eab         0xfb build/default/production/PICVision_banner.o
+ .debug_info      0x000000        0x22b build/default/production/PICvision.o
+ .debug_info      0x00022b       0x1292 build/default/production/TVout.o
+ .debug_info      0x0014bd        0x9aa build/default/production/sound.o
+ .debug_info      0x001e67         0xe6 build/default/production/font.o
+ .debug_info      0x001f4d        0x75e build/default/production/text_console.o
+ .debug_info      0x0026ab        0x3b1 build/default/production/graphics.o
+ .debug_info      0x002a5c        0x7b7 build/default/production/timers.o
+ .debug_info      0x003213        0x149 build/default/production/snes-paddle.o
+ .debug_info      0x00335c        0x390 build/default/production/snes_paddle.o
+ .debug_info      0x0036ec       0x10df build/default/production/hardwareProfile.o
+ .debug_info      0x0047cb        0x6e2 build/default/production/snake.o
+ .debug_info      0x004ead         0xfb build/default/production/PICvision_banner.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000        0xb18
@@ -524,22 +524,22 @@ __CONFIG1
  .debug_abbrev    0x0007c5         0xc3 build/default/production/snes_paddle.o
  .debug_abbrev    0x000888         0xb6 build/default/production/hardwareProfile.o
  .debug_abbrev    0x00093e        0x191 build/default/production/snake.o
- .debug_abbrev    0x000acf         0x49 build/default/production/PICVision_banner.o
+ .debug_abbrev    0x000acf         0x49 build/default/production/PICvision_banner.o
 
-.debug_line       0x000000       0x223a
+.debug_line       0x000000       0x2242
  *(.debug_line)
- .debug_line      0x000000        0x166 build/default/production/PICvision.o
- .debug_line      0x000166        0x3b3 build/default/production/TVout.o
- .debug_line      0x000519        0x2e4 build/default/production/sound.o
- .debug_line      0x0007fd         0x2e build/default/production/font.o
- .debug_line      0x00082b        0x872 build/default/production/text_console.o
- .debug_line      0x00109d        0x39b build/default/production/graphics.o
- .debug_line      0x001438        0x377 build/default/production/timers.o
- .debug_line      0x0017af         0x24 build/default/production/snes-paddle.o
- .debug_line      0x0017d3        0x166 build/default/production/snes_paddle.o
- .debug_line      0x001939        0x15e build/default/production/hardwareProfile.o
- .debug_line      0x001a97        0x769 build/default/production/snake.o
- .debug_line      0x002200         0x3a build/default/production/PICVision_banner.o
+ .debug_line      0x000000        0x16e build/default/production/PICvision.o
+ .debug_line      0x00016e        0x3b3 build/default/production/TVout.o
+ .debug_line      0x000521        0x2e4 build/default/production/sound.o
+ .debug_line      0x000805         0x2e build/default/production/font.o
+ .debug_line      0x000833        0x872 build/default/production/text_console.o
+ .debug_line      0x0010a5        0x39b build/default/production/graphics.o
+ .debug_line      0x001440        0x377 build/default/production/timers.o
+ .debug_line      0x0017b7         0x24 build/default/production/snes-paddle.o
+ .debug_line      0x0017db        0x166 build/default/production/snes_paddle.o
+ .debug_line      0x001941        0x15e build/default/production/hardwareProfile.o
+ .debug_line      0x001a9f        0x769 build/default/production/snake.o
+ .debug_line      0x002208         0x3a build/default/production/PICvision_banner.o
 
 .debug_frame      0x000000        0x514
  *(.debug_frame)
@@ -595,7 +595,7 @@ __CONFIG1
  .debug_pubnames
                   0x000446        0x195 build/default/production/snake.o
  .debug_pubnames
-                  0x0005db         0x27 build/default/production/PICVision_banner.o
+                  0x0005db         0x27 build/default/production/PICvision_banner.o
 
 .debug_ranges
  *(.debug_ranges)
@@ -1511,7 +1511,7 @@ __c30_signature
  __c30_signature
                   0x000674          0x6 build/default/production/snake.o
  __c30_signature
-                  0x00067a          0x6 build/default/production/PICVision_banner.o
+                  0x00067a          0x6 build/default/production/PICvision_banner.o
  __c30_signature
                   0x000680          0x6 /opt/microchip/xc16/v1.20/bin/bin/../../lib/libpic30-elf.a(crt0_standard.o)
  __c30_signature
@@ -1586,7 +1586,7 @@ __c30_signature
  .config_IESO     0x00abfc          0x2 build/default/production/snake.o
 
 .const              0x85ca        0xcba address de chargement 0x0005ca  
- .const             0x85ca        0x780 build/default/production/PICVision_banner.o
+ .const             0x85ca        0x780 build/default/production/PICvision_banner.o
                     0x85ca                  _PICVISION_BANNER
  .const             0x8d4a        0x370 build/default/production/font.o
                     0x8d4a                  _font6x8
@@ -1600,7 +1600,7 @@ __c30_signature
                     0x925e                  _msgTAIL_BITE
  .const             0x9262         0x22 build/default/production/PICvision.o
 
-.text             0x001284       0x1352
+.text             0x001284       0x1362
  .text            0x001284        0x4b2 build/default/production/graphics.o
                   0x001284                  _plot
                   0x0012dc                  _line
@@ -1670,15 +1670,15 @@ __c30_signature
                   0x002396                  _white_noise
                   0x0023c2                  _while_sound
                   0x0023cc                  __T3Interrupt
- .text            0x002456         0x92 build/default/production/PICvision.o
+ .text            0x002456         0xa2 build/default/production/PICvision.o
                   0x002456                  _splash_screen
-                  0x0024d8                  _PICvision_init
- .text            0x0024e8         0x7a build/default/production/hardwareProfile.o
-                  0x0024e8                  _HardwareConfig
- .text            0x002562         0x74 build/default/production/snes_paddle.o
-                  0x002562                  _latch
-                  0x002578                  _bit_shift
-                  0x00258e                  _read_paddle
+                  0x0024e8                  _PICvision_init
+ .text            0x0024f8         0x7a build/default/production/hardwareProfile.o
+                  0x0024f8                  _HardwareConfig
+ .text            0x002572         0x74 build/default/production/snes_paddle.o
+                  0x002572                  _latch
+                  0x002588                  _bit_shift
+                  0x00259e                  _read_paddle
 
-.dinit            0x0025d6         0x40
- .dinit           0x0025d6         0x40 data_init
+.dinit            0x0025e6         0x40
+ .dinit           0x0025e6         0x40 data_init

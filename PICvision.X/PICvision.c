@@ -31,7 +31,7 @@
  */
 
 #include "PICvision.h"
-#include "PICVision_banner.h"
+#include "PICvision_banner.h"
 
 void splash_screen(){
     int i,k,first,last,left;
@@ -41,7 +41,7 @@ void splash_screen(){
         first=max(0,PIX_HEIGHT-last-1);
         for (i=0;i<PIX_HEIGHT-first;i++){
             for (k=0;k<ARRAY_WIDTH;k++){
-                video_buffer[last-i][left+k]=PICVISION_BANNER[i][k];
+                video_buffer[last-i][left+k]=PICVISION_BANNER[PIX_HEIGHT-1-i][k];
             }//for
         }//for
         if (last-i>0){

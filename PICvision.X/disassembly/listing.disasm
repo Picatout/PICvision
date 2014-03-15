@@ -1,7 +1,7 @@
 Disassembly Listing for PICvision
 Generated From:
 /home/jacques/MPLABXProjects/PICvision/PICvision.X/dist/default/production/PICvision.X.production.elf
-2014-03-14 22:34:14
+2014-03-14 23:07:55
 
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/timers.c  ---------------------------------------
 1:                 /*
@@ -1552,90 +1552,90 @@ Generated From:
 37:                
 38:                void latch(){
 39:                    P_PDL_LATCH=1;
-002562  A822CC     BSET LATB, #1
+002572  A822CC     BSET LATB, #1
 40:                    mDelay(CYCLES_PER_USEC/4);
-002564  200044     MOV #0x4, W4
-002566  000000     NOP
-002568  E90204     DEC W4, W4
-00256A  3AFFFD     BRA NZ, 0x2566
+002574  200044     MOV #0x4, W4
+002576  000000     NOP
+002578  E90204     DEC W4, W4
+00257A  3AFFFD     BRA NZ, 0x2576
 41:                    P_PDL_LATCH=0;
-00256C  A922CC     BCLR LATB, #1
+00257C  A922CC     BCLR LATB, #1
 42:                    mDelay(CYCLES_PER_USEC/4);
-00256E  200044     MOV #0x4, W4
-002570  000000     NOP
-002572  E90204     DEC W4, W4
-002574  3AFFFD     BRA NZ, 0x2570
+00257E  200044     MOV #0x4, W4
+002580  000000     NOP
+002582  E90204     DEC W4, W4
+002584  3AFFFD     BRA NZ, 0x2580
 43:                }//f()
-002576  060000     RETURN
+002586  060000     RETURN
 44:                
 45:                void bit_shift(){
 46:                    P_PDL_CLK=1;
-002578  A802CC     BSET LATB, #0
+002588  A802CC     BSET LATB, #0
 47:                    mDelay(CYCLES_PER_USEC/4);
-00257A  200044     MOV #0x4, W4
-00257C  000000     NOP
-00257E  E90204     DEC W4, W4
-002580  3AFFFD     BRA NZ, 0x257C
+00258A  200044     MOV #0x4, W4
+00258C  000000     NOP
+00258E  E90204     DEC W4, W4
+002590  3AFFFD     BRA NZ, 0x258C
 48:                    P_PDL_CLK=0;
-002582  A902CC     BCLR LATB, #0
+002592  A902CC     BCLR LATB, #0
 49:                    mDelay(CYCLES_PER_USEC/4);
-002584  200044     MOV #0x4, W4
-002586  000000     NOP
-002588  E90204     DEC W4, W4
-00258A  3AFFFD     BRA NZ, 0x2586
+002594  200044     MOV #0x4, W4
+002596  000000     NOP
+002598  E90204     DEC W4, W4
+00259A  3AFFFD     BRA NZ, 0x2596
 50:                }// f()
-00258C  060000     RETURN
+00259C  060000     RETURN
 51:                
 52:                unsigned read_paddle(int paddleId) {
-00258E  BE9F88     MOV.D W8, [W15++]
-002590  BE9F8A     MOV.D W10, [W15++]
-002592  BE9F8C     MOV.D W12, [W15++]
-002594  780680     MOV W0, W13
+00259E  BE9F88     MOV.D W8, [W15++]
+0025A0  BE9F8A     MOV.D W10, [W15++]
+0025A2  BE9F8C     MOV.D W12, [W15++]
+0025A4  780680     MOV W0, W13
 53:                    unsigned i,pdata, p1,p2;
 54:                    p1=0;
-00259A  780509     MOV W9, W10
+0025AA  780509     MOV W9, W10
 55:                    p2=0;
-002598  EB0480     CLR W9
+0025A8  EB0480     CLR W9
 56:                    latch(); // latch data in paddles shift register
-002596  07FFE5     RCALL latch
+0025A6  07FFE5     RCALL latch
 57:                    // shift out is least significant bit first.
 58:                    for (i=0;i<15;i++){ // SNES paddle have 16 bits shift register
-00259C  780409     MOV W9, W8
-0025B6  E80408     INC W8, W8
-0025B8  540FEF     SUB W8, #0xF, [W15]
-0025BA  3AFFF3     BRA NZ, 0x25A2
+0025AC  780409     MOV W9, W8
+0025C6  E80408     INC W8, W8
+0025C8  540FEF     SUB W8, #0xF, [W15]
+0025CA  3AFFF3     BRA NZ, 0x25B2
 59:                        pdata=PADDLES_DATA_PORT;
-0025A2  801614     MOV PORTA, W4
+0025B2  801614     MOV PORTA, W4
 60:                        p1 |= (pdata&PADDLE1)<<i;
-0025A4  6202E1     AND W4, #0x1, W5
-0025A6  DD2A88     SL W5, W8, W5
-0025A8  750505     IOR W10, W5, W10
+0025B4  6202E1     AND W4, #0x1, W5
+0025B6  DD2A88     SL W5, W8, W5
+0025B8  750505     IOR W10, W5, W10
 61:                        p2 |= (pdata&PADDLE2)?1<<i:0;
-00259E  EB0580     CLR W11
-0025A0  20001C     MOV #0x1, W12
-0025AA  620262     AND W4, #0x2, W4
-0025AC  78028B     MOV W11, W5
-0025AE  320001     BRA Z, 0x25B2
-0025B0  DD6288     SL W12, W8, W5
-0025B2  748485     IOR W9, W5, W9
+0025AE  EB0580     CLR W11
+0025B0  20001C     MOV #0x1, W12
+0025BA  620262     AND W4, #0x2, W4
+0025BC  78028B     MOV W11, W5
+0025BE  320001     BRA Z, 0x25C2
+0025C0  DD6288     SL W12, W8, W5
+0025C2  748485     IOR W9, W5, W9
 62:                        bit_shift();
-0025B4  07FFE1     RCALL bit_shift
+0025C4  07FFE1     RCALL bit_shift
 63:                    }
 64:                    return paddleId==1?(~p1)&0xfff:(~p2)&0xfff;
-0025BC  568FE1     SUB W13, #0x1, [W15]
-0025BE  3A0004     BRA NZ, 0x25C8
-0025C0  EA800A     COM W10, W0
-0025C2  20FFF4     MOV #0xFFF, W4
-0025C4  600004     AND W0, W4, W0
-0025C6  370003     BRA 0x25CE
-0025C8  EA8009     COM W9, W0
-0025CA  20FFF4     MOV #0xFFF, W4
-0025CC  600004     AND W0, W4, W0
+0025CC  568FE1     SUB W13, #0x1, [W15]
+0025CE  3A0004     BRA NZ, 0x25D8
+0025D0  EA800A     COM W10, W0
+0025D2  20FFF4     MOV #0xFFF, W4
+0025D4  600004     AND W0, W4, W0
+0025D6  370003     BRA 0x25DE
+0025D8  EA8009     COM W9, W0
+0025DA  20FFF4     MOV #0xFFF, W4
+0025DC  600004     AND W0, W4, W0
 65:                }//f()
-0025CE  BE064F     MOV.D [--W15], W12
-0025D0  BE054F     MOV.D [--W15], W10
-0025D2  BE044F     MOV.D [--W15], W8
-0025D4  060000     RETURN
+0025DE  BE064F     MOV.D [--W15], W12
+0025E0  BE054F     MOV.D [--W15], W10
+0025E2  BE044F     MOV.D [--W15], W8
+0025E4  060000     RETURN
 66:                
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/snake.c  ----------------------------------------
 1:                 /*
@@ -1887,7 +1887,7 @@ Generated From:
 143:                     p=read_paddle(PADDLE1);
 001802  200018     MOV #0x1, W8
 001804  780008     MOV W8, W0
-001806  0706C3     RCALL read_paddle
+001806  0706CB     RCALL read_paddle
 144:                   }
 145:               }//f()
 00180C  78044F     MOV [--W15], W8
@@ -1924,8 +1924,8 @@ Generated From:
 001828  B3C20B     MOV #0x20, W11
 001836  78400B     MOV.B W11, W0
 001838  070236     RCALL put_char
-154:                       tone(freq,500);
-00182A  201F4C     MOV #0x1F4, W12
+154:                       tone(freq,250);
+00182A  200FAC     MOV #0xFA, W12
 00183A  78008C     MOV W12, W1
 00183C  78000A     MOV W10, W0
 00183E  070571     RCALL tone
@@ -2449,22 +2449,20 @@ Generated From:
 001B08  781F8A     MOV W10, [W15++]
 320:                   unsigned p,frame_count;
 321:                   PICvision_init();
-001B0A  0704E6     RCALL PICvision_init
-322:               //    timers_init(100);
-323:               //    sound_init(10);
-324:                   present_game();
+001B0A  0704EE     RCALL PICvision_init
+322:                   present_game();
 001B0C  07FFA9     RCALL present_game
-325:                   game_init();
+323:                   game_init();
 001B0E  07FFBF     RCALL game_init
-326:                   frame_count=0;
+324:                   frame_count=0;
 001B10  EB0400     CLR W8
-327:                   while (1){
-328:                       wait_n_frame(10);
+325:                   while (1){
+326:                       wait_n_frame(10);
 001B16  2000A0     MOV #0xA, W0
 001B18  070352     RCALL wait_n_frame
-329:                       frame_count += 10;
+327:                       frame_count += 10;
 001B1A  44046A     ADD W8, #0xA, W8
-330:                       if (frame_count%frames_per_second==0){
+328:                       if (frame_count%frames_per_second==0){
 001B1C  80F654     MOV frames_per_second, W4
 001B1E  BE9F80     MOV.D W0, [W15++]
 001B20  090011     REPEAT #0x11
@@ -2473,9 +2471,9 @@ Generated From:
 001B26  BE004F     MOV.D [--W15], W0
 001B28  520FE0     SUB W4, #0x0, [W15]
 001B2A  3A000E     BRA NZ, 0x1B48
-331:                           snake.lifespan +=1;
+329:                           snake.lifespan +=1;
 001B2C  EC3EDC     INC 0x1EDC
-332:                           burn_calories(snake.calories / 10);
+330:                           burn_calories(snake.calories / 10);
 001B2E  80F6D0     MOV 0x1EDA, W0
 001B30  2000A4     MOV #0xA, W4
 001B32  781F81     MOV W1, [W15++]
@@ -2483,18 +2481,18 @@ Generated From:
 001B36  D88004     DIV.UW W0, W4
 001B38  7800CF     MOV [--W15], W1
 001B3A  07FEB3     RCALL burn_calories
-333:                           rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
+331:                           rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
 001B3C  200014     MOV #0x1, W4
 001B3E  200D73     MOV #0xD7, W3
 001B40  780103     MOV W3, W2
 001B42  200081     MOV #0x8, W1
 001B44  EB0000     CLR W0
 001B46  07FC35     RCALL rectangle
-334:                       }
-335:                       p=read_paddle(PADDLE1);
+332:                       }
+333:                       p=read_paddle(PADDLE1);
 001B48  200010     MOV #0x1, W0
-001B4A  070521     RCALL read_paddle
-336:                       switch (p){
+001B4A  070529     RCALL read_paddle
+334:                       switch (p){
 001B12  200209     MOV #0x20, W9
 001B4C  500F89     SUB W0, W9, [W15]
 001B4E  32002A     BRA Z, 0x1BA4
@@ -2509,97 +2507,93 @@ Generated From:
 001B60  500F84     SUB W0, W4, [W15]
 001B62  3A0029     BRA NZ, 0x1BB6
 001B64  37000A     BRA 0x1B7A
-337:                           case SNES_LEFT:
-338:                               if (snake.dx==1){
+335:                           case SNES_LEFT:
+336:                               if (snake.dx==1){
 001B66  80F6F4     MOV 0x1EDE, W4
 001B68  520FE1     SUB W4, #0x1, [W15]
 001B6A  320025     BRA Z, 0x1BB6
-339:                                   break;
-340:                               }
-341:                               snake.dx =-1;
+337:                                   break;
+338:                               }
+339:                               snake.dx =-1;
 001B6C  EFBEDE     SETM 0x1EDE
-342:                               snake.dy=0;
+340:                               snake.dy=0;
 001B6E  EF3EE0     CLR 0x1EE0
-343:                               snake.body[0].part=HEAD_LEFT;
+341:                               snake.body[0].part=HEAD_LEFT;
 001B70  B3C884     MOV #0x88, W4
 001B72  FD0200     EXCH W0, W4
 001B74  B7FEE4     MOV.B WREG, 0x1EE4
 001B76  FD0200     EXCH W0, W4
-344:                               break;
+342:                               break;
 001B78  37001E     BRA 0x1BB6
-345:                           case SNES_RIGHT:
-346:                               if (snake.dx==-1){
+343:                           case SNES_RIGHT:
+344:                               if (snake.dx==-1){
 001B7A  80F6F4     MOV 0x1EDE, W4
 001B7C  420FE1     ADD W4, #0x1, [W15]
 001B7E  32001B     BRA Z, 0x1BB6
-347:                                   break;
-348:                               }
-349:                               snake.dx=1;
+345:                                   break;
+346:                               }
+347:                               snake.dx=1;
 001B80  200014     MOV #0x1, W4
 001B82  88F6F4     MOV W4, 0x1EDE
-350:                               snake.dy=0;
+348:                               snake.dy=0;
 001B84  EF3EE0     CLR 0x1EE0
-351:                               snake.body[0].part=HEAD_RIGHT;
+349:                               snake.body[0].part=HEAD_RIGHT;
 001B86  B3C874     MOV #0x87, W4
 001B88  FD0200     EXCH W0, W4
 001B8A  B7FEE4     MOV.B WREG, 0x1EE4
 001B8C  FD0200     EXCH W0, W4
-352:                               break;
+350:                               break;
 001B8E  370013     BRA 0x1BB6
-353:                           case SNES_UP:
-354:                               if (snake.dy==1){
+351:                           case SNES_UP:
+352:                               if (snake.dy==1){
 001B90  80F704     MOV 0x1EE0, W4
 001B92  520FE1     SUB W4, #0x1, [W15]
 001B94  320010     BRA Z, 0x1BB6
-355:                                   break;
-356:                               }
-357:                               snake.dy=-1;
+353:                                   break;
+354:                               }
+355:                               snake.dy=-1;
 001B96  EFBEE0     SETM 0x1EE0
-358:                               snake.dx=0;
+356:                               snake.dx=0;
 001B98  EF3EDE     CLR 0x1EDE
-359:                               snake.body[0].part=HEAD_UP;
+357:                               snake.body[0].part=HEAD_UP;
 001B9A  B3C894     MOV #0x89, W4
 001B9C  FD0200     EXCH W0, W4
 001B9E  B7FEE4     MOV.B WREG, 0x1EE4
 001BA0  FD0200     EXCH W0, W4
-360:                               break;
+358:                               break;
 001BA2  370009     BRA 0x1BB6
-361:                           case SNES_DOWN:
-362:                               if (snake.dy==-1){
+359:                           case SNES_DOWN:
+360:                               if (snake.dy==-1){
 001BA4  80F704     MOV 0x1EE0, W4
 001BA6  420FE1     ADD W4, #0x1, [W15]
 001BA8  320006     BRA Z, 0x1BB6
-363:                                   break;
-364:                               }
-365:                               snake.dy=1;
+361:                                   break;
+362:                               }
+363:                               snake.dy=1;
 001BAA  200014     MOV #0x1, W4
 001BAC  88F704     MOV W4, 0x1EE0
-366:                               snake.dx=0;
+364:                               snake.dx=0;
 001BAE  EF3EDE     CLR 0x1EDE
-367:                               snake.body[0].part=HEAD_DOWN;
+365:                               snake.body[0].part=HEAD_DOWN;
 001B14  B3C8AA     MOV #0x8A, W10
 001BB0  FD0500     EXCH W0, W10
 001BB2  B7FEE4     MOV.B WREG, 0x1EE4
 001BB4  FD0500     EXCH W0, W10
-368:                               break;
-369:               //            default:
-370:               //                snake.dx=0;
-371:               //                snake.dy=0;
-372:               //                break;
-373:                       }//switch
-374:                       move_snake();
+366:                               break;
+367:                       }//switch
+368:                       move_snake();
 001BB6  07FF1E     RCALL move_snake
-375:                       if (reset) game_init();
+369:                       if (reset) game_init();
 001BB8  21FFC4     MOV #0x1FFC, W4
 001BBA  784214     MOV.B [W4], W4
 001BBC  524FE0     SUB.B W4, #0x0, [W15]
 001BBE  32FFAB     BRA Z, 0x1B16
 001BC0  07FF66     RCALL game_init
 001BC2  37FFA9     BRA 0x1B16
-376:                   }//while
-377:                   return (EXIT_SUCCESS);
-378:               }//main()
-379:               
+370:                   }//while
+371:                   return (EXIT_SUCCESS);
+372:               }//main()
+373:               
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/hardwareProfile.c  ------------------------------
 1:                 /*
 2:                 * Copyright 2014, Jacques Deschênes
@@ -2631,94 +2625,94 @@ Generated From:
 28:                void HardwareConfig(){
 29:                    // peripheral to pin association.
 30:                    PPSUnLock;
-0024E8  803A16     MOV OSCCON, W6
-0024EA  B20BF6     AND #0xBF, W6
-0024EC  200464     MOV #0x46, W4
-0024EE  200575     MOV #0x57, W5
-0024F0  207427     MOV #0x742, W7
-0024F2  784B84     MOV.B W4, [W7]
-0024F4  784B85     MOV.B W5, [W7]
-0024F6  784B86     MOV.B W6, [W7]
+0024F8  803A16     MOV OSCCON, W6
+0024FA  B20BF6     AND #0xBF, W6
+0024FC  200464     MOV #0x46, W4
+0024FE  200575     MOV #0x57, W5
+002500  207427     MOV #0x742, W7
+002502  784B84     MOV.B W4, [W7]
+002504  784B85     MOV.B W5, [W7]
+002506  784B86     MOV.B W6, [W7]
 31:                    PPSOutput(PPS_RP5,PPS_SDO1);   // video pixels output
-0024F8  803626     MOV RPOR2, W6
-0024FA  2E0FF7     MOV #0xE0FF, W7
-0024FC  630307     AND W6, W7, W6
-0024FE  207000     MOV #0x700, W0
-002500  730300     IOR W6, W0, W6
-002502  883626     MOV W6, RPOR2
+002508  803626     MOV RPOR2, W6
+00250A  2E0FF7     MOV #0xE0FF, W7
+00250C  630307     AND W6, W7, W6
+00250E  207000     MOV #0x700, W0
+002510  730300     IOR W6, W0, W6
+002512  883626     MOV W6, RPOR2
 32:                    PPSOutput(PPS_RP6,PPS_OC4);  // video delay output
-002504  803630     MOV RPOR3, W0
-002506  2FFE06     MOV #0xFFE0, W6
-002508  600006     AND W0, W6, W0
-00250A  B30150     IOR #0x15, W0
-00250C  883630     MOV W0, RPOR3
+002514  803630     MOV RPOR3, W0
+002516  2FFE06     MOV #0xFFE0, W6
+002518  600006     AND W0, W6, W0
+00251A  B30150     IOR #0x15, W0
+00251C  883630     MOV W0, RPOR3
 33:                    PPSOutput(PPS_RP7,PPS_OC1);  // video sync output
-00250E  803630     MOV RPOR3, W0
-002510  600387     AND W0, W7, W7
-002512  212000     MOV #0x1200, W0
-002514  738380     IOR W7, W0, W7
-002516  883637     MOV W7, RPOR3
+00251E  803630     MOV RPOR3, W0
+002520  600387     AND W0, W7, W7
+002522  212000     MOV #0x1200, W0
+002524  738380     IOR W7, W0, W7
+002526  883637     MOV W7, RPOR3
 34:                    PPSOutput(PPS_RP8,PPS_OC2);  // audio output
-002518  803647     MOV RPOR4, W7
-00251A  638306     AND W7, W6, W6
-00251C  B30136     IOR #0x13, W6
-00251E  883646     MOV W6, RPOR4
+002528  803647     MOV RPOR4, W7
+00252A  638306     AND W7, W6, W6
+00252C  B30136     IOR #0x13, W6
+00252E  883646     MOV W6, RPOR4
 35:                    PPSLock;
-002520  803A16     MOV OSCCON, W6
-002522  A06006     BSET W6, #6
-002524  207427     MOV #0x742, W7
-002526  784B84     MOV.B W4, [W7]
-002528  784B85     MOV.B W5, [W7]
-00252A  784B86     MOV.B W6, [W7]
+002530  803A16     MOV OSCCON, W6
+002532  A06006     BSET W6, #6
+002534  207427     MOV #0x742, W7
+002536  784B84     MOV.B W4, [W7]
+002538  784B85     MOV.B W5, [W7]
+00253A  784B86     MOV.B W6, [W7]
 36:                    // pins data direction
 37:                    P_PIXEL_OUT_TRIS=0;     // video pixels output
-00252C  A9A2C8     BCLR TRISB, #5
+00253C  A9A2C8     BCLR TRISB, #5
 38:                    P_VDLY_OUT_TRIS=0;     // video delay output
-00252E  A9C2C8     BCLR TRISB, #6
+00253E  A9C2C8     BCLR TRISB, #6
 39:                    P_VSYNC_OUT_TRIS=0;     // video sync output
-002530  A9E2C8     BCLR TRISB, #7
+002540  A9E2C8     BCLR TRISB, #7
 40:                    P_AUDIO_OUT_TRIS=0;     // audio output
-002532  A902C9     BCLR 0x2C9, #0
+002542  A902C9     BCLR 0x2C9, #0
 41:                    P_NOISE_OUT_TRIS=0;     /// white noise output
-002534  A942C9     BCLR 0x2C9, #2
+002544  A942C9     BCLR 0x2C9, #2
 42:                    P_PIXDLY_IN_TRIS=1;     //input video pixels delay
-002536  A822C9     BSET 0x2C9, #1
+002546  A822C9     BSET 0x2C9, #1
 43:                    P_VIDEO_MODE_TRIS=1;    //input NTSC/PAL select input
-002538  A882C9     BSET 0x2C9, #4
+002548  A882C9     BSET 0x2C9, #4
 44:                    VIDMODE_ANDIS=1;   // disable ADC  on NTSC/PAL select input.
-00253A  A8832D     BSET 0x32D, #4
+00254A  A8832D     BSET 0x32D, #4
 45:                    // paddles interface I/O setting
 46:                    P_PDL1_DAT_TRIS=1;      // paddle 1 data as input
-00253C  A802C0     BSET TRISA, #0
+00254C  A802C0     BSET TRISA, #0
 47:                    P_PDL2_DAT_TRIS=1;      // paddle 2 data as input
-00253E  A822C0     BSET TRISA, #1
+00254E  A822C0     BSET TRISA, #1
 48:                    P_PDL_CLK_TRIS=0;       // paddles clock signal as output
-002540  A902C8     BCLR TRISB, #0
+002550  A902C8     BCLR TRISB, #0
 49:                    P_PDL_LATCH_TRIS=0;     // paddles latch signal as output
-002542  A922C8     BCLR TRISB, #1
+002552  A922C8     BCLR TRISB, #1
 50:                    P_PDL1_ANDIS=1;         // disable analog input
-002544  A8032C     BSET AD1PCFG, #0
+002554  A8032C     BSET AD1PCFG, #0
 51:                    P_PDL2_ANDIS=1;         // disable analog input
-002546  A8232C     BSET AD1PCFG, #1
+002556  A8232C     BSET AD1PCFG, #1
 52:                    // interrupts priorities
 53:                    VSYNCIP=7;  // timer interrupt used for video output must have highest priority
-002548  270000     MOV #0x7000, W0
-00254A  B720A6     IOR IPC1
+002558  270000     MOV #0x7000, W0
+00255A  B720A6     IOR IPC1
 54:                    PIXIP=7;  // change notification interrupt used for video pixels must have highest priority
-00254C  B720AC     IOR IPC4
+00255C  B720AC     IOR IPC4
 55:                    AUDIOIP=3; // audio output timer interrupt priority
-00254E  800544     MOV IPC2, W4
-002550  B30034     IOR #0x3, W4
-002552  A12004     BCLR W4, #2
-002554  880544     MOV W4, IPC2
+00255E  800544     MOV IPC2, W4
+002560  B30034     IOR #0x3, W4
+002562  A12004     BCLR W4, #2
+002564  880544     MOV W4, IPC2
 56:                    SYSTICKIP=2; // system ticks timer interrupt priority
-002556  800524     MOV IPC0, W4
-002558  A1C004     BCLR W4, #12
-00255A  A0D004     BSET W4, #13
-00255C  A1E004     BCLR W4, #14
-00255E  880524     MOV W4, IPC0
+002566  800524     MOV IPC0, W4
+002568  A1C004     BCLR W4, #12
+00256A  A0D004     BSET W4, #13
+00256C  A1E004     BCLR W4, #14
+00256E  880524     MOV W4, IPC0
 57:                }//f()
-002560  060000     RETURN
+002570  060000     RETURN
 58:                
 ---  /home/jacques/MPLABXProjects/PICvision/PICvision.X/graphics.c  -------------------------------------
 1:                 /*
@@ -3912,112 +3906,120 @@ Generated From:
 31:                 */
 32:                
 33:                #include "PICvision.h"
-34:                #include "PICVision_banner.h"
+34:                #include "PICvision_banner.h"
 35:                
 36:                void splash_screen(){
-002456  BE9F88     MOV.D W8, [W15++]
-002458  BE9F8A     MOV.D W10, [W15++]
-00245A  BE9F8C     MOV.D W12, [W15++]
-002460  558477     SUB W11, #0x17, W8
-002462  207FEC     MOV #0x7FE, W12
-002466  78068A     MOV W10, W13
-002468  2004F4     MOV #0x4F, W4
-00246A  52020A     SUB W4, W10, W4
-00247C  208003     MOV #0x800, W3
-00247E  370007     BRA 0x248E
-00248E  B93A78     MUL.SU W7, #24, W4
-002490  E90204     DEC W4, W4
-002492  420208     ADD W4, W8, W4
-002494  568007     SUB W13, W7, W0
-002496  B9007B     MUL.SU W0, #27, W0
-002498  E80280     INC W0, W5
-00249A  428283     ADD W5, W3, W5
-00249C  37FFF1     BRA 0x2480
-0024A4  E90007     DEC W7, W0
-0024A6  B9007B     MUL.SU W0, #27, W0
-0024A8  208014     MOV #0x801, W4
-0024AA  400204     ADD W0, W4, W4
-0024AC  B93B7B     MUL.SU W7, #27, W6
-0024AE  460286     ADD W12, W6, W5
+002456  4787E6     ADD W15, #0x6, W15
+002458  BE9F88     MOV.D W8, [W15++]
+00245A  BE9F8A     MOV.D W10, [W15++]
+00245C  BE9F8C     MOV.D W12, [W15++]
+00245E  781F8E     MOV W14, [W15++]
+002464  285CA8     MOV #0x85CA, W8
+002466  207FEE     MOV #0x7FE, W14
+00246A  78000A     MOV W10, W0
+00246C  2004F4     MOV #0x4F, W4
+00246E  52020A     SUB W4, W10, W4
+00247E  2004F7     MOV #0x4F, W7
+002480  538103     SUB W7, W3, W2
+002482  208001     MOV #0x800, W1
+002484  370008     BRA 0x2496
+002496  B93A78     MUL.SU W7, #24, W4
+002498  E90204     DEC W4, W4
+00249A  420208     ADD W4, W8, W4
+00249C  B9067B     MUL.SU W0, #27, W12
+00249E  9FB7FC     MOV W12, [W15-18]
+0024A0  9FBF8D     MOV W13, [W15-16]
+0024A2  E8028C     INC W12, W5
+0024A4  428281     ADD W5, W1, W5
+0024A6  37FFEF     BRA 0x2486
+0024B0  E90303     DEC W3, W6
+0024B2  B9337B     MUL.SU W6, #27, W6
+0024B4  208014     MOV #0x801, W4
+0024B6  430204     ADD W6, W4, W4
+0024B8  B91B7B     MUL.SU W3, #27, W6
+0024BA  470286     ADD W14, W6, W5
 37:                    int i,k,first,last,left;
 38:                    left=(HPIXELS-PIX_WIDTH)/16+1;
 39:                    last=0;
-00245C  EB0500     CLR W10
+002460  EB0500     CLR W10
 40:                    while (last<(VPIXELS-PIX_HEIGHT)/2+PIX_HEIGHT){
-0024BC  200944     MOV #0x94, W4
-0024BE  550F84     SUB W10, W4, [W15]
-0024C0  3AFFD2     BRA NZ, 0x2466
+0024C8  200944     MOV #0x94, W4
+0024CA  550F84     SUB W10, W4, [W15]
+0024CC  3AFFCE     BRA NZ, 0x246A
 41:                        first=max(0,PIX_HEIGHT-last-1);
-00246C  3B0001     BRA NN, 0x2470
-00246E  EB0200     CLR W4
+002470  3B0001     BRA NN, 0x2474
+002472  EB0200     CLR W4
 42:                        for (i=0;i<PIX_HEIGHT-first;i++){
-00245E  285E1B     MOV #0x85E1, W11
-002470  200502     MOV #0x50, W2
-002472  510104     SUB W2, W4, W2
-002474  EB0380     CLR W7
-002476  510F87     SUB W2, W7, [W15]
-002478  340012     BRA LE, 0x249E
-00247A  78030B     MOV W11, W6
-002486  E80387     INC W7, W7
-002488  430378     ADD W6, #0x18, W6
-00248A  538F82     SUB W7, W2, [W15]
-00248C  320008     BRA Z, 0x249E
+002462  28D49B     MOV #0x8D49, W11
+002474  200503     MOV #0x50, W3
+002476  518184     SUB W3, W4, W3
+002478  A94042     BCLR SR, #2
+00247A  340016     BRA LE, 0x24A8
+00247C  78030B     MOV W11, W6
+002492  538F82     SUB W7, W2, [W15]
+002494  32000A     BRA Z, 0x24AA
+0024A8  EB0180     CLR W3
 43:                            for (k=0;k<ARRAY_WIDTH;k++){
-002482  530F84     SUB W6, W4, [W15]
-002484  3AFFFD     BRA NZ, 0x2480
-44:                                video_buffer[last-i][left+k]=PICVISION_BANNER[i][k];
-002480  786AD4     MOV.B [++W4], [++W5]
+002488  520F86     SUB W4, W6, [W15]
+00248A  3AFFFD     BRA NZ, 0x2486
+00248C  E90387     DEC W7, W7
+00248E  E90000     DEC W0, W0
+002490  530378     SUB W6, #0x18, W6
+44:                                video_buffer[last-i][left+k]=PICVISION_BANNER[PIX_HEIGHT-1-i][k];
+002486  786AD4     MOV.B [++W4], [++W5]
 45:                            }//for
 46:                        }//for
 47:                        if (last-i>0){
-00249E  550387     SUB W10, W7, W7
-0024A0  A94042     BCLR SR, #2
-0024A2  340009     BRA LE, 0x24B6
+0024AA  550183     SUB W10, W3, W3
+0024AC  A94042     BCLR SR, #2
+0024AE  340009     BRA LE, 0x24C2
 48:                            for (k=0;k<ARRAY_WIDTH;k++){
-0024B2  520F85     SUB W4, W5, [W15]
-0024B4  3AFFFD     BRA NZ, 0x24B0
+0024BE  520F85     SUB W4, W5, [W15]
+0024C0  3AFFFD     BRA NZ, 0x24BC
 49:                                video_buffer[last-i-1][left+k]=0;
-002464  EB4480     CLR.B W9
-0024B0  786A09     MOV.B W9, [++W4]
+002468  EB4480     CLR.B W9
+0024BC  786A09     MOV.B W9, [++W4]
 50:                            }//for
 51:                        }//if
 52:                        wait_n_frame(1);
-0024B6  200010     MOV #0x1, W0
-0024B8  07FE82     RCALL wait_n_frame
+0024C2  200010     MOV #0x1, W0
+0024C4  07FE7C     RCALL wait_n_frame
 53:                        last++;
-0024BA  E8050A     INC W10, W10
+0024C6  E8050A     INC W10, W10
 54:                    }//while
 55:                    set_curpos(left,last/8+2);
-0024C2  200141     MOV #0x14, W1
-0024C4  200020     MOV #0x2, W0
-0024C6  07FCF7     RCALL set_curpos
+0024CE  200141     MOV #0x14, W1
+0024D0  200020     MOV #0x2, W0
+0024D2  07FCF1     RCALL set_curpos
 56:                    print("Copyright 2014, Jacques Deschenes");
-0024C8  292620     MOV #0x9262, W0
-0024CA  07FC78     RCALL print
+0024D4  292620     MOV #0x9262, W0
+0024D6  07FC72     RCALL print
 57:                    wait_n_frame(180);
-0024CC  200B40     MOV #0xB4, W0
-0024CE  07FE77     RCALL wait_n_frame
+0024D8  200B40     MOV #0xB4, W0
+0024DA  07FE71     RCALL wait_n_frame
 58:                }//f()
-0024D0  BE064F     MOV.D [--W15], W12
-0024D2  BE054F     MOV.D [--W15], W10
-0024D4  BE044F     MOV.D [--W15], W8
-0024D6  060000     RETURN
+0024DC  78074F     MOV [--W15], W14
+0024DE  BE064F     MOV.D [--W15], W12
+0024E0  BE054F     MOV.D [--W15], W10
+0024E2  BE044F     MOV.D [--W15], W8
+0024E4  B1006F     SUB #0x6, W15
+0024E6  060000     RETURN
 59:                
 60:                
 61:                void PICvision_init(void) {
 62:                    HardwareConfig();
-0024D8  070007     RCALL HardwareConfig
+0024E8  070007     RCALL HardwareConfig
 63:                    timers_init(TICK_FREQ);
-0024DA  200640     MOV #0x64, W0
-0024DC  07FD45     RCALL timers_init
+0024EA  200640     MOV #0x64, W0
+0024EC  07FD3D     RCALL timers_init
 64:                    video_init();
-0024DE  07FE52     RCALL video_init
+0024EE  07FE4A     RCALL video_init
 65:                    sound_init(1000/TICK_FREQ);
-0024E0  2000A0     MOV #0xA, W0
-0024E2  07FF0F     RCALL sound_init
+0024F0  2000A0     MOV #0xA, W0
+0024F2  07FF07     RCALL sound_init
 66:                    splash_screen();
-0024E4  07FFB8     RCALL splash_screen
+0024F4  07FFB0     RCALL splash_screen
 67:                }//f()
-0024E6  060000     RETURN
+0024F6  060000     RETURN
 68:                
 69:                

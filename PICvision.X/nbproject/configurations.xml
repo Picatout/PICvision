@@ -14,7 +14,7 @@
       <itemPath>snes-paddle.h</itemPath>
       <itemPath>snes_paddle.h</itemPath>
       <itemPath>PICvision.h</itemPath>
-      <itemPath>PICVision_banner.h</itemPath>
+      <itemPath>PICvision_banner.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -34,7 +34,7 @@
       <itemPath>snes_paddle.c</itemPath>
       <itemPath>hardwareProfile.c</itemPath>
       <itemPath>snake.c</itemPath>
-      <itemPath>PICVision_banner.c</itemPath>
+      <itemPath>PICvision_banner.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

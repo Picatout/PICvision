@@ -151,7 +151,7 @@ void animate_death(){
     for (i=snake.length-1;i>=0;i--){
         set_curpos(snake.body[i].x,snake.body[i].y);
         put_char(32);
-        tone(freq,500);
+        tone(freq,250);
         wait_n_frame(frames_per_second/2);
         freq -= 100;
     }//for
@@ -319,8 +319,6 @@ void game_init(){
 int main(void) {
     unsigned p,frame_count;
     PICvision_init();
-//    timers_init(100);
-//    sound_init(10);
     present_game();
     game_init();
     frame_count=0;
@@ -366,10 +364,6 @@ int main(void) {
                 snake.dx=0;
                 snake.body[0].part=HEAD_DOWN;
                 break;
-//            default:
-//                snake.dx=0;
-//                snake.dy=0;
-//                break;
         }//switch
         move_snake();
         if (reset) game_init();
