@@ -40,6 +40,10 @@ extern "C" {
 #define VPIXELS 216
 #define HPIXELS 216
 #define BYTES_PER_LINE (HPIXELS/8)
+
+#define VIDEO_OFF 1
+#define VIDEO_ON  0
+
 typedef union coord_type{
     unsigned int yx;
     struct{
@@ -55,7 +59,7 @@ extern unsigned frames_per_second;
 
 void  video_init();
 void  wait_n_frame(unsigned n);
-
+void  blank_out();
 
 
 #ifdef	__cplusplus

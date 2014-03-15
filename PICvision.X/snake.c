@@ -27,7 +27,6 @@
 #include <time.h>
 #include "PICvision.h"
 
-
 // PIC24FJ64GA002 Configuration Bit Settings
 // CONFIG2
 #pragma config POSCMOD = HS             // Primary Oscillator Select (HS Oscillator mode selected)
@@ -263,8 +262,8 @@ void move_snake(){
     }
     snake.body[0].x += snake.dx;
     snake.body[0].y += snake.dy;
-    if ((snake.body[0].x<1)||(snake.body[0].x>=(CHAR_PER_LINE-1)) ||
-        (snake.body[0].y<2) || (snake.body[0].y>=LINE_PER_SCREEN)){
+    if ((snake.body[0].x<1)||(snake.body[0].x>=(CHAR_PER_LINE)) ||
+        (snake.body[0].y<2) || (snake.body[0].y>=LINE_PER_SCREEN-1)){
         game_over(WALL_COLLISION);
     }else if (bit_himself()){
         game_over(TAIL_BITE);
@@ -317,12 +316,11 @@ void game_init(){
 }//f()
 
 
-
 int main(void) {
     unsigned p,frame_count;
     PICvision_init();
-    timers_init(100);
-    sound_init(10);
+//    timers_init(100);
+//    sound_init(10);
     present_game();
     game_init();
     frame_count=0;
