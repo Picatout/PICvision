@@ -59,6 +59,7 @@ extern "C" {
 // video out SFR and bits
 #define P_PIXEL_OUT_TRIS TRISBbits.TRISB5 // pixel output TRIS SFR bit
 #define VDLYCON     OC4CONbits   // video delay OCxCON SFR bits
+#define VDLYCONR    OC4CON       // video delay OCxCON SFR
 #define VDLYR       OC4R        // video delay OCxR SFR
 #define VDLYRS      OC4RS       // video delay OCxRS SFR
 #define PIXDLY_INP  PORTBbits.RB9 // video delay input pin change notification

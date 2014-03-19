@@ -152,7 +152,7 @@ void animate_death(){
         set_curpos(snake.body[i].x,snake.body[i].y);
         put_char(32);
         tone(freq,250);
-        wait_n_frame(frames_per_second/2);
+        wait_n_frame(frames_per_second/4);
         freq -= 100;
     }//for
 }//f()
@@ -315,10 +315,36 @@ void game_init(){
     show_snake();
 }//f()
 
+// for debugging only
+const unsigned char X[8]={0x84,0x84,0x48,0x30,0x30,0x48,0x84,0x84};
+const unsigned char X16[16][2]={{0x80,0x01},{0x40,0x02},{0x20,0x04},{0x10,0x08},
+                                {0x08,0x10},{0x04,0x20},{0x02,0x40},{0x01,0x80},
+                                {0x01,0x80},{0x02,0x40},{0x04,0x20},{0x08,0x10},
+                                {0x10,0x08},{0x20,0x04},{0x40,0x02},{0x80,0x01}};
+
+void bitmap_test(){
+    int i;
+    // test box()
+//    box(0,0,32,64,WHITE);
+//    for (i=0;i<6;i++){
+//        box(0,0,32,64,INVERT);
+//        wait_n_frame(30);
+//    }//for
+    bitmap(20,20,16,16,BMP_COPY,X16);
+    while(1){
+        for (i=0;i<8;i++){
+            bitmap(i,i*8,6,8,BMP_XOR,X);
+        }
+        wait_n_frame(60);
+    }
+}//f()
+
+// end debug code
 
 int main(void) {
     unsigned p,frame_count;
     PICvision_init();
+//    bitmap_test(); // for debugging only
     present_game();
     game_init();
     frame_count=0;

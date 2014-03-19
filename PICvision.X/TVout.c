@@ -137,10 +137,10 @@ void __attribute__((interrupt,no_auto_psv,shadow)) _VSYNC_ISR(void){
     switch (frame_line_cntr){
         case 1:
             VSYNCR=vsync;
-            VDLYCON.OCM=0;
+            VDLYCONR &=0xF8;
             break;
         case 4:
-            VDLYCON.OCM=5;
+            VDLYCONR |=5;
             VSYNCR=hsync;
             break;
         case NTSC_FIRST_VISIBLE:

@@ -31,15 +31,22 @@
 
 void plot(int x, int y, int color){
     int h,ofs;
+    unsigned char mask;
     if ((y>=VPIXELS)||(x>=HPIXELS)) return; // bound check
     h= x/8;
     ofs = 7 - x%8;
-    if (color==INVERT)
-        video_buffer[y][h] ^= (1<<ofs);
-    else if (color==WHITE)
-        video_buffer[y][h]|= (1<<ofs);
-    else
-        video_buffer[y][h]&= ~(1<<ofs);
+    mask = 1<<ofs;
+    switch (color){
+        case BLACK:
+            video_buffer[y][h]&= ~mask;
+            break;
+        case WHITE:
+            video_buffer[y][h]|= mask;
+            break;
+        case INVERT:
+            video_buffer[y][h] ^= mask;
+            break;
+    }
 } // plot()
 
 // dessine une droite en utilisant l'algorithme de Bresenham
@@ -136,3 +143,188 @@ void polygon(int points[], int vertices, int color){
 }//polygon()
 
 
+void box(int left, int top, int width, int height,int color){
+    int y, x,idx,mwidth,bitsleft;
+    unsigned char mask;
+    for (y=top;y<top+height;y++){
+        x=left;
+        bitsleft=width;
+        while (bitsleft){
+            idx=x/8;
+            if (x%8==0){
+                mask=0xff;
+                mwidth=8;
+            }else{
+                mask=0xff>>(x%8);
+                mwidth=8-x%8;
+            }
+            if (bitsleft<mwidth){
+                mask &= 0xff<<(mwidth-bitsleft);
+                mwidth=bitsleft;
+            }
+            switch(color){
+                case BLACK:
+                    video_buffer[y][idx] &= ~mask;
+                    break;
+                case WHITE:
+                    video_buffer[y][idx] |= mask;
+                    break;
+                case INVERT:
+                    video_buffer[y][idx] ^= mask;
+                    break;
+            }//switch
+            x += mwidth;
+            bitsleft -= mwidth;
+        }//while
+    }//for
+}//f()
+
+
+
+void bitmap(int left, int top, int width, int height, bmp_op_t op, const unsigned char* bmp){
+    int x,y, xbmp,mwidth,idx, bitsleft,ybmp_inc;
+    unsigned char  mask, bmpbits, *ybmp;
+
+    ybmp_inc=width/8;
+    if (width%8) ybmp_inc++;
+    ybmp=bmp;
+    //remainder=0;
+    for (y=top;y<top+height;y++){
+        x=left;
+        xbmp=0;
+        bitsleft=width;
+        while (bitsleft){
+            idx=x/8;
+            if (x%8==0){
+                mask=0xff;
+                mwidth=8;
+            }else{
+                mask=0xff>>(x%8);
+                mwidth=8-x%8;
+            }
+            if (bitsleft<mwidth){
+                mask &= 0xff<<(mwidth-bitsleft);
+                mwidth=bitsleft;
+            }
+            bmpbits = (*(ybmp+xbmp/8))<<(xbmp%8);
+            if (xbmp%8){
+                bmpbits |= (*(ybmp+xbmp/8+1))>>(8-xbmp%8);
+            }
+            bmpbits >>= (x%8);
+            bmpbits &= mask;
+            switch(op){
+                case BMP_COPY:
+                    video_buffer[y][idx] &= ~mask;
+                    video_buffer[y][idx] |= bmpbits;
+                    break;
+                case BMP_OR:
+                    video_buffer[y][idx] |= bmpbits;
+                    break;
+                case BMP_AND:
+                    video_buffer[y][idx] &= (~mask) | bmpbits;
+                    break;
+                case BMP_XOR:
+                    video_buffer[y][idx] ^= bmpbits;
+                    break;
+            }//switch
+            x += mwidth;
+            xbmp += mwidth;
+            bitsleft -= mwidth;
+        }//while
+        ybmp+=ybmp_inc;
+        
+    }//for
+
+//    awidth=width/8;
+//    if (width%8) awidth++;
+//    first= left/8;
+//    lmask= 0xff>>(left%8);
+//    last= (left+width-1)/8;
+//    if (width<9){
+//        if (8-left%8>=width){
+//            rmask= lmask;
+//        }else{
+//            rmask= 0xff<<(8-left%8);
+//        }//if
+//    }
+//    else{
+//        rmask=0xff<<(8-(left+width)%8);
+//    }//if
+//    if (first==last){
+//        lmask &= rmask;
+//        for (i=top;i<top+height;i++){
+//            switch(r2op){
+//                case BMP_COPY:
+//                    video_buffer[i][first] &= ~lmask;
+//                    video_buffer[i][first] |= (*(bmp+(i-top)))>>(left%8);
+//                    break;
+//                case BMP_OR:
+//                    video_buffer[i][first] |= (*(bmp+(i-top)))>>(left%8);
+//                    break;
+//                case BMP_AND:
+//                    video_buffer[i][first] &= ~(lmask^((*(bmp+(i-top)))>>(left%8)));
+//                    break;
+//                case BMP_XOR:
+//                    video_buffer[i][first] ^= (*(bmp+(i-top)))>>(left%8);
+//                    break;
+//            }//switch
+//        }//for
+//    }else{
+//        for (i=top;i<top+height;i++){
+//            switch(r2op){
+//                case BMP_COPY:
+//                    video_buffer[i][first] &= ~lmask;
+//                    video_buffer[i][first] |= (*(bmp+(i-top)))>>(left%8);
+//                    video_buffer[i][last] &= ~rmask;
+//                    if (width<8)
+//                        video_buffer[i][last]|=(*(bmp+(i-top)*awidth+awidth-1))<<(width-1-(left+width-1)%8);
+//                    else
+//                        video_buffer[i][last] |=(*(bmp+(i-top)*awidth+awidth-1))<<(7-(left+width-1)%8);
+//                    break;
+//                case BMP_OR:
+//                    video_buffer[i][first] |= (*(bmp+(i-top)))>>(left%8);
+//                    if (width<8)
+//                        video_buffer[i][last]|=(*(bmp+(i-top)*awidth+awidth-1))<<(width-1-(left+width-1)%8);
+//                    else
+//                        video_buffer[i][last] |=(*(bmp+(i-top)*awidth+awidth-1))<<(7-(left+width-1)%8);
+//                    break;
+//                    break;
+//                case BMP_AND:
+//                    video_buffer[i][first] &= ~(lmask^((*(bmp+(i-top)))>>(left%8)));
+//              //      video_buffer[i][last] &= ~(rmask^(*(bmp+(i-top)*awidth+awidth-1)));
+//                    if (width<8)
+//                        video_buffer[i][last]&=~(rmask^(*(bmp+(i-top)*awidth+awidth-1))<<(width-1-(left+width-1)%8));
+//                    else
+//                        video_buffer[i][last] &=~(rmask^(*(bmp+(i-top)*awidth+awidth-1))<<(7-(left+width-1)%8));
+//                    break;
+//                case BMP_XOR:
+//                    video_buffer[i][first] ^= (*(bmp+(i-top)*awidth+awidth-1))>>(left%8);
+//                    if (width<8)
+//                        video_buffer[i][last] ^=(*(bmp+(i-top)*awidth+awidth-1))<<(width-1-(left+width-1)%8);
+//                    else
+//                        video_buffer[i][last] ^=(*(bmp+(i-top)*awidth+awidth-1))<<(7-(left+width-1)%8);
+//                    break;
+//            }//switch
+//        }//for
+//        if (last>first+1){
+//            for (i=top;i<top+height;i++){
+//                for (j=first+1;j<last;j++){
+//                    switch(r2op){
+//                        case BMP_COPY:
+//                            video_buffer[i][j]= *(bmp+(i-top)*awidth+j);
+//                            break;
+//                        case BMP_OR:
+//                            video_buffer[i][j] |= *(bmp+(i-top)*awidth+j);
+//                            break;
+//                        case BMP_AND:
+//                            video_buffer[i][j] &= *(bmp+(i-top)*awidth+j);
+//                            break;
+//                        case BMP_XOR:
+//                            video_buffer[i][j] ^= *(bmp+(i-top)*awidth+j);
+//                            break;
+//                    }//switch
+//                }//for
+//            }//for
+//        }//if
+//    }
+}//f()

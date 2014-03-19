@@ -16,13 +16,17 @@
 *     along with PICvision.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef _PICVISION_BANNER
-#define _PICVISION_BANNER
+/*
+ * File:   bitmaps.h
+ * Author: jacques Deschênes
+ * Description: bitmaps operations
+ * Created on 15 mars 2014, 11:51
+ */
 
-#define ARRAY_WIDTH 24
-#define PIX_WIDTH 185
-#define PIX_HEIGHT 80
+#include "bitmaps.h"
 
-extern const unsigned char PICVISION_BANNER[PIX_HEIGHT][ARRAY_WIDTH];
 
-#endif // _PICVISION_BANNER
+
+
+
+

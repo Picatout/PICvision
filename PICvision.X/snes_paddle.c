@@ -33,7 +33,7 @@
 
 
 // the loop execute in 4 Tcy
-#define mDelay(usec) __asm__("MOV #%0,W4\n NOP\n DEC W4,W4\n BRA NZ .-4"::"i"(usec))
+#define mDelay(usec) asm(" MOV #%0, W4\n NOP\n DEC W4,W4\n BRA NZ .-4"::"i"(usec))
 
 void latch(){
     P_PDL_LATCH=1;
