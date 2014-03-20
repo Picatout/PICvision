@@ -1,0 +1,144 @@
+﻿<html>
+<head>
+<!--
+/*
+* Copyright 2014, Jacques Deschênes
+* This file is part of PICvision.
+*
+* PICvision is free software: you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* PICvision is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with PICvision. If not, see <http://www.gnu.org/licenses/>.
+*/
+-->
+</head>
+<body>
+<p>
+ Le module <b>text_console</b> traite l'impression de texte à l'écran. une police de caractères <b>font.c</b> qui contient les caractères ASCII de 32 à 127 est fournie. L'utilisateur peut ajouter des caractères dans la table jusqu'au code 255. Le format de la police est de 6x8 pixels. 27 lignes de 36 caractères peuvent donc être affichées à l'écran.  On peut utiliser les fonctions de l'API text_console en même temps que les fonctions graphiques, il faut cependant s'assurer que les caractères et graphiques ne se superposent pas.
+</p>
+<h4>Interface application de text_console</h4>
+<p>
+<code><pre>
+void clear_screen(void);
+</pre></code>
+ Efface l'écran et déplace le curseur texte à la position {0,0} soit au coin supérieur gauche. S'il y a des graphiques à l'écran il seront aussi effacés car tout le contenu de <b>video_buffer</b> est mis à zéro.
+<hr width="25%" align="left"/>
+<code><pre>
+void clear_eol(void); 
+</pre></code>
+ A partir de la position du curseur texte efface la fin de la ligne. Le curseur demeure à sa position.
+<hr width="25%" align="left"/><code><pre>
+void scroll_up(void);
+</pre></code>
+ Décale toutes les lignes de texte vers le haut d'une ligne. La première ligne de texte disparait. La dernière ligne est effacée.
+<hr width="25%" align="left"/>
+<code><pre>
+void scroll_down(void);
+</pre></code>
+ Décale toutes les lignes de texte vers le bas d'une ligne. La dernière ligne de texte disparait. La première ligne est effacée.
+<hr width="25%" align="left"/>
+<code><pre>
+text_coord_t get_curpos();
+</pre></code>
+  Retourne la position courante du curseur texte. la structure <b>text_coord_t</b> est la suivante:<br/>
+<code><pre>
+typedef struct{
+    unsigned short x;
+    unsigned short y;
+} text_coord_t;
+</pre></code>
+ <b>x</b> est la position horizontale entre 0 et 35 et <b>y</b> est la position verticale entre 0 et 26.
+<hr width="25%" align="left"/>
+<code><pre>
+void set_curpos(unsigned short x, unsigned short y);
+</pre></code>
+  Déplace le curseur texte à la position spécifiée par les paramètres <b>x</b> et <b>y</b>.
+<hr width="25%" align="left"/>
+<code><pre>
+void put_char(unsigned char c);
+</pre></code>
+  Imprime les caractère ASCII <b>c</b> à la position actuelle du curseur texte et avance le curseur à la position suivante. Le curseur passe à la ligne suivante et l'écran est décalée vers le haut si nécessaire. Le caractère <b>c</b> doit-être compris entre 32 et 127. Les caratères de contrôle suivants sont reconnus: CR, TAB, BACKSPACE.
+<hr width="25%" align="left"/>
+<code><pre>
+void print(const char *str);
+</pre></code>
+  Imprime la chaîne de caractère  <b>str</b>. Cette chaîne peut contenir les caractères CR et TAB.
+<hr width="25%" align="left"/>
+<code><pre>
+void print_hex(unsigned int i, unsigned char width);
+</pre></code>
+  Imprime l'entier <b>i</b> sous forme hexadécimale. <b>width</b> détermine la largeur minimale du champ. Si <b>width</b> est à zéro seul les digits nécessaires seront imprimés sinon le champ est préfixé avec des zéro.
+<hr width="25%" align="left"/>
+<code><pre>
+void print_int(int number, unsigned short width);
+</pre></code>
+  Imprime l'entier <b>number</b> avec la largeur de champ minimale <b>width</b>. Si width est à zéro seul les digits nécessaires seront imprimés sinon le champ sera préfixé avec des zéro.
+<hr width="25%" align="left"/>
+<code><pre>
+void cursor_right(void);
+</pre></code>
+  Déplace le curseur texte d'une position vers la droite. Le curseur passe à la ligne suivante et défile l'écran vers le haut si nécessaire.
+<hr width="25%" align="left"/>
+<code><pre>
+void cursor_left(void);
+</pre></code>
+  Déplace le curseur texte d'une position vers la gauche. Le curseur passe à la ligne précédente et défile l'écran vers le bas si nécessaire.
+<hr width="25%" align="left"/>
+<code><pre>
+void cursor_down(void);
+</pre></code>
+  Déplace le curseur à la ligne suivante en restant dans la même colonne. Défile l'écran vers le haut si nécessaire.
+<hr width="25%" align="left"/>
+<code><pre>
+void cursor_up(void);
+</pre></code>
+ Déplace le curseur à la ligne précédente en restant dans la même colonne. Défile l'écran vers le bas si nécessaire.
+<hr width="25%" align="left"/>
+<code><pre>
+void set_tab_width(unsigned char width);
+</pre></code>
+ l'argument <b>width</b> définis la largeur des colonnes de tabulation.
+<hr width="25%" align="left"/>
+<code><pre>
+void invert_char(void);
+</pre></code>
+  Inverse les pixels du caractère qui est à la position du curseur. Les pixels blancs deviennent noirs et vice-versa.
+<hr width="25%" align="left"/>
+<code><pre>
+void show_cursor(BOOL);
+</pre></code>
+  Affiche ou cache le curseur texte. 
+<hr width="25%" align="left"/>
+<code><pre>
+void set_cursor(cursor_t shape);
+</pre></code>
+   <b>shape</b> définis la forme du curseur texte. Il  peut prendre les valeurs: <b>CR_UNDER</b> pour afficher une barre sous le caractère, ou <b>CR_BLOCK</b> pour inverser les pixels du caractère.
+<hr width="25%" align="left"/>
+<code><pre>
+void crlf(void);
+</pre></code>
+  Déplace le curseur texte au début de la ligne suivante. Défile l'écran vers le haut si nécessaire. A le même effet que:
+<code><pre>
+   put_char(CR);
+</pre></code>
+<hr width="25%" align="left"/>
+<code><pre>
+void invert_video();
+</pre></code>
+  Inverse le mode vidéo, c'est à dire que les caractères seront imprimés en pixels noirs sur fond blanc.
+<hr width="25%" align="left"/>
+<code><pre>
+void normal_video();
+</pre></code>
+  Revient au mode vidéo normal, c'est à dire que les caractères seront imprimés en pixels blancs sur fond noir.
+</p>
+</body>
+</html>
