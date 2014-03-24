@@ -92,8 +92,32 @@ void PICvision_init(void) {
 
 
 int main(void){
+   menu_t *games_list;
+   int selected;
    PICvision_init();
-   snake_game_tm();
+   games_list=create_menu("SELECT GAME");
+   add_menu_item("snake text mode",1,games_list);
+   add_menu_item("game 2",2,games_list);
+   add_menu_item("game 3",3,games_list);
+   while(1){
+       clear_screen();
+       selected=run_menu(games_list,10,(27-5)/2,PADDLE1);
+       switch(selected){
+           case 1:
+               snake_game_tm();
+               break;
+           case 2:
+               set_curpos(0,0);
+               print("game 2");
+               wait_n_frame(60);
+               break;
+           case 3:
+               set_curpos(0,0);
+               print("game 3");
+               wait_n_frame(60);
+               break;
+       }//switch
+   }//while
    return 0;
 }//main()
 

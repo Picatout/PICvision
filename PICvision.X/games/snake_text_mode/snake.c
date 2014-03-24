@@ -65,10 +65,13 @@ snake_t snake;
 
 symbol_t mouse;
 
+int run; // game exit when run==0
+
 const msg_t msgCALORIES={0,0,"calories: "};
 const msg_t msgSECONDS={16,0,"lifespan: "};
 const msg_t msgGAME_OVER={6,13,"game over"};
 const msg_t msgSTART={8,20, "press START to begin"};
+const msg_t msgQUIT={8,21,"X to quit game."};
 const msg_t msgSTARVATION={6,14,"died of starvation"};
 const msg_t msgWALL_COLLIDE={6,14,"died of wall collision"};
 const msg_t msgTAIL_BITE={6,14,"died of tail bite."};
@@ -113,12 +116,18 @@ void show_snake(){
 }//f()
 
 
-void wait_start_signal(){
+int wait_start_signal(){
     unsigned p;
     p=0;
     print_msg(msgSTART);
-    while (!(p&SNES_START)){
+    print_msg(msgQUIT);
+    while (1){
       p=read_paddle(PADDLE1);
+      if ((p&SNES_START)==SNES_START){
+          return 1;
+      }else if ((p&SNES_X)==SNES_X){
+          return 0;
+      }
     }
 }//f()
 
@@ -154,7 +163,7 @@ void game_over(death_t cause){
             break;
     }//switch
     reset=1;
-    wait_start_signal();
+    if (!wait_start_signal()) run=0;
 }//f()
 
 void add_calories(unsigned short gain){
@@ -251,7 +260,7 @@ void move_snake(){
     }//if
 }//f()
 
-void present_game(){
+void game_info(){
     clear_screen();
     print("**************\r");
     print("* SNAKE GAME *\r");
@@ -263,7 +272,7 @@ void present_game(){
     print("Die when hitting wall.\r");
     print("Die when bitting his tail.\r\r");
     print("Use ARROWS to control snake.\r");
-    wait_start_signal();
+    run=wait_start_signal();
 }//f()
 
 void game_init(){
@@ -293,39 +302,13 @@ void game_init(){
     show_snake();
 }//f()
 
-// for debugging only
-const unsigned char X[8]={0x84,0x84,0x48,0x30,0x30,0x48,0x84,0x84};
-const unsigned char X16[16][2]={{0x80,0x01},{0x40,0x02},{0x20,0x04},{0x10,0x08},
-                                {0x08,0x10},{0x04,0x20},{0x02,0x40},{0x01,0x80},
-                                {0x01,0x80},{0x02,0x40},{0x04,0x20},{0x08,0x10},
-                                {0x10,0x08},{0x20,0x04},{0x40,0x02},{0x80,0x01}};
-
-void bitmap_test(){
-    int i;
-    // test box()
-//    box(0,0,32,64,WHITE);
-//    for (i=0;i<6;i++){
-//        box(0,0,32,64,INVERT);
-//        wait_n_frame(30);
-//    }//for
-    bitmap(20,20,16,16,BMP_COPY,X16);
-    while(1){
-        for (i=0;i<8;i++){
-            bitmap(i,i*8,6,8,BMP_XOR,X);
-        }
-        wait_n_frame(60);
-    }
-}//f()
-
-// end debug code
 
 void snake_game_tm(void) {
     unsigned p,frame_count;
-//    bitmap_test(); // for debugging only
-    present_game();
+    game_info();
     game_init();
     frame_count=0;
-    while (1){
+    while (run){
         wait_n_frame(10);
         frame_count += 10;
         if (frame_count%frames_per_second==0){
@@ -371,6 +354,7 @@ void snake_game_tm(void) {
         move_snake();
         if (reset) game_init();
     }//while
-}//snake()
+    clear_screen();
+}//snake_game_tm()
 
 

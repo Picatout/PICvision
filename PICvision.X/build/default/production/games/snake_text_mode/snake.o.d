@@ -15,4 +15,5 @@ games/snake_text_mode/../../PICvision.h  \
  games/snake_text_mode/../../audio/../system/../Hardware/hardwareProfile.h  \
  games/snake_text_mode/../../Hardware/controllers/SNES/snes_paddle.h  \
  games/snake_text_mode/../../Hardware/controllers/SNES/../../hardwareProfile.h  \
- games/snake_text_mode/../../system/timers.h 
+ games/snake_text_mode/../../system/timers.h  \
+ games/snake_text_mode/../../menus.h 

@@ -16,5 +16,6 @@ audio/../system/timers.h  \
  Hardware/controllers/SNES/snes_paddle.h  \
  Hardware/controllers/SNES/../../hardwareProfile.h  \
 system/timers.h  \
- PICvision_banner.h  \
+ menus.h  \
+PICvision_banner.h  \
 games/snake_text_mode/snake.h 

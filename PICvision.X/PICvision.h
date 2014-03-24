@@ -44,6 +44,7 @@ extern "C" {
 #include "audio/sound.h"
 #include "Hardware/controllers/SNES/snes_paddle.h"
 #include "system/timers.h"
+#include "menus.h"
 
 void PICvision_init(void);
 
