@@ -17,41 +17,44 @@
 */
 
 /* 
- * File:   PICvision.h
+ * File:   snes_paddle.h
  * Author: jacques Deschênes
- * Description:  a simple video game console on PIC24FJ64GA002 MCU
- *               inspiration come from HACKvision console.
- *               REF: https://nootropicdesign.com/hackvision/
- *     - display  NTSC/PAL  monochrome
- *     - resolution  216x216 pixels
- *     - controls: 2 SNES paddle  (cheap and easy to find.)
- *     - audio out:  monophonic  PWM DAC  or square wave tones
- *
- * Created on 5 mars 2014, 16:05
+ * Description:  SNES gemepad interface
+ * Created on 25 février 2014, 16:41
  */
 
-#ifndef PICVISION_H
-#define	PICVISION_H
+#ifndef SNES_PADDLE_H
+#define	SNES_PADDLE_H
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
-#include <stdlib.h>
-#include "Hardware/hardwareProfile.h"
-#include "TVout/TVout.h"
-#include "text_console/text_console.h"
-#include "graphics/graphics.h"
-#include "audio/sound.h"
-#include "Hardware/controllers/SNES/snes_paddle.h"
-#include "system/timers.h"
+#include "../../hardwareProfile.h"
 
-void PICvision_init(void);
+#define PADDLE1  1
+#define PADDLE2  2
 
+// paddle buttons
+#define SNES_B       0x01
+#define SNES_Y       0x02
+#define SNES_SELECT  0x04
+#define SNES_START   0x08
+#define SNES_UP      0x10
+#define SNES_DOWN    0x20
+#define SNES_LEFT    0x40
+#define SNES_RIGHT   0x80
+#define SNES_A       0x100
+#define SNES_X       0x200
+#define SNES_L       0x400
+#define SNES_R       0x800
+
+
+unsigned read_paddle(int paddleId);
 
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* PICVISION_H */
+#endif	/* SNES_PADDLE_H */
 

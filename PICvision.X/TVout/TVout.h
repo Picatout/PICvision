@@ -17,41 +17,54 @@
 */
 
 /* 
- * File:   PICvision.h
+ * File:   TVout.h
  * Author: jacques Deschênes
- * Description:  a simple video game console on PIC24FJ64GA002 MCU
- *               inspiration come from HACKvision console.
- *               REF: https://nootropicdesign.com/hackvision/
- *     - display  NTSC/PAL  monochrome
- *     - resolution  216x216 pixels
- *     - controls: 2 SNES paddle  (cheap and easy to find.)
- *     - audio out:  monophonic  PWM DAC  or square wave tones
+ * Description:  NTSC/PAL signal generator
  *
- * Created on 5 mars 2014, 16:05
+ * Created on 25 février 2014, 16:28
  */
 
-#ifndef PICVISION_H
-#define	PICVISION_H
+#ifndef TVOUT_H
+#define	TVOUT_H
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
-#include <stdlib.h>
-#include "Hardware/hardwareProfile.h"
-#include "TVout/TVout.h"
-#include "text_console/text_console.h"
-#include "graphics/graphics.h"
-#include "audio/sound.h"
-#include "Hardware/controllers/SNES/snes_paddle.h"
-#include "system/timers.h"
 
-void PICvision_init(void);
+#include <PPS.h>
+#include "../Hardware/hardwareProfile.h"
 
+
+
+
+#define VPIXELS 216
+#define HPIXELS 216
+#define BYTES_PER_LINE (HPIXELS/8)
+
+#define VIDEO_OFF 1
+#define VIDEO_ON  0
+
+typedef union coord_type{
+    unsigned int yx;
+    struct{
+        unsigned char y;
+        unsigned char x;
+    };
+}coord_t;
+
+
+extern char video_buffer[VPIXELS][BYTES_PER_LINE];
+extern int video_mode;
+extern unsigned frames_per_second;
+
+void  video_init();
+void  wait_n_frame(unsigned n);
+void  blank_out();
 
 
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* PICVISION_H */
+#endif	/* TVOUT_H */
 

@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=PICvision.c TVout.c sound.c font.c text_console.c graphics.c timers.c snes-paddle.c snes_paddle.c hardwareProfile.c snake.c PICvision_banner.c
+SOURCEFILES_QUOTED_IF_SPACED=PICvision.c PICvision_banner.c text_console/font.c text_console/text_console.c Hardware/controllers/SNES/snes_paddle.c Hardware/hardwareProfile.c graphics/graphics.c games/snake_text_mode/snake.c audio/sound.c TVout/TVout.c system/timers.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o ${OBJECTDIR}/timers.o ${OBJECTDIR}/snes-paddle.o ${OBJECTDIR}/snes_paddle.o ${OBJECTDIR}/hardwareProfile.o ${OBJECTDIR}/snake.o ${OBJECTDIR}/PICvision_banner.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/TVout.o.d ${OBJECTDIR}/sound.o.d ${OBJECTDIR}/font.o.d ${OBJECTDIR}/text_console.o.d ${OBJECTDIR}/graphics.o.d ${OBJECTDIR}/timers.o.d ${OBJECTDIR}/snes-paddle.o.d ${OBJECTDIR}/snes_paddle.o.d ${OBJECTDIR}/hardwareProfile.o.d ${OBJECTDIR}/snake.o.d ${OBJECTDIR}/PICvision_banner.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/PICvision_banner.o ${OBJECTDIR}/text_console/font.o ${OBJECTDIR}/text_console/text_console.o ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o ${OBJECTDIR}/Hardware/hardwareProfile.o ${OBJECTDIR}/graphics/graphics.o ${OBJECTDIR}/games/snake_text_mode/snake.o ${OBJECTDIR}/audio/sound.o ${OBJECTDIR}/TVout/TVout.o ${OBJECTDIR}/system/timers.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/PICvision_banner.o.d ${OBJECTDIR}/text_console/font.o.d ${OBJECTDIR}/text_console/text_console.o.d ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d ${OBJECTDIR}/Hardware/hardwareProfile.o.d ${OBJECTDIR}/graphics/graphics.o.d ${OBJECTDIR}/games/snake_text_mode/snake.o.d ${OBJECTDIR}/audio/sound.o.d ${OBJECTDIR}/TVout/TVout.o.d ${OBJECTDIR}/system/timers.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/TVout.o ${OBJECTDIR}/sound.o ${OBJECTDIR}/font.o ${OBJECTDIR}/text_console.o ${OBJECTDIR}/graphics.o ${OBJECTDIR}/timers.o ${OBJECTDIR}/snes-paddle.o ${OBJECTDIR}/snes_paddle.o ${OBJECTDIR}/hardwareProfile.o ${OBJECTDIR}/snake.o ${OBJECTDIR}/PICvision_banner.o
+OBJECTFILES=${OBJECTDIR}/PICvision.o ${OBJECTDIR}/PICvision_banner.o ${OBJECTDIR}/text_console/font.o ${OBJECTDIR}/text_console/text_console.o ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o ${OBJECTDIR}/Hardware/hardwareProfile.o ${OBJECTDIR}/graphics/graphics.o ${OBJECTDIR}/games/snake_text_mode/snake.o ${OBJECTDIR}/audio/sound.o ${OBJECTDIR}/TVout/TVout.o ${OBJECTDIR}/system/timers.o
 
 # Source Files
-SOURCEFILES=PICvision.c TVout.c sound.c font.c text_console.c graphics.c timers.c snes-paddle.c snes_paddle.c hardwareProfile.c snake.c PICvision_banner.c
+SOURCEFILES=PICvision.c PICvision_banner.c text_console/font.c text_console/text_console.c Hardware/controllers/SNES/snes_paddle.c Hardware/hardwareProfile.c graphics/graphics.c games/snake_text_mode/snake.c audio/sound.c TVout/TVout.c system/timers.c
 
 
 CFLAGS=
@@ -86,82 +86,75 @@ ${OBJECTDIR}/PICvision.o: PICvision.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  PICvision.c  -o ${OBJECTDIR}/PICvision.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/PICvision.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/PICvision.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/TVout.o: TVout.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/TVout.o.d 
-	@${RM} ${OBJECTDIR}/TVout.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  TVout.c  -o ${OBJECTDIR}/TVout.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/TVout.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/TVout.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/sound.o: sound.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/sound.o.d 
-	@${RM} ${OBJECTDIR}/sound.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  sound.c  -o ${OBJECTDIR}/sound.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/sound.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/sound.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/font.o: font.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/font.o.d 
-	@${RM} ${OBJECTDIR}/font.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  font.c  -o ${OBJECTDIR}/font.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/font.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/font.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/text_console.o: text_console.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/text_console.o.d 
-	@${RM} ${OBJECTDIR}/text_console.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  text_console.c  -o ${OBJECTDIR}/text_console.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/text_console.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/text_console.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/graphics.o: graphics.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/graphics.o.d 
-	@${RM} ${OBJECTDIR}/graphics.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  graphics.c  -o ${OBJECTDIR}/graphics.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/graphics.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/graphics.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/timers.o: timers.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/timers.o.d 
-	@${RM} ${OBJECTDIR}/timers.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  timers.c  -o ${OBJECTDIR}/timers.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/timers.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/timers.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/snes-paddle.o: snes-paddle.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/snes-paddle.o.d 
-	@${RM} ${OBJECTDIR}/snes-paddle.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  snes-paddle.c  -o ${OBJECTDIR}/snes-paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes-paddle.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/snes-paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/snes_paddle.o: snes_paddle.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/snes_paddle.o.d 
-	@${RM} ${OBJECTDIR}/snes_paddle.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  snes_paddle.c  -o ${OBJECTDIR}/snes_paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes_paddle.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/snes_paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/hardwareProfile.o: hardwareProfile.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/hardwareProfile.o.d 
-	@${RM} ${OBJECTDIR}/hardwareProfile.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  hardwareProfile.c  -o ${OBJECTDIR}/hardwareProfile.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/hardwareProfile.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/hardwareProfile.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/snake.o: snake.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/snake.o.d 
-	@${RM} ${OBJECTDIR}/snake.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  snake.c  -o ${OBJECTDIR}/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snake.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 ${OBJECTDIR}/PICvision_banner.o: PICvision_banner.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/PICvision_banner.o.d 
 	@${RM} ${OBJECTDIR}/PICvision_banner.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  PICvision_banner.c  -o ${OBJECTDIR}/PICvision_banner.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/PICvision_banner.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/PICvision_banner.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/text_console/font.o: text_console/font.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/text_console 
+	@${RM} ${OBJECTDIR}/text_console/font.o.d 
+	@${RM} ${OBJECTDIR}/text_console/font.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  text_console/font.c  -o ${OBJECTDIR}/text_console/font.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/text_console/font.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/text_console/font.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/text_console/text_console.o: text_console/text_console.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/text_console 
+	@${RM} ${OBJECTDIR}/text_console/text_console.o.d 
+	@${RM} ${OBJECTDIR}/text_console/text_console.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  text_console/text_console.c  -o ${OBJECTDIR}/text_console/text_console.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/text_console/text_console.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/text_console/text_console.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o: Hardware/controllers/SNES/snes_paddle.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/Hardware/controllers/SNES 
+	@${RM} ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d 
+	@${RM} ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Hardware/controllers/SNES/snes_paddle.c  -o ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/Hardware/hardwareProfile.o: Hardware/hardwareProfile.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/Hardware 
+	@${RM} ${OBJECTDIR}/Hardware/hardwareProfile.o.d 
+	@${RM} ${OBJECTDIR}/Hardware/hardwareProfile.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Hardware/hardwareProfile.c  -o ${OBJECTDIR}/Hardware/hardwareProfile.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Hardware/hardwareProfile.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/Hardware/hardwareProfile.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/graphics/graphics.o: graphics/graphics.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/graphics 
+	@${RM} ${OBJECTDIR}/graphics/graphics.o.d 
+	@${RM} ${OBJECTDIR}/graphics/graphics.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  graphics/graphics.c  -o ${OBJECTDIR}/graphics/graphics.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/graphics/graphics.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/graphics/graphics.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/games/snake_text_mode/snake.o: games/snake_text_mode/snake.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/games/snake_text_mode 
+	@${RM} ${OBJECTDIR}/games/snake_text_mode/snake.o.d 
+	@${RM} ${OBJECTDIR}/games/snake_text_mode/snake.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  games/snake_text_mode/snake.c  -o ${OBJECTDIR}/games/snake_text_mode/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/games/snake_text_mode/snake.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/games/snake_text_mode/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/audio/sound.o: audio/sound.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/audio 
+	@${RM} ${OBJECTDIR}/audio/sound.o.d 
+	@${RM} ${OBJECTDIR}/audio/sound.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  audio/sound.c  -o ${OBJECTDIR}/audio/sound.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/audio/sound.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/audio/sound.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/TVout/TVout.o: TVout/TVout.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/TVout 
+	@${RM} ${OBJECTDIR}/TVout/TVout.o.d 
+	@${RM} ${OBJECTDIR}/TVout/TVout.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  TVout/TVout.c  -o ${OBJECTDIR}/TVout/TVout.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/TVout/TVout.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/TVout/TVout.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/system/timers.o: system/timers.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/system 
+	@${RM} ${OBJECTDIR}/system/timers.o.d 
+	@${RM} ${OBJECTDIR}/system/timers.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  system/timers.c  -o ${OBJECTDIR}/system/timers.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/system/timers.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/system/timers.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 else
 ${OBJECTDIR}/PICvision.o: PICvision.c  nbproject/Makefile-${CND_CONF}.mk
@@ -171,82 +164,75 @@ ${OBJECTDIR}/PICvision.o: PICvision.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  PICvision.c  -o ${OBJECTDIR}/PICvision.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/PICvision.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/PICvision.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/TVout.o: TVout.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/TVout.o.d 
-	@${RM} ${OBJECTDIR}/TVout.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  TVout.c  -o ${OBJECTDIR}/TVout.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/TVout.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/TVout.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/sound.o: sound.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/sound.o.d 
-	@${RM} ${OBJECTDIR}/sound.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  sound.c  -o ${OBJECTDIR}/sound.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/sound.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/sound.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/font.o: font.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/font.o.d 
-	@${RM} ${OBJECTDIR}/font.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  font.c  -o ${OBJECTDIR}/font.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/font.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/font.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/text_console.o: text_console.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/text_console.o.d 
-	@${RM} ${OBJECTDIR}/text_console.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  text_console.c  -o ${OBJECTDIR}/text_console.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/text_console.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/text_console.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/graphics.o: graphics.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/graphics.o.d 
-	@${RM} ${OBJECTDIR}/graphics.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  graphics.c  -o ${OBJECTDIR}/graphics.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/graphics.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/graphics.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/timers.o: timers.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/timers.o.d 
-	@${RM} ${OBJECTDIR}/timers.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  timers.c  -o ${OBJECTDIR}/timers.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/timers.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/timers.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/snes-paddle.o: snes-paddle.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/snes-paddle.o.d 
-	@${RM} ${OBJECTDIR}/snes-paddle.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  snes-paddle.c  -o ${OBJECTDIR}/snes-paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes-paddle.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/snes-paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/snes_paddle.o: snes_paddle.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/snes_paddle.o.d 
-	@${RM} ${OBJECTDIR}/snes_paddle.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  snes_paddle.c  -o ${OBJECTDIR}/snes_paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snes_paddle.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/snes_paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/hardwareProfile.o: hardwareProfile.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/hardwareProfile.o.d 
-	@${RM} ${OBJECTDIR}/hardwareProfile.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  hardwareProfile.c  -o ${OBJECTDIR}/hardwareProfile.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/hardwareProfile.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/hardwareProfile.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/snake.o: snake.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR} 
-	@${RM} ${OBJECTDIR}/snake.o.d 
-	@${RM} ${OBJECTDIR}/snake.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  snake.c  -o ${OBJECTDIR}/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/snake.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 ${OBJECTDIR}/PICvision_banner.o: PICvision_banner.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR} 
 	@${RM} ${OBJECTDIR}/PICvision_banner.o.d 
 	@${RM} ${OBJECTDIR}/PICvision_banner.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  PICvision_banner.c  -o ${OBJECTDIR}/PICvision_banner.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/PICvision_banner.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/PICvision_banner.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/text_console/font.o: text_console/font.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/text_console 
+	@${RM} ${OBJECTDIR}/text_console/font.o.d 
+	@${RM} ${OBJECTDIR}/text_console/font.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  text_console/font.c  -o ${OBJECTDIR}/text_console/font.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/text_console/font.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/text_console/font.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/text_console/text_console.o: text_console/text_console.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/text_console 
+	@${RM} ${OBJECTDIR}/text_console/text_console.o.d 
+	@${RM} ${OBJECTDIR}/text_console/text_console.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  text_console/text_console.c  -o ${OBJECTDIR}/text_console/text_console.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/text_console/text_console.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/text_console/text_console.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o: Hardware/controllers/SNES/snes_paddle.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/Hardware/controllers/SNES 
+	@${RM} ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d 
+	@${RM} ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Hardware/controllers/SNES/snes_paddle.c  -o ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/Hardware/hardwareProfile.o: Hardware/hardwareProfile.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/Hardware 
+	@${RM} ${OBJECTDIR}/Hardware/hardwareProfile.o.d 
+	@${RM} ${OBJECTDIR}/Hardware/hardwareProfile.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Hardware/hardwareProfile.c  -o ${OBJECTDIR}/Hardware/hardwareProfile.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Hardware/hardwareProfile.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/Hardware/hardwareProfile.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/graphics/graphics.o: graphics/graphics.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/graphics 
+	@${RM} ${OBJECTDIR}/graphics/graphics.o.d 
+	@${RM} ${OBJECTDIR}/graphics/graphics.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  graphics/graphics.c  -o ${OBJECTDIR}/graphics/graphics.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/graphics/graphics.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/graphics/graphics.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/games/snake_text_mode/snake.o: games/snake_text_mode/snake.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/games/snake_text_mode 
+	@${RM} ${OBJECTDIR}/games/snake_text_mode/snake.o.d 
+	@${RM} ${OBJECTDIR}/games/snake_text_mode/snake.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  games/snake_text_mode/snake.c  -o ${OBJECTDIR}/games/snake_text_mode/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/games/snake_text_mode/snake.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/games/snake_text_mode/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/audio/sound.o: audio/sound.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/audio 
+	@${RM} ${OBJECTDIR}/audio/sound.o.d 
+	@${RM} ${OBJECTDIR}/audio/sound.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  audio/sound.c  -o ${OBJECTDIR}/audio/sound.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/audio/sound.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/audio/sound.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/TVout/TVout.o: TVout/TVout.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/TVout 
+	@${RM} ${OBJECTDIR}/TVout/TVout.o.d 
+	@${RM} ${OBJECTDIR}/TVout/TVout.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  TVout/TVout.c  -o ${OBJECTDIR}/TVout/TVout.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/TVout/TVout.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/TVout/TVout.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/system/timers.o: system/timers.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/system 
+	@${RM} ${OBJECTDIR}/system/timers.o.d 
+	@${RM} ${OBJECTDIR}/system/timers.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  system/timers.c  -o ${OBJECTDIR}/system/timers.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/system/timers.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/system/timers.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

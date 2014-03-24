@@ -17,35 +17,30 @@
 */
 
 /* 
- * File:   PICvision.h
+ * File:   sound.h
  * Author: jacques Deschênes
- * Description:  a simple video game console on PIC24FJ64GA002 MCU
- *               inspiration come from HACKvision console.
- *               REF: https://nootropicdesign.com/hackvision/
- *     - display  NTSC/PAL  monochrome
- *     - resolution  216x216 pixels
- *     - controls: 2 SNES paddle  (cheap and easy to find.)
- *     - audio out:  monophonic  PWM DAC  or square wave tones
- *
- * Created on 5 mars 2014, 16:05
+ * Description:  sound generation using PWM D.A.C.
+ * Created on 25 février 2014, 16:43
  */
 
-#ifndef PICVISION_H
-#define	PICVISION_H
+#ifndef SOUND_H
+#define	SOUND_H
 
 #ifdef	__cplusplus
 extern "C" {
 #endif
-#include <stdlib.h>
-#include "Hardware/hardwareProfile.h"
-#include "TVout/TVout.h"
-#include "text_console/text_console.h"
-#include "graphics/graphics.h"
-#include "audio/sound.h"
-#include "Hardware/controllers/SNES/snes_paddle.h"
-#include "system/timers.h"
 
-void PICvision_init(void);
+#include "../Hardware/hardwareProfile.h"
+#include "../system/timers.h"
+
+
+
+
+void sound_init(int tick_time);
+void tone(unsigned freq, unsigned duration);
+void tune(const unsigned  *buffer);
+void white_noise(unsigned msec);
+void while_sound();
 
 
 
@@ -53,5 +48,5 @@ void PICvision_init(void);
 }
 #endif
 
-#endif	/* PICVISION_H */
+#endif	/* SOUND_H */
 

@@ -4,15 +4,36 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>hardwareProfile.h</itemPath>
-      <itemPath>TVout.h</itemPath>
-      <itemPath>sound.h</itemPath>
-      <itemPath>font.h</itemPath>
-      <itemPath>text_console.h</itemPath>
-      <itemPath>graphics.h</itemPath>
-      <itemPath>timers.h</itemPath>
-      <itemPath>snes-paddle.h</itemPath>
-      <itemPath>snes_paddle.h</itemPath>
+      <logicalFolder name="f2" displayName="audio" projectFiles="true">
+        <itemPath>audio/sound.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="games" projectFiles="true">
+        <logicalFolder name="f1" displayName="snake" projectFiles="true">
+        </logicalFolder>
+        <logicalFolder name="f2" displayName="snake_text_mode" projectFiles="true">
+          <itemPath>games/snake_text_mode/snake.h</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="graphics" projectFiles="true">
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="hardware" projectFiles="true">
+        <logicalFolder name="f1" displayName="controllers" projectFiles="true">
+          <logicalFolder name="f1" displayName="SNES" projectFiles="true">
+            <itemPath>Hardware/controllers/SNES/snes_paddle.h</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <itemPath>Hardware/hardwareProfile.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f7" displayName="system" projectFiles="true">
+        <itemPath>system/timers.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="text_console" projectFiles="true">
+        <itemPath>text_console/font.h</itemPath>
+        <itemPath>text_console/text_console.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6" displayName="TVout" projectFiles="true">
+        <itemPath>TVout/TVout.h</itemPath>
+      </logicalFolder>
       <itemPath>PICvision.h</itemPath>
       <itemPath>PICvision_banner.h</itemPath>
     </logicalFolder>
@@ -23,17 +44,38 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f1" displayName="audio" projectFiles="true">
+        <itemPath>audio/sound.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f2" displayName="games" projectFiles="true">
+        <logicalFolder name="f1" displayName="snake" projectFiles="true">
+        </logicalFolder>
+        <logicalFolder name="f2" displayName="snake_text_mode" projectFiles="true">
+          <itemPath>games/snake_text_mode/snake.c</itemPath>
+        </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="f3" displayName="graphics" projectFiles="true">
+        <itemPath>graphics/graphics.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f4" displayName="hardware" projectFiles="true">
+        <logicalFolder name="f1" displayName="controllers" projectFiles="true">
+          <logicalFolder name="f1" displayName="SNES" projectFiles="true">
+            <itemPath>Hardware/controllers/SNES/snes_paddle.c</itemPath>
+          </logicalFolder>
+        </logicalFolder>
+        <itemPath>Hardware/hardwareProfile.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f7" displayName="system" projectFiles="true">
+        <itemPath>system/timers.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f5" displayName="text_console" projectFiles="true">
+        <itemPath>text_console/font.c</itemPath>
+        <itemPath>text_console/text_console.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6" displayName="TVout" projectFiles="true">
+        <itemPath>TVout/TVout.c</itemPath>
+      </logicalFolder>
       <itemPath>PICvision.c</itemPath>
-      <itemPath>TVout.c</itemPath>
-      <itemPath>sound.c</itemPath>
-      <itemPath>font.c</itemPath>
-      <itemPath>text_console.c</itemPath>
-      <itemPath>graphics.c</itemPath>
-      <itemPath>timers.c</itemPath>
-      <itemPath>snes-paddle.c</itemPath>
-      <itemPath>snes_paddle.c</itemPath>
-      <itemPath>hardwareProfile.c</itemPath>
-      <itemPath>snake.c</itemPath>
       <itemPath>PICvision_banner.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -42,6 +84,15 @@
       <itemPath>Makefile</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>Hardware</Elem>
+    <Elem>audio</Elem>
+    <Elem>text_console</Elem>
+    <Elem>games/snake_text_mode</Elem>
+    <Elem>graphics</Elem>
+    <Elem>TVout</Elem>
+    <Elem>system</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
