@@ -31,7 +31,7 @@ extern "C" {
 #endif
 
 
-void snake_game_gm(void);
+void snake_game(void);
 
 
 

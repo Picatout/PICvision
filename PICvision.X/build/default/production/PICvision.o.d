@@ -18,4 +18,4 @@ audio/../system/timers.h  \
 system/timers.h  \
  menus.h  \
 PICvision_banner.h  \
-games/snake_graphics_mode/snake_gm.h 
+games/snake/snake.h 

@@ -26,14 +26,14 @@
 #include <time.h>
 #include "../../PICvision.h"
 
-#include "snake_gm.h"
+#include "snake.h"
 #include "resources/snake_head_down.xbm"
 #include "resources/snake_head_up.xbm"
 #include "resources/snake_head_left.xbm"
 #include "resources/snake_head_right.xbm"
 #include "resources/mouse.xbm"
-#include "resources/snake_segment_up_down.xbm"
-#include "resources/snake_segment_left_right.xbm"
+#include "resources/snake_segment_vert.xbm"
+#include "resources/snake_segment_horz.xbm"
 
 #define HEAD_UP     0
 #define HEAD_RIGHT  1
@@ -47,8 +47,8 @@
 #define SPRITE_HEIGHT 16
 
 static unsigned char *sprites[7]={snake_head_up_bits,snake_head_right_bits,
-snake_head_down_bits,snake_head_left_bits,snake_segment_left_right_bits,
-snake_segment_up_down_bits,mouse_bits};
+snake_head_down_bits,snake_head_left_bits,snake_segment_vert_bits,
+snake_segment_vert_bits,mouse_bits};
 
 typedef struct symbol{
     unsigned char x;  //{left,top corner coordinates}
@@ -78,29 +78,61 @@ symbol_t mouse;
 
 int run; // game exit when run==0
 
-const msg_t msgCALORIES_GM={0,0,"calories: "};
-const msg_t msgSECONDS_GM={16,0,"lifespan: "};
-const msg_t msgGAME_OVER_GM={6,13,"game over"};
-const msg_t msgSTART_GM={8,20, "press START to begin"};
-const msg_t msgQUIT_GM={8,21,"X to quit game."};
-const msg_t msgSTARVATION_GM={6,14,"died of starvation"};
-const msg_t msgWALL_COLLIDE_GM={6,14,"died of wall collision"};
-const msg_t msgTAIL_BITE_GM={6,14,"died of tail bite."};
+const msg_t msgCALORIES={0,0,"calories: "};
+const msg_t msgSECONDS={16,0,"lifespan: "};
+const msg_t msgGAME_OVER={6,13,"game over"};
+const msg_t msgSTART={8,20, "press START to begin"};
+const msg_t msgQUIT={8,21,"X to quit game."};
+const msg_t msgSTARVATION={6,14,"died of starvation"};
+const msg_t msgWALL_COLLIDE={6,14,"died of wall collision"};
+const msg_t msgTAIL_BITE={6,14,"died of tail bite."};
+
+//REF: http://en.wikipedia.org/wiki/Methods_of_computing_square_roots
+int isqrt(int num) {
+    int res = 0;
+    int bit = 1 << 14; // The second-to-top bit is set: 1 << 30 for 32 bits
+
+    // "bit" starts at the highest power of four <= the argument.
+    while (bit > num)
+        bit >>= 2;
+
+    while (bit != 0) {
+        if (num >= res + bit) {
+            num -= res + bit;
+            res = (res >> 1) + bit;
+        }
+        else
+            res >>= 1;
+        bit >>= 2;
+    }
+    return res;
+}//f()
+
+int distance(int x1, int y1, int x2, int y2){
+    int dx, dy;
+    dx = x1-x2;
+    dy = y1-y2;
+    return isqrt(dx*dx+dy*dy);
+}//f()
+
+static void hide_mouse(){
+    box(mouse.x,mouse.y,SPRITE_WIDTH,SPRITE_HEIGHT,BLACK);
+}// f()
 
 static void new_mouse(){
     unsigned short i, collide,mouseX,mouseY;
     collide=1;
     while (collide){
-        mouseX=rand()%(CHAR_PER_LINE-3)+2;
-        mouseY=rand()%(LINE_PER_SCREEN-3)+2;
+        mouseX=rand()%(HPIXELS-3)+2;
+        mouseY=rand()%(HPIXELS-CHAR_HEIGHT-19)+CHAR_HEIGHT+2;
         for (i=0;i<snake.length;i++){
-            if ((mouseX==snake.body[i].x)&&(mouseY==snake.body[i].y)) break;
+            if (distance(mouseX,mouseY,snake.body[i].x,snake.body[i].y)<SPRITE_WIDTH) break;
         }
         if (i==snake.length) collide=0;
     }//while
     mouse.x=mouseX;
     mouse.y=mouseY;
-    xbm(mouse.x,mouse.y,SPRITE_WIDTH,SPRITE_HEIGHT,sprites[mouse.sprite]);
+    put_xbm(mouse.x,mouse.y,SPRITE_WIDTH,SPRITE_HEIGHT,sprites[mouse.sprite]);
 }//f()
 
 static void hide_snake(){
@@ -113,8 +145,7 @@ static void hide_snake(){
 static void show_snake(){
     unsigned i;
     for (i=0;i<snake.length;i++){
-        set_curpos(snake.body[i].x,snake.body[i].y);
-        xbm(snake.body[i].x,snake.body[i].y,SPRITE_WIDTH,SPRITE_HEIGHT,
+        put_xbm(snake.body[i].x,snake.body[i].y,SPRITE_WIDTH,SPRITE_HEIGHT,
             sprites[snake.body[i].sprite]);
     }//for
 }//f()
@@ -123,8 +154,8 @@ static void show_snake(){
 static int wait_start_signal(){
     unsigned p;
     p=0;
-    print_msg(msgSTART_GM);
-    print_msg(msgQUIT_GM);
+    print_msg(msgSTART);
+    print_msg(msgQUIT);
     while (1){
       p=read_paddle(PADDLE1);
       if ((p&SNES_START)==SNES_START){
@@ -153,16 +184,16 @@ typedef enum DEATH {STARVATION,WALL_COLLISION,TAIL_BITE} death_t;
 static unsigned char reset=0;
 static void game_over(death_t cause){
     animate_death();
-    print_msg(msgGAME_OVER_GM);
+    print_msg(msgGAME_OVER);
     switch (cause){
         case STARVATION:
-            print_msg(msgSTARVATION_GM);
+            print_msg(msgSTARVATION);
             break;
         case WALL_COLLISION:
-            print_msg(msgWALL_COLLIDE_GM);
+            print_msg(msgWALL_COLLIDE);
             break;
         case TAIL_BITE:
-            print_msg(msgTAIL_BITE_GM);
+            print_msg(msgTAIL_BITE);
             break;
     }//switch
     reset=1;
@@ -171,7 +202,7 @@ static void game_over(death_t cause){
 
 static void add_calories(unsigned short gain){
     snake.calories+=gain;
-    print_msg(msgCALORIES_GM);
+    print_msg(msgCALORIES);
     print_int(snake.calories,1);
 }//f()
 
@@ -181,15 +212,15 @@ static void burn_calories(unsigned short lost){
     if (lost < BASE_METABOLISM) lost=BASE_METABOLISM;
     snake.calories -= lost;
     if (snake.calories<0) snake.calories=0;
-    print_msg(msgCALORIES_GM);
+    print_msg(msgCALORIES);
     clear_eol();
     print_int(snake.calories,1);
-    print_msg(msgSECONDS_GM);
+    print_msg(msgSECONDS);
     print_int(snake.lifespan,1);
     hide_snake();
-    newLength=snake.calories/MOUSE_CALORIES+1;
+//    newLength=snake.calories/MOUSE_CALORIES+1;
     if (snake.calories){
-        snake.length=newLength+1;
+//        snake.length=newLength+1;
         show_snake();
     } else{
         game_over(STARVATION);
@@ -198,7 +229,8 @@ static void burn_calories(unsigned short lost){
 }//f()
 
 static void check_if_got_mouse(){
-    if ((mouse.x==snake.body[0].x) && (mouse.y==snake.body[0].y)){
+    if (distance(mouse.x,mouse.y,snake.body[0].x,snake.body[0].y)<SPRITE_WIDTH){
+        hide_mouse();
         add_calories(MOUSE_CALORIES);
         snake.length++;
         snake.body[snake.length-1].sprite=snake.body[snake.length-2].sprite;
@@ -229,13 +261,13 @@ static void check_if_got_mouse(){
 
         }//if
         new_mouse();
-    }
+    }//if
 }//f()
 
 static int bit_himself(){
     int i;
     for (i=1;i<snake.length;i++){
-        if ((snake.body[0].x==snake.body[i].x) &&(snake.body[0].y==snake.body[i].y)){
+        if (distance(snake.body[0].x,snake.body[0].y,snake.body[i].x,snake.body[i].y)<SPRITE_WIDTH){
             return 1;
         }
     }
@@ -252,8 +284,8 @@ static void move_snake(){
     }
     snake.body[0].x += snake.dx;
     snake.body[0].y += snake.dy;
-    if ((snake.body[0].x<1)||(snake.body[0].x>=(CHAR_PER_LINE)) ||
-        (snake.body[0].y<2) || (snake.body[0].y>=LINE_PER_SCREEN-1)){
+    if ((snake.body[0].x<1)||(snake.body[0].x>=(HPIXELS)) ||
+        (snake.body[0].y<CHAR_HEIGHT+2) || (snake.body[0].y>=VPIXELS-1)){
         game_over(WALL_COLLISION);
     }else if (bit_himself()){
         game_over(TAIL_BITE);
@@ -295,9 +327,9 @@ static void game_init(){
     snake.body[1].sprite=SEG_HORZ;
     mouse.sprite=MOUSE;
     clear_screen();
-    print_msg(msgCALORIES_GM);
+    print_msg(msgCALORIES);
     print_int(snake.calories,1);
-    print_msg(msgSECONDS_GM);
+    print_msg(msgSECONDS);
     print_int(snake.lifespan,1);
     //draw  borders
     rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
@@ -306,7 +338,7 @@ static void game_init(){
 }//f()
 
 
-void snake_game_gm(void) {
+void snake_game(void) {
     unsigned p,frame_count;
     game_info();
     game_init();
@@ -322,34 +354,34 @@ void snake_game_gm(void) {
         p=read_paddle(PADDLE1);
         switch (p){
             case SNES_LEFT:
-                if (snake.dx==1){
+                if (snake.dx>0){
                     break;
                 }
-                snake.dx =-1;
+                snake.dx =-SPRITE_WIDTH;
                 snake.dy=0;
                 snake.body[0].sprite=HEAD_LEFT;
                 break;
             case SNES_RIGHT:
-                if (snake.dx==-1){
+                if (snake.dx<0){
                     break;
                 }
-                snake.dx=1;
+                snake.dx=SPRITE_WIDTH;
                 snake.dy=0;
                 snake.body[0].sprite=HEAD_RIGHT;
                 break;
             case SNES_UP:
-                if (snake.dy==1){
+                if (snake.dy>0){
                     break;
                 }
-                snake.dy=-1;
+                snake.dy=-SPRITE_HEIGHT;
                 snake.dx=0;
                 snake.body[0].sprite=HEAD_UP;
                 break;
             case SNES_DOWN:
-                if (snake.dy==-1){
+                if (snake.dy<0){
                     break;
                 }
-                snake.dy=1;
+                snake.dy=SPRITE_HEIGHT;
                 snake.dx=0;
                 snake.body[0].sprite=HEAD_DOWN;
                 break;

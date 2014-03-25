@@ -32,8 +32,7 @@
 
 #include "PICvision.h"
 #include "PICvision_banner.h"
-//#include "games/snake_text_mode/snake.h"
-#include "games/snake_graphics_mode/snake_gm.h"
+#include "games/snake/snake.h"
 
 // PIC24FJ64GA002 Configuration Bit Settings
 // CONFIG2
@@ -79,7 +78,7 @@ void splash_screen(){
     }//while
     set_curpos(left,last/8+2);
     print("Copyright 2014, Jacques Deschenes");
-    wait_n_frame(180);
+    wait_n_frame(120);
 }//f()
 
 
@@ -97,22 +96,30 @@ int main(void){
    int selected;
    PICvision_init();
    games_list=create_menu("SELECT GAME");
-   add_menu_item("snake text mode",1,games_list);
-   add_menu_item("snake graphics mode",2,games_list);
+   add_menu_item("snake",1,games_list);
+   add_menu_item("game 2",2,games_list);
    add_menu_item("game 3",3,games_list);
+   add_menu_item("etc...",4,games_list);
    while(1){
        clear_screen();
        selected=run_menu(games_list,10,(27-5)/2,PADDLE1);
        switch(selected){
            case 1:
-//               snake_game_tm();
+               snake_game();
                break;
            case 2:
-               snake_game_gm();
+               set_curpos(0,0);
+               print("game 2");
+               wait_n_frame(60);
                break;
            case 3:
                set_curpos(0,0);
                print("game 3");
+               wait_n_frame(60);
+               break;
+           case 4:
+               set_curpos(0,0);
+               print("autre jeux");
                wait_n_frame(60);
                break;
        }//switch

@@ -8,11 +8,8 @@
         <itemPath>audio/sound.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="games" projectFiles="true">
-        <logicalFolder name="f1" displayName="snake_graphics_mode" projectFiles="true">
-          <itemPath>games/snake_graphics_mode/snake_gm.h</itemPath>
-        </logicalFolder>
-        <logicalFolder name="f2" displayName="snake_text_mode" projectFiles="true">
-          <itemPath>games/snake_text_mode/snake.h</itemPath>
+        <logicalFolder name="f1" displayName="snake" projectFiles="true">
+          <itemPath>games/snake/snake.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f4" displayName="graphics" projectFiles="true">
@@ -51,10 +48,8 @@
         <itemPath>audio/sound.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="games" projectFiles="true">
-        <logicalFolder name="f1" displayName="snake_graphics_mode" projectFiles="true">
-          <itemPath>games/snake_graphics_mode/snake_gm.c</itemPath>
-        </logicalFolder>
-        <logicalFolder name="f2" displayName="snake_text_mode" projectFiles="true">
+        <logicalFolder name="f1" displayName="snake" projectFiles="true">
+          <itemPath>games/snake/snake.c</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f3" displayName="graphics" projectFiles="true">

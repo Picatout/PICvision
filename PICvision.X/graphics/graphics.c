@@ -236,7 +236,7 @@ void bitmap(int left, int top, int width, int height, bmp_op_t op, const unsigne
     }//for
 }//f()
 
-void xbm(int left, int top, int width, int height, const unsigned char* xbm_bits){
+void put_xbm(int left, int top, int width, int height, const unsigned char* xbm_bits){
     int i;
     int x,y;
     unsigned char c;
@@ -244,6 +244,6 @@ void xbm(int left, int top, int width, int height, const unsigned char* xbm_bits
         x=left+i%width;
         y=top+i/width;
         c=*(xbm_bits+i/8);
-        if (c&(1<<(i%8))) plot(x,y,BLACK); else plot(x,y,WHITE);
+        if (!(c&(1<<(i%8)))) plot(x,y,WHITE);
     }//for
 }//f()

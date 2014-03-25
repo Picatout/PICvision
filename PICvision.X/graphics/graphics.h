@@ -117,7 +117,7 @@ void box(int left, int top, int width, int height,int color);
  */
 void bitmap(int left, int top, int width, int height, bmp_op_t op, const unsigned char* bmp);
 
-/* xbm(int left, int top, int width, int height, const unsigned char* xbm_bits)
+/* put_xbm(int left, int top, int width, int height, const unsigned char* xbm_bits)
  * Description: display xbm file bit array. Bits to 1 display as black, 0 as white.
  *              Least signficant bit of each byte is left side.
  * Arguments:
@@ -127,7 +127,7 @@ void bitmap(int left, int top, int width, int height, bmp_op_t op, const unsigne
  *     - height  vertical size of rectangle in pixels
  *     - *xbm_bits  pointer to xbm bits array used in operation
  */
-void xbm(int left, int top, int width, int height, const unsigned char* xbm_bits);
+void put_xbm(int left, int top, int width, int height, const unsigned char* xbm_bits);
 
 #ifdef	__cplusplus
 }
