@@ -47,6 +47,12 @@ typedef struct{
     unsigned short y;
 } text_coord_t;
 
+typedef struct msg_struct{
+    unsigned char x;
+    unsigned char y;
+    char *text;
+}msg_t;
+
 typedef enum _CURSOR_SHAPE {CR_UNDER=0,CR_BLOCK} cursor_t;
 
 
@@ -72,6 +78,8 @@ void set_cursor(cursor_t shape); // set cursor shape (underscore or block)
 void crlf(void); // move cursor at beginning of next line
 void invert_video(); // set inverse video mode for text.
 void normal_video(); // set normal video mode for text.
+void print_msg(const msg_t msg); // print message at fixed position.
+
 #ifdef	__cplusplus
 }
 #endif

@@ -340,3 +340,9 @@ void invert_video(){
 void normal_video(){
     flags &= ~INV_VID;
 }//normal_video()
+
+void print_msg(const msg_t msg){
+    set_curpos(msg.x,msg.y);
+    print(msg.text);
+}//f()
+

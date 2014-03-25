@@ -1,0 +1,27 @@
+build/default/production/games/snake_graphics_mode/snake_gm.o:  \
+ games/snake_graphics_mode/snake_gm.c  \
+ games/snake_graphics_mode/../../PICvision.h  \
+ games/snake_graphics_mode/../../Hardware/hardwareProfile.h  \
+ games/snake_graphics_mode/../../TVout/TVout.h  \
+ games/snake_graphics_mode/../../TVout/../Hardware/hardwareProfile.h  \
+ games/snake_graphics_mode/../../text_console/text_console.h  \
+ games/snake_graphics_mode/../../text_console/../TVout/TVout.h  \
+ games/snake_graphics_mode/../../text_console/font.h  \
+ games/snake_graphics_mode/../../graphics/graphics.h  \
+ games/snake_graphics_mode/../../graphics/../TVout/TVout.h  \
+ games/snake_graphics_mode/../../audio/sound.h  \
+ games/snake_graphics_mode/../../audio/../Hardware/hardwareProfile.h  \
+ games/snake_graphics_mode/../../audio/../system/timers.h  \
+ games/snake_graphics_mode/../../audio/../system/../Hardware/hardwareProfile.h  \
+ games/snake_graphics_mode/../../Hardware/controllers/SNES/snes_paddle.h  \
+ games/snake_graphics_mode/../../Hardware/controllers/SNES/../../hardwareProfile.h  \
+ games/snake_graphics_mode/../../system/timers.h  \
+ games/snake_graphics_mode/../../menus.h  \
+ games/snake_graphics_mode/snake_gm.h  \
+ games/snake_graphics_mode/resources/snake_head_down.xbm  \
+ games/snake_graphics_mode/resources/snake_head_up.xbm  \
+ games/snake_graphics_mode/resources/snake_head_left.xbm  \
+ games/snake_graphics_mode/resources/snake_head_right.xbm  \
+ games/snake_graphics_mode/resources/mouse.xbm  \
+ games/snake_graphics_mode/resources/snake_segment_up_down.xbm  \
+ games/snake_graphics_mode/resources/snake_segment_left_right.xbm 
