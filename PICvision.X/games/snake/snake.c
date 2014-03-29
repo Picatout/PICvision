@@ -79,8 +79,9 @@ static int run; // game exit when run==0
 static unsigned char reset=0; // reinitialize game
 
 static const msg_t msgCALORIES={0,0,"calories: "};
-static const msg_t msgSECONDS={18,0,"lifespan: "};
+static const msg_t msgSCORE={18,0,"score: "};
 static const msg_t msgGAME_OVER={6,13,"game over"};
+static const msg_t msgMAXSCORE={6,16,"max score: "};
 static const msg_t msgSTART={8,20, "press START to begin"};
 static const msg_t msgQUIT={8,21,"X to quit game."};
 static const msg_t msgSTARVATION={6,14,"died of starvation"};
@@ -153,8 +154,8 @@ static int wait_start_signal(){
 
 static void animate_death(){
     int i,freq;
-    show_snake();
-    freq=2000;
+    //show_snake();
+    freq=3200;
     for (i=snake.length-1;i>=0;i--){
         box(snake.body[i].x,snake.body[i].y,SPRITE_WIDTH,SPRITE_HEIGHT,BLACK);
         tone(freq,100);
@@ -163,12 +164,34 @@ static void animate_death(){
     }//for
 }//f()
 
+// score=lifespan*calories/8
+#define mScore() (snake.lifespan*(snake.calories>>3))
+
+void display_status(){
+    print_msg(msgCALORIES);
+    clear_eol();
+    print_int(snake.calories,1);
+    print_msg(msgSCORE);
+    print_int(mScore(),1);
+    rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
+}//f()
+
+
 // dead cause
 typedef enum DEATH {STARVATION,WALL_COLLISION,TAIL_BITE} death_t;
 
 static void game_over(death_t cause){
+    static int max_score=0;
+    if (mScore()>max_score){
+        max_score=mScore();
+    }
+    hide_mouse();
     animate_death();
+    display_status();
     print_msg(msgGAME_OVER);
+    print_msg(msgGAME_OVER);
+    print_msg(msgMAXSCORE);
+    print_int(max_score,0);
     switch (cause){
         case STARVATION:
             print_msg(msgSTARVATION);
@@ -182,16 +205,6 @@ static void game_over(death_t cause){
     }//switch
     reset=1;
     if (!wait_start_signal()) run=0;
-}//f()
-
-void display_status(){
-    print_msg(msgCALORIES);
-    clear_eol();
-    print_int(snake.calories,1);
-    print_msg(msgSECONDS);
-    print_int(snake.lifespan,1);
-    //draw  borders
-    rectangle(0,CHAR_HEIGHT,HPIXELS-1,VPIXELS-1,WHITE);
 }//f()
 
 static void add_calories(unsigned short gain){
@@ -246,7 +259,9 @@ static int bit_himself(){
 static void move_snake(){
     unsigned i;
 
-    hide_snake();
+    //hide_snake();
+    box(snake.body[snake.length-1].x,snake.body[snake.length-1].y,SPRITE_WIDTH,
+        SPRITE_HEIGHT,BLACK);
     for (i=snake.length-1;i;i--){
         snake.body[i].x = snake.body[i-1].x;
         snake.body[i].y = snake.body[i-1].y;
@@ -278,6 +293,11 @@ static void move_snake(){
                 snake.body[0].x=0;
             break;
     }//switch
+    put_xbm(snake.body[0].x,snake.body[0].y,SPRITE_WIDTH,SPRITE_HEIGHT,
+            sprites[snake.body[0].sprite]);
+    box(snake.body[1].x,snake.body[1].y,SPRITE_WIDTH,SPRITE_HEIGHT,BLACK);
+    put_xbm(snake.body[1].x,snake.body[1].y,SPRITE_WIDTH,SPRITE_HEIGHT,
+            sprites[SEGMENT]);
     if ((snake.body[0].x<1)||(snake.body[0].x>=(HPIXELS-SPRITE_WIDTH)) ||
         (snake.body[0].y<CHAR_HEIGHT+2) || (snake.body[0].y>=VPIXELS-SPRITE_HEIGHT)){
         game_over(WALL_COLLISION);
@@ -285,7 +305,7 @@ static void move_snake(){
         game_over(TAIL_BITE);
     }else{
         check_if_got_mouse();
-        show_snake();
+//        show_snake();
     }//if
 }//f()
 
@@ -299,7 +319,8 @@ static void game_info(){
     print("Die of starvation when calories=0.\r");
     print("Eating a mouse give 20 calories.\r");
     print("Die when hitting wall.\r");
-    print("Die when bitting his tail.\r\r");
+    print("Die when bitting his tail.\r");
+    print("score=calories*lifespan/8\r\r");
     print("Use ARROWS to control snake.\r");
     run=wait_start_signal();
 }//f()
