@@ -34,10 +34,10 @@
 #define mTone_on()  (AUDIOCON.OCM=5)
 
 
-volatile unsigned char fSound=0; // boolean flags
-volatile int tmrId;  // duratio timer identifier
-volatile unsigned int *tones_list;  // list of tones and interval for playing tune
-int tick_msec=10; // tick interval in milliseconds, default 10msec.
+static volatile unsigned char fSound=0; // boolean flags
+static volatile int tmrId;  // duratio timer identifier
+const unsigned  *  tones_list;  // list of tones and interval for playing tune
+static int tick_msec=10; // tick interval in milliseconds, default 10msec.
 
 void cb_tone(void){ // timer call back function
     mTone_off();
@@ -56,7 +56,7 @@ void sound_init(int tick_time){
 // play tone in background
 void tone(unsigned freq, // frequency in hertz
           unsigned msec){ // duration in  milliseconds
-    //
+    if (!(freq && msec))  return ;
     mTone_off(); 
     AUDIORS=FCY/16/freq; // determine tone duty cycle
     AUDIOTMR.TON=0;

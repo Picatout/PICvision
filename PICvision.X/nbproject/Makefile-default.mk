@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=audio/sound.c graphics/graphics.c Hardware/controllers/SNES/snes_paddle.c Hardware/hardwareProfile.c system/timers.c text_console/font.c text_console/text_console.c TVout/TVout.c PICvision.c PICvision_banner.c menus.c games/snake/snake.c
+SOURCEFILES_QUOTED_IF_SPACED=audio/sound.c games/snake/snake.c graphics/graphics.c Hardware/controllers/SNES/snes_paddle.c Hardware/hardwareProfile.c system/timers.c text_console/font.c text_console/text_console.c TVout/TVout.c PICvision.c PICvision_banner.c menus.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/audio/sound.o ${OBJECTDIR}/graphics/graphics.o ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o ${OBJECTDIR}/Hardware/hardwareProfile.o ${OBJECTDIR}/system/timers.o ${OBJECTDIR}/text_console/font.o ${OBJECTDIR}/text_console/text_console.o ${OBJECTDIR}/TVout/TVout.o ${OBJECTDIR}/PICvision.o ${OBJECTDIR}/PICvision_banner.o ${OBJECTDIR}/menus.o ${OBJECTDIR}/games/snake/snake.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/audio/sound.o.d ${OBJECTDIR}/graphics/graphics.o.d ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d ${OBJECTDIR}/Hardware/hardwareProfile.o.d ${OBJECTDIR}/system/timers.o.d ${OBJECTDIR}/text_console/font.o.d ${OBJECTDIR}/text_console/text_console.o.d ${OBJECTDIR}/TVout/TVout.o.d ${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/PICvision_banner.o.d ${OBJECTDIR}/menus.o.d ${OBJECTDIR}/games/snake/snake.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/audio/sound.o ${OBJECTDIR}/games/snake/snake.o ${OBJECTDIR}/graphics/graphics.o ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o ${OBJECTDIR}/Hardware/hardwareProfile.o ${OBJECTDIR}/system/timers.o ${OBJECTDIR}/text_console/font.o ${OBJECTDIR}/text_console/text_console.o ${OBJECTDIR}/TVout/TVout.o ${OBJECTDIR}/PICvision.o ${OBJECTDIR}/PICvision_banner.o ${OBJECTDIR}/menus.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/audio/sound.o.d ${OBJECTDIR}/games/snake/snake.o.d ${OBJECTDIR}/graphics/graphics.o.d ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o.d ${OBJECTDIR}/Hardware/hardwareProfile.o.d ${OBJECTDIR}/system/timers.o.d ${OBJECTDIR}/text_console/font.o.d ${OBJECTDIR}/text_console/text_console.o.d ${OBJECTDIR}/TVout/TVout.o.d ${OBJECTDIR}/PICvision.o.d ${OBJECTDIR}/PICvision_banner.o.d ${OBJECTDIR}/menus.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/audio/sound.o ${OBJECTDIR}/graphics/graphics.o ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o ${OBJECTDIR}/Hardware/hardwareProfile.o ${OBJECTDIR}/system/timers.o ${OBJECTDIR}/text_console/font.o ${OBJECTDIR}/text_console/text_console.o ${OBJECTDIR}/TVout/TVout.o ${OBJECTDIR}/PICvision.o ${OBJECTDIR}/PICvision_banner.o ${OBJECTDIR}/menus.o ${OBJECTDIR}/games/snake/snake.o
+OBJECTFILES=${OBJECTDIR}/audio/sound.o ${OBJECTDIR}/games/snake/snake.o ${OBJECTDIR}/graphics/graphics.o ${OBJECTDIR}/Hardware/controllers/SNES/snes_paddle.o ${OBJECTDIR}/Hardware/hardwareProfile.o ${OBJECTDIR}/system/timers.o ${OBJECTDIR}/text_console/font.o ${OBJECTDIR}/text_console/text_console.o ${OBJECTDIR}/TVout/TVout.o ${OBJECTDIR}/PICvision.o ${OBJECTDIR}/PICvision_banner.o ${OBJECTDIR}/menus.o
 
 # Source Files
-SOURCEFILES=audio/sound.c graphics/graphics.c Hardware/controllers/SNES/snes_paddle.c Hardware/hardwareProfile.c system/timers.c text_console/font.c text_console/text_console.c TVout/TVout.c PICvision.c PICvision_banner.c menus.c games/snake/snake.c
+SOURCEFILES=audio/sound.c games/snake/snake.c graphics/graphics.c Hardware/controllers/SNES/snes_paddle.c Hardware/hardwareProfile.c system/timers.c text_console/font.c text_console/text_console.c TVout/TVout.c PICvision.c PICvision_banner.c menus.c
 
 
 CFLAGS=
@@ -85,6 +85,13 @@ ${OBJECTDIR}/audio/sound.o: audio/sound.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/audio/sound.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  audio/sound.c  -o ${OBJECTDIR}/audio/sound.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/audio/sound.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/audio/sound.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/games/snake/snake.o: games/snake/snake.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/games/snake 
+	@${RM} ${OBJECTDIR}/games/snake/snake.o.d 
+	@${RM} ${OBJECTDIR}/games/snake/snake.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  games/snake/snake.c  -o ${OBJECTDIR}/games/snake/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/games/snake/snake.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/games/snake/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/graphics/graphics.o: graphics/graphics.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/graphics 
@@ -156,13 +163,6 @@ ${OBJECTDIR}/menus.o: menus.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  menus.c  -o ${OBJECTDIR}/menus.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/menus.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/menus.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
-${OBJECTDIR}/games/snake/snake.o: games/snake/snake.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/games/snake 
-	@${RM} ${OBJECTDIR}/games/snake/snake.o.d 
-	@${RM} ${OBJECTDIR}/games/snake/snake.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  games/snake/snake.c  -o ${OBJECTDIR}/games/snake/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/games/snake/snake.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PICKIT2=1  -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/games/snake/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
 else
 ${OBJECTDIR}/audio/sound.o: audio/sound.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/audio 
@@ -170,6 +170,13 @@ ${OBJECTDIR}/audio/sound.o: audio/sound.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/audio/sound.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  audio/sound.c  -o ${OBJECTDIR}/audio/sound.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/audio/sound.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/audio/sound.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/games/snake/snake.o: games/snake/snake.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} ${OBJECTDIR}/games/snake 
+	@${RM} ${OBJECTDIR}/games/snake/snake.o.d 
+	@${RM} ${OBJECTDIR}/games/snake/snake.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  games/snake/snake.c  -o ${OBJECTDIR}/games/snake/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/games/snake/snake.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
+	@${FIXDEPS} "${OBJECTDIR}/games/snake/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 ${OBJECTDIR}/graphics/graphics.o: graphics/graphics.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} ${OBJECTDIR}/graphics 
@@ -240,13 +247,6 @@ ${OBJECTDIR}/menus.o: menus.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/menus.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  menus.c  -o ${OBJECTDIR}/menus.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/menus.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
 	@${FIXDEPS} "${OBJECTDIR}/menus.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
-	
-${OBJECTDIR}/games/snake/snake.o: games/snake/snake.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} ${OBJECTDIR}/games/snake 
-	@${RM} ${OBJECTDIR}/games/snake/snake.o.d 
-	@${RM} ${OBJECTDIR}/games/snake/snake.o 
-	${MP_CC} $(MP_EXTRA_CC_PRE)  games/snake/snake.c  -o ${OBJECTDIR}/games/snake/snake.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/games/snake/snake.o.d"      -g -omf=elf -O1 -msmart-io=1 -Wall -msfr-warn=off
-	@${FIXDEPS} "${OBJECTDIR}/games/snake/snake.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 

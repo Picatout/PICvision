@@ -61,14 +61,15 @@
 
 unsigned frames_per_second;
 static unsigned int frame_line_cntr=0; // count line in video frame
-volatile static unsigned long frame_cntr=0; // number of frame since reset
-volatile static unsigned int flags;
+static volatile unsigned long frame_cntr=0; // number of frame since reset
+static volatile unsigned int flags;
 
 
-char video_buffer[VPIXELS][BYTES_PER_LINE];
-int vsync, hsync, video_mode;
+unsigned char __attribute__((aligned(2))) video_buffer[VPIXELS][BYTES_PER_LINE];
+static int vsync, hsync;
+int video_mode;
 
-void ntsc_init(){
+static void ntsc_init(){
     VIDPR = NTSC_LINE_PERIOD;  // video timer PRx SFR
     VSYNCR= NTSC_HPULSE;       // video OCxR  SFR
     VSYNCRS=NTSC_LINE_PERIOD;  // video OCxRS SFR
@@ -80,7 +81,7 @@ void ntsc_init(){
     frames_per_second=NTSC_FRAMES_PER_SECOND;
 }//f()
 
-void pal_init(){
+static void pal_init(){
     VIDPR = PAL_LINE_PERIOD;
     VSYNCR= PAL_HPULSE;
     VSYNCRS=PAL_LINE_PERIOD;
@@ -130,6 +131,9 @@ void  blank_out(unsigned state){
     }
 }//f()
 
+int  get_frame_count(){
+    return frame_cntr;
+}//f()
 
 // video sync signal generation
 void __attribute__((interrupt,no_auto_psv,shadow)) _VSYNC_ISR(void){

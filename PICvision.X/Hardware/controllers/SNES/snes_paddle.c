@@ -33,20 +33,20 @@
 
 
 // the loop execute in 4 Tcy
-#define mDelay(usec) asm(" MOV #%0, W4\n NOP\n DEC W4,W4\n BRA NZ .-4"::"i"(usec))
+#define mDelay(usec) asm("MOV #%0, W0\n NOP\n DEC W0,W0\n BRA NZ, .-4\n"::"i"(usec*CYCLES_PER_USEC/4):"w0")
 
-void latch(){
+inline void latch(){
     P_PDL_LATCH=1;
-    mDelay(CYCLES_PER_USEC/4);
+    mDelay(1);
     P_PDL_LATCH=0;
-    mDelay(CYCLES_PER_USEC/4);
+    mDelay(1);
 }//f()
 
-void bit_shift(){
+inline void bit_shift(){
     P_PDL_CLK=1;
-    mDelay(CYCLES_PER_USEC/4);
+    mDelay(1);
     P_PDL_CLK=0;
-    mDelay(CYCLES_PER_USEC/4);
+    mDelay(1);
 }// f()
 
 unsigned read_paddle(int paddleId) {

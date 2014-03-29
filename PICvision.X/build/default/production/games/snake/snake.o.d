@@ -23,5 +23,4 @@ games/snake/resources/snake_head_down.xbm  \
  games/snake/resources/snake_head_left.xbm  \
  games/snake/resources/snake_head_right.xbm  \
  games/snake/resources/mouse.xbm  \
- games/snake/resources/snake_segment_vert.xbm  \
- games/snake/resources/snake_segment_horz.xbm 
+games/snake/resources/snake_segment.xbm 

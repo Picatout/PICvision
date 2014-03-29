@@ -33,8 +33,8 @@ void plot(int x, int y, int color){
     int h,ofs;
     unsigned char mask;
     if ((y>=VPIXELS)||(x>=HPIXELS)) return; // bound check
-    h= x/8;
-    ofs = 7 - x%8;
+    h= x>>3;
+    ofs = 7 - (x&7);
     mask = 1<<ofs;
     switch (color){
         case BLACK:
@@ -144,23 +144,27 @@ void polygon(int points[], int vertices, int color){
 
 
 void box(int left, int top, int width, int height,int color){
-    int y, x,idx,mwidth,bitsleft;
     unsigned char mask;
+    int y, x,idx,mwidth,countdown;
+//    for (y=top;y<top+height;y++)
+//        for (x=left;x<left+width;x++)
+//            plot(x,y,color);
+    if (!(width && height)) return;
     for (y=top;y<top+height;y++){
         x=left;
-        bitsleft=width;
-        while (bitsleft){
-            idx=x/8;
-            if (x%8==0){
+        countdown=width;
+        while (countdown){
+            idx=x>>3;
+            if ((x&7)==0){
                 mask=0xff;
                 mwidth=8;
             }else{
-                mask=0xff>>(x%8);
-                mwidth=8-x%8;
+                mask=0xff>>(x&7);
+                mwidth=8-(x&7);
             }
-            if (bitsleft<mwidth){
-                mask &= 0xff<<(mwidth-bitsleft);
-                mwidth=bitsleft;
+            if (countdown<mwidth){
+                mask &= 0xff<<(mwidth-countdown);
+                mwidth=countdown;
             }
             switch(color){
                 case BLACK:
@@ -174,7 +178,7 @@ void box(int left, int top, int width, int height,int color){
                     break;
             }//switch
             x += mwidth;
-            bitsleft -= mwidth;
+            countdown -= mwidth;
         }//while
     }//for
 }//f()
@@ -182,35 +186,36 @@ void box(int left, int top, int width, int height,int color){
 
 
 void bitmap(int left, int top, int width, int height, bmp_op_t op, const unsigned char* bmp){
-    int x,y, xbmp,mwidth,idx, bitsleft,ybmp_inc;
-    unsigned char  mask, bmpbits, *ybmp;
+    int x,y, xbmp,mwidth,idx, countdown,ybmp_inc;
+    unsigned char  mask, bmpbits;
+    const unsigned char *ybmp;
 
-    ybmp_inc=width/8;
-    if (width%8) ybmp_inc++;
+    ybmp_inc=width>>3;
+    if (width&7) ybmp_inc++;
     ybmp=bmp;
     //remainder=0;
     for (y=top;y<top+height;y++){
         x=left;
         xbmp=0;
-        bitsleft=width;
-        while (bitsleft){
-            idx=x/8;
-            if (x%8==0){
+        countdown=width;
+        while (countdown){
+            idx=x>>3;
+            if ((x&7)==0){
                 mask=0xff;
                 mwidth=8;
             }else{
-                mask=0xff>>(x%8);
-                mwidth=8-x%8;
+                mask=0xff>>(x&7);
+                mwidth=8-(x&7);
             }
-            if (bitsleft<mwidth){
-                mask &= 0xff<<(mwidth-bitsleft);
-                mwidth=bitsleft;
+            if (countdown<mwidth){
+                mask &= 0xff<<(mwidth-countdown);
+                mwidth=countdown;
             }
-            bmpbits = (*(ybmp+xbmp/8))<<(xbmp%8);
-            if (xbmp%8){
-                bmpbits |= (*(ybmp+xbmp/8+1))>>(8-xbmp%8);
+            bmpbits = (*(ybmp+(xbmp>>3)))<<(xbmp&7);
+            if (xbmp&7){
+                bmpbits |= (*(ybmp+(xbmp>>3)+1))>>(8-(xbmp&7));
             }
-            bmpbits >>= (x%8);
+            bmpbits >>= (x&7);
             bmpbits &= mask;
             switch(op){
                 case BMP_COPY:
@@ -229,7 +234,7 @@ void bitmap(int left, int top, int width, int height, bmp_op_t op, const unsigne
             }//switch
             x += mwidth;
             xbmp += mwidth;
-            bitsleft -= mwidth;
+            countdown -= mwidth;
         }//while
         ybmp+=ybmp_inc;
         
@@ -243,7 +248,7 @@ void put_xbm(int left, int top, int width, int height, const unsigned char* xbm_
     for (i=0;i<width*height;i++){
         x=left+i%width;
         y=top+i/width;
-        c=*(xbm_bits+i/8);
-        if (!(c&(1<<(i%8)))) plot(x,y,WHITE);
+        c=*(xbm_bits+(i>>3));
+        if (!(c&(1<<(i&7)))) plot(x,y,WHITE);
     }//for
 }//f()

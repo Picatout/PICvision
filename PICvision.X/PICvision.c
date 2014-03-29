@@ -103,6 +103,7 @@ int main(void){
    while(1){
        clear_screen();
        selected=run_menu(games_list,10,(27-5)/2,PADDLE1);
+       selected=1;
        switch(selected){
            case 1:
                snake_game();
