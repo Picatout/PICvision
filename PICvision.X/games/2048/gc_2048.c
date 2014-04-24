@@ -34,7 +34,7 @@
 
 unsigned board[16];  // game board
 
-unsigned current_score, max_score;
+unsigned current_score, max_score=0;
 
 static unsigned cell_width, cell_height;
 
@@ -77,102 +77,175 @@ void init_board_values(){
     for (pos=0;pos<16;pos++){
         board[pos]=0;
     }
+    srand(get_frame_count());
     pop_number();
     pop_number();
+    current_score=0;
 }//f()
 
-BOOL is_movable(){// check if a move is possible
-    return 1;
-}//f()
-
-int update_value(int x,int y, int t){
-    int sum=0;
-    if (!board[(y<<2)+x]){
-        board[(y<<2)+x]=board[(t<<2)+x];
-        board[(t<<2)+x]=0;
-    }else if (board[(y<<2)+x]==board[(t<<2)+x]){
-        board[(y<<2)+x] <<= 1;
-        sum = board[(y<<2)+x];
-        board[(t<<2)+x]=0;
-    }else if (t>(y+1)){
-        board[((y+1)<<2)+x]=board[(t<<2)+x];
-        board[(t<<2)+x]=0;
+BOOL is_playable(){// check if a move is possible
+    int i;
+    for (i=0;i<16;i++){
+        if (!board[i]) return 1;
     }
-    return sum;
+    for (i=0;i<12;i++){
+        if ((i&3)==3){
+            if (board[i]==board[i+4]) return 1;
+        }else if ((board[i]==board[i+1])||(board[i]==board[i+4])) return 1;
+
+    }
+    return 0;
 }//f()
 
-void slide_tiles(unsigned arrow){// move numbers on board way of arrow
+
+
+BOOL slide_tiles(unsigned arrow){// move numbers on board
     int x,y,t,sum;
+    BOOL moved;
     sum=0;
+    moved=FALSE;
     arrow &= SNES_UP|SNES_DOWN|SNES_LEFT|SNES_RIGHT;
     switch(arrow){
         case SNES_UP:
             for(x=0;x<4;x++){
-                for(y=0;y<3;y++){
-                    t=y+1;
+                for(y=0;y<4;y++){
+                    t=y;
                     while ((t<4) && !board[(t<<2)+x]){
                         t++;
                     }
                     if (t==4) break;
-                    sum += update_value(x,y,t);
-                }
-            }
+                    if (t>y){
+                        board[(y<<2)+x]=board[(t<<2)+x];
+                        board[(t<<2)+x]=0;
+                        moved=TRUE;
+                    }//if
+                    if (y>0){
+                        if (board[((y-1)<<2)+x]==board[(y<<2)+x]){
+                            board[((y-1)<<2)+x]<<=1;
+                            sum+=board[((y-1)<<2)+x];
+                            board[(y<<2)+x]=0;
+                            moved=TRUE;
+                        }else if (!board[((y-1)<<2)+x]){
+                            board[((y-1)<<2)+x]=board[(y<<2)+x];
+                            board[(y<<2)+x]=0;
+                            moved=TRUE;
+                        }
+                    }//if
+                }//for
+            }//for
             break;
         case SNES_DOWN:
             for (x=0;x<4;x++){
-                for (y=3;y;y--){
-                    t=y-1;
+                for (y=3;y>=0;y--){
+                    t=y;
                     while ((t>=0)&&(!board[(t<<2)+x])){
                         t--;
                     }
                     if (t<0) break;
-                    sum += update_value(x,y,t);
-                }
-            }
+                    if (t<y){
+                        board[(y<<2)+x]=board[(t<<2)+x];
+                        board[(t<<2)+x]=0;
+                        moved=TRUE;
+                    }
+                    if (y<3){
+                        if (board[((y+1)<<2)+x]==board[(y<<2)+x]){
+                            board[((y+1)<<2)+x]<<=1;
+                            sum+=board[((y+1)<<2)+x];
+                            board[(y<<2)+x]=0;
+                            moved=TRUE;
+                        }else if (!board[((y+1)<<2)+x]){
+                            board[((y+1)<<2)+x]=board[(y<<2)+x];
+                            board[(y<<2)+x]=0;
+                            moved=TRUE;
+                        }
+                    }//if
+                }//for
+            }//For
             break;
         case SNES_LEFT:
             for (y=0;y<4;y++){
-                for (x=0;x<3;x++){
-                    t=x+1;
+                for (x=0;x<4;x++){
+                    t=x;
                     while (t<4 && !board[(y<<2)+t]){
                         t++;
-                    }
+                    }//while
                     if (t==4)break;
-                    sum += update_value(x,y,t);
-                }
-            }
+                    if (t>x){
+                        board[(y<<2)+x]=board[(y<<2)+t];
+                        board[(y<<2)+t]=0;
+                        moved=TRUE;
+                    }//if
+                    if (x>0){
+                        if (board[(y<<2)+x-1]==board[(y<<2)+x]){
+                            board[(y<<2)+x-1]<<=1;
+                            sum+=board[(y<<2)+x-1];
+                            board[(y<<2)+x]=0;
+                            moved=TRUE;
+                        }else if (!board[(y<<2)+x-1]){
+                            board[(y<<2)+x-1]=board[(y<<2)+x];
+                            board[(y<<2)+x]=0;
+                            moved=TRUE;
+                        }
+                    }//if
+                }//for
+            }//For
             break;
         case SNES_RIGHT:
             for (y=0;y<4;y++){
-                for (x=3;x;x--){
-                    t=x-1;
+                for (x=3;x>=0;x--){
+                    t=x;
                     while((t>=0)&&(!board[(y<<2)+t])){
                         t--;
                     }
                     if (t<0) break;
-                    sum += update_value(x,y,t);
+                    if (t<x){
+                        board[(y<<2)+x]=board[(y<<2)+t];
+                        board[(y<<2)+t]=0;
+                        moved=TRUE;
+                    }//if
+                    if (x<3){
+                        if (board[(y<<2)+x+1]==board[(y<<2)+x]){
+                            board[(y<<2)+x+1]<<=1;
+                            sum+=board[(y<<2)+x+1];
+                            board[(y<<2)+x]=0;
+                            moved=TRUE;
+                        }else if (!board[(y<<2)+x+1]){
+                            board[(y<<2)+x+1]=board[(y<<2)+x];
+                            board[(y<<2)+x]=0;
+                            moved=TRUE;
+                        }//if
+                    }//if
                 }
             }
             break;
     }//switch
     current_score += sum;
+    return moved;
+}//f()
+
+void display_score(){
+    set_curpos(0,24);
+    clear_eol();
+    print("score: ");
+    print_int(current_score,0);
+    set_curpos(0,25);
+    clear_eol();
+    print("best score: ");
+    print_int(max_score,0);
 }//f()
 
 void update_board(){
     clear_screen();
     draw_board();
     print_board_values();
-    set_curpos(0,24);
-    print("score: ");
-    print_int(current_score,0);
-    set_curpos(0,25);
-    print("best score: ");
-    print_int(max_score,0);
+    display_score();
 }//f()
 
 BOOL game_over(){
     unsigned key;
     box(0,0,HPIXELS,VPIXELS-3*CHAR_HEIGHT,BLACK);
+    if (current_score>max_score) max_score=current_score;
+    display_score();
     set_curpos(12,12);
     print("game over");
     set_curpos(0,14);
@@ -180,6 +253,7 @@ BOOL game_over(){
     do{
         key=read_paddle(PADDLE1);
     } while (!key);
+    init_board_values();
     if (key & SNES_X) return 1; else return 0;
 }//f()
 
@@ -196,12 +270,11 @@ void gc_2048_game(void){
             key=read_paddle(PADDLE1);
         } while (!key);
         if (key & SNES_X) break;
-        slide_tiles(key);
+        if (slide_tiles(key)) pop_number();
         update_board();
-        if (!is_movable()){
+        if (!is_playable()){
             if (game_over()) break;
         }
-        pop_number();
         while (read_paddle(PADDLE1));
     }//while
 }//f()
