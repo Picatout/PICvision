@@ -1,0 +1,19 @@
+build/default/production/games/2048/gc_2048.o:  \
+games/2048/gc_2048.c  \
+ games/2048/../../PICvision.h  \
+games/2048/../../Hardware/hardwareProfile.h  \
+ games/2048/../../TVout/TVout.h  \
+ games/2048/../../TVout/../Hardware/hardwareProfile.h  \
+ games/2048/../../text_console/text_console.h  \
+ games/2048/../../text_console/../TVout/TVout.h  \
+ games/2048/../../text_console/font.h  \
+ games/2048/../../graphics/graphics.h  \
+ games/2048/../../graphics/../TVout/TVout.h  \
+ games/2048/../../audio/sound.h  \
+ games/2048/../../audio/../Hardware/hardwareProfile.h  \
+ games/2048/../../audio/../system/timers.h  \
+ games/2048/../../audio/../system/../Hardware/hardwareProfile.h  \
+ games/2048/../../Hardware/controllers/SNES/snes_paddle.h  \
+ games/2048/../../Hardware/controllers/SNES/../../hardwareProfile.h  \
+ games/2048/../../system/timers.h  \
+games/2048/../../menus.h 

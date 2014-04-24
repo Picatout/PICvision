@@ -18,4 +18,5 @@ audio/../system/timers.h  \
 system/timers.h  \
  menus.h  \
 PICvision_banner.h  \
-games/snake/snake.h 
+games/snake/snake.h  \
+games/2048/gc_2048.h 

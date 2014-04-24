@@ -155,12 +155,12 @@ static int wait_start_signal(){
 static void animate_death(){
     int i,freq;
     //show_snake();
-    freq=3200;
+    freq=2200;
     for (i=snake.length-1;i>=0;i--){
         box(snake.body[i].x,snake.body[i].y,SPRITE_WIDTH,SPRITE_HEIGHT,BLACK);
-        tone(freq,100);
-        wait_n_frame(frames_per_second/10);
-        freq -= 100;
+        tone(freq,50);
+        wait_n_frame(frames_per_second>>4);
+        freq -= freq>>3;
     }//for
 }//f()
 

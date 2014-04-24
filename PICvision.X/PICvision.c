@@ -33,6 +33,7 @@
 #include "PICvision.h"
 #include "PICvision_banner.h"
 #include "games/snake/snake.h"
+#include "games/2048/gc_2048.h"
 
 // PIC24FJ64GA002 Configuration Bit Settings
 // CONFIG2
@@ -97,21 +98,19 @@ int main(void){
    PICvision_init();
    games_list=create_menu("SELECT GAME");
    add_menu_item("snake",1,games_list);
-   add_menu_item("game 2",2,games_list);
-   add_menu_item("game 3",3,games_list);
-   add_menu_item("etc...",4,games_list);
+   add_menu_item("2048",2,games_list);
+   //add_menu_item("game 3",3,games_list);
+   //add_menu_item("etc...",4,games_list);
    while(1){
        clear_screen();
        selected=run_menu(games_list,10,(27-5)/2,PADDLE1);
-       selected=1;
+       clear_screen();
        switch(selected){
            case 1:
                snake_game();
                break;
            case 2:
-               set_curpos(0,0);
-               print("game 2");
-               wait_n_frame(60);
+               gc_2048_game();
                break;
            case 3:
                set_curpos(0,0);
