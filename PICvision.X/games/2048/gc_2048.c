@@ -143,7 +143,7 @@ unsigned congratulation(int x, int y){
 
 
 int slide_tiles(unsigned arrow){// move numbers on board
-    int x,y,t,sum;
+    int x,y,t,sum,bound;
     unsigned state; // 0=no change, 1=changed, 2=start new game
     sum=0;
     state=0;
@@ -151,6 +151,7 @@ int slide_tiles(unsigned arrow){// move numbers on board
     switch(arrow){
         case SNES_UP:
             for(x=0;x<4;x++){
+                bound=0;
                 for(y=0;y<4;y++){
                     t=y;
                     while ((t<4) && !board[(t<<2)+x]){
@@ -162,20 +163,27 @@ int slide_tiles(unsigned arrow){// move numbers on board
                         board[(t<<2)+x]=0;
                         state=1;
                     }//if
-                    if (y>0){
-                        if (board[((y-1)<<2)+x]==board[(y<<2)+x]){
-                            board[((y-1)<<2)+x]<<=1;
-                            sum+=board[((y-1)<<2)+x];
+                    if (y>bound){
+                        if (board[((bound)<<2)+x]==board[(y<<2)+x]){
+                            board[((bound)<<2)+x]<<=1;
+                            sum+=board[((bound)<<2)+x];
                             board[(y<<2)+x]=0;
-                            if (board[((y-1)<<2)+x]==2048){
-                                state=congratulation(x,y-1);
+                            if (board[((bound)<<2)+x]==2048){
+                                state=congratulation(x,bound);
                             }else{
                                 state=1;
                             }
-                        }else if (!board[((y-1)<<2)+x]){
-                            board[((y-1)<<2)+x]=board[(y<<2)+x];
+                            bound++;
+                        }else if (!board[((bound)<<2)+x]){
+                            board[((bound)<<2)+x]=board[(y<<2)+x];
                             board[(y<<2)+x]=0;
                             state=1;
+                        }else{
+                            bound++;
+                            if (y>bound){
+                                board[((bound)<<2)+x]=board[(y<<2)+x];
+                                board[(y<<2)+x]=0;
+                            }
                         }
                     }//if
                 }//for
@@ -183,6 +191,7 @@ int slide_tiles(unsigned arrow){// move numbers on board
             break;
         case SNES_DOWN:
             for (x=0;x<4;x++){
+                bound=3;
                 for (y=3;y>=0;y--){
                     t=y;
                     while ((t>=0)&&(!board[(t<<2)+x])){
@@ -194,20 +203,27 @@ int slide_tiles(unsigned arrow){// move numbers on board
                         board[(t<<2)+x]=0;
                         state=1;
                     }
-                    if (y<3){
-                        if (board[((y+1)<<2)+x]==board[(y<<2)+x]){
-                            board[((y+1)<<2)+x]<<=1;
-                            sum+=board[((y+1)<<2)+x];
+                    if (y<bound){
+                        if (board[((bound)<<2)+x]==board[(y<<2)+x]){
+                            board[((bound)<<2)+x]<<=1;
+                            sum+=board[((bound)<<2)+x];
                             board[(y<<2)+x]=0;
-                            if (board[((y+1)<<2)+x]==2048){
-                                state=congratulation(x,y+1);
+                            if (board[((bound)<<2)+x]==2048){
+                                state=congratulation(x,bound);
                             }else{
                                 state=1;
                             }
-                        }else if (!board[((y+1)<<2)+x]){
-                            board[((y+1)<<2)+x]=board[(y<<2)+x];
+                            bound--;
+                        }else if (!board[((bound)<<2)+x]){
+                            board[((bound)<<2)+x]=board[(y<<2)+x];
                             board[(y<<2)+x]=0;
                             state=1;
+                        }else{
+                            bound--;
+                            if (y<bound){
+                                board[(bound<<2)+x]=board[(y<<2)+x];
+                                board[(y<<2)+x]=0;
+                            }
                         }
                     }//if
                 }//for
@@ -215,6 +231,7 @@ int slide_tiles(unsigned arrow){// move numbers on board
             break;
         case SNES_LEFT:
             for (y=0;y<4;y++){
+                bound=0;
                 for (x=0;x<4;x++){
                     t=x;
                     while (t<4 && !board[(y<<2)+t]){
@@ -226,20 +243,27 @@ int slide_tiles(unsigned arrow){// move numbers on board
                         board[(y<<2)+t]=0;
                         state=1;
                     }//if
-                    if (x>0){
-                        if (board[(y<<2)+x-1]==board[(y<<2)+x]){
-                            board[(y<<2)+x-1]<<=1;
-                            sum+=board[(y<<2)+x-1];
+                    if (x>bound){
+                        if (board[(y<<2)+bound]==board[(y<<2)+x]){
+                            board[(y<<2)+bound]<<=1;
+                            sum+=board[(y<<2)+bound];
                             board[(y<<2)+x]=0;
-                            if (board[(y<<2)+x-1]==2048){
-                                state=congratulation(x-1,y);
+                            if (board[(y<<2)+bound]==2048){
+                                state=congratulation(bound,y);
                             }else{
                                 state=1;
                             }
-                        }else if (!board[(y<<2)+x-1]){
-                            board[(y<<2)+x-1]=board[(y<<2)+x];
+                            bound++;
+                        }else if (!board[(y<<2)+bound]){
+                            board[(y<<2)+bound]=board[(y<<2)+x];
                             board[(y<<2)+x]=0;
                             state=1;
+                        }else{
+                            bound++;
+                            if (x>bound){
+                                board[(y<<2)+bound]=board[(y<<2)+x];
+                                board[(y<<2)+x]=0;
+                            }
                         }
                     }//if
                 }//for
@@ -247,6 +271,7 @@ int slide_tiles(unsigned arrow){// move numbers on board
             break;
         case SNES_RIGHT:
             for (y=0;y<4;y++){
+                bound=3;
                 for (x=3;x>=0;x--){
                     t=x;
                     while((t>=0)&&(!board[(y<<2)+t])){
@@ -258,21 +283,28 @@ int slide_tiles(unsigned arrow){// move numbers on board
                         board[(y<<2)+t]=0;
                         state=1;
                     }//if
-                    if (x<3){
-                        if (board[(y<<2)+x+1]==board[(y<<2)+x]){
-                            board[(y<<2)+x+1]<<=1;
-                            sum+=board[(y<<2)+x+1];
+                    if (x<bound){
+                        if (board[(y<<2)+bound]==board[(y<<2)+x]){
+                            board[(y<<2)+bound]<<=1;
+                            sum+=board[(y<<2)+bound];
                             board[(y<<2)+x]=0;
-                            if (board[(y<<2)+x+1]==2048){
-                                state=congratulation(x+1,y);
+                            if (board[(y<<2)+bound]==2048){
+                                state=congratulation(bound,y);
                             }else{
                                 state=1;
                             }
-                        }else if (!board[(y<<2)+x+1]){
-                            board[(y<<2)+x+1]=board[(y<<2)+x];
+                            bound--;
+                        }else if (!board[(y<<2)+bound]){
+                            board[(y<<2)+bound]=board[(y<<2)+x];
                             board[(y<<2)+x]=0;
                             state=1;
-                        }//if
+                        }else{
+                            bound--;
+                            if (x<bound){
+                                board[(y<<2)+bound]=board[(y<<2)+x];
+                                board[(y<<2)+x]=0;
+                            }
+                        }
                     }//if
                 }
             }
