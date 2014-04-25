@@ -34,7 +34,7 @@
 
 unsigned board[16];  // game board
 
-unsigned current_score, max_score=0;
+unsigned current_score=0, max_score=0;
 
 static unsigned cell_width, cell_height;
 
@@ -80,6 +80,9 @@ void init_board_values(){
     srand(get_frame_count());
     pop_number();
     pop_number();
+    if (current_score>max_score){
+        max_score=current_score;
+    }
     current_score=0;
 }//f()
 
@@ -97,13 +100,53 @@ BOOL is_playable(){// check if a move is possible
     return 0;
 }//f()
 
+unsigned congratulation(int x, int y){
+    unsigned key, t,line,column;
+    BOOL vstate=FALSE;
+    set_curpos(0,22);
+    print("CONGRATULATION! YOU GOT 2048 SUM!");
+    crlf();
+    print("'A' to continue, 'B' new game.");
+    line=y*cell_height+(cell_height>>1)+1;
+    column=x*cell_width+2;
+    t=get_frame_count()+30;
+    while(read_paddle(PADDLE1)){
+        wait_n_frame(1);
+    }
+    do{
+        if (get_frame_count()>t){
+            set_curpos(column,line);
+            if (!vstate){
+                invert_video();
+            }else{
+                normal_video();
+            }
+            vstate = !vstate;
+            print(" 2048");
+            t=get_frame_count()+30;
+        }
+        key=read_paddle(PADDLE1);
+    } while (!key);
+    normal_video();
+    set_curpos(column,line);
+    print(" 2048");
+    set_curpos(6,22);
+    clear_eol();
+    crlf();
+    clear_eol();
+    if ((key & SNES_B)==SNES_B){
+        return 2;
+    }else{
+        return 1;
+    }
+}//f()
 
 
-BOOL slide_tiles(unsigned arrow){// move numbers on board
+int slide_tiles(unsigned arrow){// move numbers on board
     int x,y,t,sum;
-    BOOL moved;
+    unsigned state; // 0=no change, 1=changed, 2=start new game
     sum=0;
-    moved=FALSE;
+    state=0;
     arrow &= SNES_UP|SNES_DOWN|SNES_LEFT|SNES_RIGHT;
     switch(arrow){
         case SNES_UP:
@@ -117,18 +160,22 @@ BOOL slide_tiles(unsigned arrow){// move numbers on board
                     if (t>y){
                         board[(y<<2)+x]=board[(t<<2)+x];
                         board[(t<<2)+x]=0;
-                        moved=TRUE;
+                        state=1;
                     }//if
                     if (y>0){
                         if (board[((y-1)<<2)+x]==board[(y<<2)+x]){
                             board[((y-1)<<2)+x]<<=1;
                             sum+=board[((y-1)<<2)+x];
                             board[(y<<2)+x]=0;
-                            moved=TRUE;
+                            if (board[((y-1)<<2)+x]==2048){
+                                state=congratulation(x,y-1);
+                            }else{
+                                state=1;
+                            }
                         }else if (!board[((y-1)<<2)+x]){
                             board[((y-1)<<2)+x]=board[(y<<2)+x];
                             board[(y<<2)+x]=0;
-                            moved=TRUE;
+                            state=1;
                         }
                     }//if
                 }//for
@@ -145,18 +192,22 @@ BOOL slide_tiles(unsigned arrow){// move numbers on board
                     if (t<y){
                         board[(y<<2)+x]=board[(t<<2)+x];
                         board[(t<<2)+x]=0;
-                        moved=TRUE;
+                        state=1;
                     }
                     if (y<3){
                         if (board[((y+1)<<2)+x]==board[(y<<2)+x]){
                             board[((y+1)<<2)+x]<<=1;
                             sum+=board[((y+1)<<2)+x];
                             board[(y<<2)+x]=0;
-                            moved=TRUE;
+                            if (board[((y+1)<<2)+x]==2048){
+                                state=congratulation(x,y+1);
+                            }else{
+                                state=1;
+                            }
                         }else if (!board[((y+1)<<2)+x]){
                             board[((y+1)<<2)+x]=board[(y<<2)+x];
                             board[(y<<2)+x]=0;
-                            moved=TRUE;
+                            state=1;
                         }
                     }//if
                 }//for
@@ -173,18 +224,22 @@ BOOL slide_tiles(unsigned arrow){// move numbers on board
                     if (t>x){
                         board[(y<<2)+x]=board[(y<<2)+t];
                         board[(y<<2)+t]=0;
-                        moved=TRUE;
+                        state=1;
                     }//if
                     if (x>0){
                         if (board[(y<<2)+x-1]==board[(y<<2)+x]){
                             board[(y<<2)+x-1]<<=1;
                             sum+=board[(y<<2)+x-1];
                             board[(y<<2)+x]=0;
-                            moved=TRUE;
+                            if (board[(y<<2)+x-1]==2048){
+                                state=congratulation(x-1,y);
+                            }else{
+                                state=1;
+                            }
                         }else if (!board[(y<<2)+x-1]){
                             board[(y<<2)+x-1]=board[(y<<2)+x];
                             board[(y<<2)+x]=0;
-                            moved=TRUE;
+                            state=1;
                         }
                     }//if
                 }//for
@@ -201,26 +256,38 @@ BOOL slide_tiles(unsigned arrow){// move numbers on board
                     if (t<x){
                         board[(y<<2)+x]=board[(y<<2)+t];
                         board[(y<<2)+t]=0;
-                        moved=TRUE;
+                        state=1;
                     }//if
                     if (x<3){
                         if (board[(y<<2)+x+1]==board[(y<<2)+x]){
                             board[(y<<2)+x+1]<<=1;
                             sum+=board[(y<<2)+x+1];
                             board[(y<<2)+x]=0;
-                            moved=TRUE;
+                            if (board[(y<<2)+x+1]==2048){
+                                state=congratulation(x+1,y);
+                            }else{
+                                state=1;
+                            }
                         }else if (!board[(y<<2)+x+1]){
                             board[(y<<2)+x+1]=board[(y<<2)+x];
                             board[(y<<2)+x]=0;
-                            moved=TRUE;
+                            state=1;
                         }//if
                     }//if
                 }
             }
             break;
     }//switch
+    if (sum){
+        invert_video();
+        set_curpos(6,23);
+        put_char('+');
+        print_int(sum,0);
+        wait_n_frame(30);
+        normal_video();
+    }
     current_score += sum;
-    return moved;
+    return state;
 }//f()
 
 void display_score(){
@@ -244,7 +311,6 @@ void update_board(){
 BOOL game_over(){
     unsigned key;
     box(0,0,HPIXELS,VPIXELS-3*CHAR_HEIGHT,BLACK);
-    if (current_score>max_score) max_score=current_score;
     display_score();
     set_curpos(12,12);
     print("game over");
@@ -258,7 +324,7 @@ BOOL game_over(){
 }//f()
 
 void gc_2048_game(void){
-    unsigned key;
+    unsigned key,result;
     cell_width=CHAR_PER_LINE/4; // size in character
     cell_height=LINE_PER_SCREEN/4 ; // height in lines count
     if (!(cell_height&1)) cell_height--;
@@ -270,7 +336,12 @@ void gc_2048_game(void){
             key=read_paddle(PADDLE1);
         } while (!key);
         if (key & SNES_X) break;
-        if (slide_tiles(key)) pop_number();
+        result=slide_tiles(key);
+        if (result==1){
+            pop_number();
+        }else if (result==2){
+            init_board_values();
+        }
         update_board();
         if (!is_playable()){
             if (game_over()) break;
